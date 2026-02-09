@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Вайб-кодинг: От идеи к реальным решениям</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+        
+    <style>
+      html, body {        
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        height: auto !important;
+      }
+
+       body {
+        font-family: "Inter", sans-serif;
+        scroll-behavior: smooth;
+      }
+      .font-header {
+        font-family: "Montserrat", sans-serif;
+      }
+      .text-gradient {
+        background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .bg-gradient-main {
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .perspective-1000 {
+        perspective: 1000px;
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+      @keyframes float-delayed {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+      .animate-float {
+        animation: float 6s ease-in-out infinite;
+      }
+      .animate-float-delayed {
+        animation: float-delayed 7s ease-in-out infinite;
+        animation-delay: 1s;
+      }
+    </style>
+
+    <link rel="stylesheet" href="/index.css" />
+    <script type="module" crossorigin src="/assets/index-CrqkIGJg.js"></script>
+  </head>
+
+  <body class="bg-[#0a0a0c] text-white">
+    <div id="root"></div>
+
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var utmSource = params.get("utm_source") || "";
+        var utmMedium = params.get("utm_medium") || "";
+
+        function modifyLinks() {
+          var links = document.querySelectorAll(
+            'a[href*="xeniabaranova-school.ru/pl/lite/widget"]'
+          );
+          var sections = document.querySelectorAll("section");
+          // Первые две секции — hero (мобайл + десктоп)
+          var heroSections = [sections[0], sections[1]];
+
+          links.forEach(function (link) {
+            var section = link.closest("section");
+            var isHero = heroSections.indexOf(section) !== -1;
+
+            if (isHero) {
+              // Hero-кнопки → прокрутка к тарифам
+              link.removeAttribute("target");
+              link.href = "#pricing";
+              link.addEventListener("click", function (e) {
+                e.preventDefault();
+                var pricing = document.getElementById("pricing");
+                if (pricing) pricing.scrollIntoView({ behavior: "smooth" });
+              });
+            } else {
+              // Остальные кнопки → добавляем UTM-метки
+              if (utmSource || utmMedium) {
+                var url = new URL(link.href);
+                if (utmSource) url.searchParams.set("utm_source", utmSource);
+                if (utmMedium) url.searchParams.set("utm_medium", utmMedium);
+                link.href = url.toString();
+              }
+            }
+          });
+        }
+
+        // Ждём, пока React отрендерит приложение
+        var observer = new MutationObserver(function (mutations, obs) {
+          var root = document.getElementById("root");
+          if (root && root.children.length > 0) {
+            obs.disconnect();
+            setTimeout(modifyLinks, 100);
+          }
+        });
+
+        observer.observe(document.getElementById("root"), {
+          childList: true,
+          subtree: true,
+        });
+      })();
+    </script>
+  </body>
+</html>
