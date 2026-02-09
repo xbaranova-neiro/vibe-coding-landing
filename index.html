@@ -105,8 +105,17 @@
                 var pricing = document.getElementById("pricing");
                 if (pricing) pricing.scrollIntoView({ behavior: "smooth" });
               });
+            } else if (link.href.indexOf("id=1558793") !== -1) {
+              // Бесплатные кнопки → меняем URL на новый домен
+              link.href = "https://neyroseti.neiroguru.ru/pl/lite/widget/widget?id=1558793";
+              if (utmSource || utmMedium) {
+                var url = new URL(link.href);
+                if (utmSource) url.searchParams.set("utm_source", utmSource);
+                if (utmMedium) url.searchParams.set("utm_medium", utmMedium);
+                link.href = url.toString();
+              }
             } else {
-              // Остальные кнопки → добавляем UTM-метки
+              // Остальные кнопки (VIP) → добавляем UTM-метки
               if (utmSource || utmMedium) {
                 var url = new URL(link.href);
                 if (utmSource) url.searchParams.set("utm_source", utmSource);
