@@ -102,7 +102,7 @@
         function openWidget(url, maxH) {
           var h = maxH || 700;
           inner.style.maxHeight = h + "px";
-          inner.style.height = (h === 700) ? "80vh" : "90vh";
+          inner.style.height = (h === 700) ? "80vh" : "95vh";
           iframe.src = url;
           modal.style.display = "flex";
           document.body.style.overflow = "hidden";
@@ -166,7 +166,7 @@
               link.href = "#";
               link.addEventListener("click", function (e) {
                 e.preventDefault();
-                openWidget(buildWidgetUrl("1558799"), 850);
+                openWidget(buildWidgetUrl("1558799"), 99999);
               });
             }
           });
