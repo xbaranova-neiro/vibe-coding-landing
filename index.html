@@ -114,8 +114,9 @@
                 if (utmMedium) url.searchParams.set("utm_medium", utmMedium);
                 link.href = url.toString();
               }
-            } else {
-              // Остальные кнопки (VIP) → добавляем UTM-метки
+            } else if (link.href.indexOf("id=1558799") !== -1) {
+              // VIP-кнопки → меняем URL на новый домен
+              link.href = "https://neyroseti.neiroguru.ru/pl/lite/widget/widget?id=1558799";
               if (utmSource || utmMedium) {
                 var url = new URL(link.href);
                 if (utmSource) url.searchParams.set("utm_source", utmSource);
