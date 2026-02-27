@@ -169,12 +169,43 @@
           });
         }
 
+        // Скрываем блок VIP-тарифа (оставляем только бесплатную регистрацию)
+        function hideVipCard() {
+          var root = document.getElementById("root");
+          if (!root) return;
+          var all = root.querySelectorAll("section, div[class*='rounded'], div[class*='border']");
+          for (var i = 0; i < all.length; i++) {
+            var el = all[i];
+            var text = el.textContent || "";
+            if (text.indexOf("VIP 570") !== -1 || (text.indexOf("Хочу VIP") !== -1 && text.indexOf("570") !== -1)) {
+              el.style.display = "none";
+              return;
+            }
+          }
+          var walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, null, false);
+          var node;
+          while ((node = walker.nextNode())) {
+            var t = (node.textContent || "").trim();
+            if ((t.indexOf("VIP 570") !== -1 || t.indexOf("Хочу VIP за 570") !== -1) && t.length < 400) {
+              var card = node.closest("section") || node.closest("div");
+              if (card && card !== root && !card.querySelector("section")) {
+                card.style.display = "none";
+                return;
+              }
+            }
+          }
+        }
+
         // Ждём, пока React отрендерит приложение
         var observer = new MutationObserver(function (mutations, obs) {
           var root = document.getElementById("root");
           if (root && root.children.length > 0) {
             obs.disconnect();
-            setTimeout(modifyLinks, 100);
+            setTimeout(function () {
+              modifyLinks();
+              hideVipCard();
+              setTimeout(hideVipCard, 500);
+            }, 100);
           }
         });
 
