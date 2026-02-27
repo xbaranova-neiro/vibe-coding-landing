@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>День 2 — Wipecoding</title>
+  <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Запись Дня 2</h1>
+
+    <div id="no-access" class="hidden">
+      <p class="alert alert-warning">Сначала посмотрите запись Дня 1. День 2 откроется после этого (сразу или на следующий день — по вашему выбору).</p>
+      <a href="day1.html" class="btn btn-primary">К Дню 1</a>
+      <div id="day2-countdown" class="hidden" style="margin-top: 16px;">
+        <p>День 2 откроется через: <span class="timer" id="timer">--:--</span></p>
+      </div>
+    </div>
+
+    <div id="player-block" class="hidden">
+      <p class="subtitle">Запись второго дня вебинара.</p>
+      <div class="video-wrap">
+        <iframe id="video" src="" title="День 2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <button type="button" class="btn btn-primary" id="mark-watched">Я посмотрел День 2</button>
+    </div>
+
+    <div class="nav-block">
+      <a href="return.html" class="btn btn-secondary">К списку записей</a>
+      <a href="day1.html" class="btn btn-secondary">День 1</a>
+      <a href="gift.html" class="btn btn-gift">Получить подарок</a>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/state.js"></script>
+  <script>
+    const noAccess = document.getElementById('no-access');
+    const playerBlock = document.getElementById('player-block');
+    const day2Countdown = document.getElementById('day2-countdown');
+    const timerEl = document.getElementById('timer');
+    const markWatched = document.getElementById('mark-watched');
+
+    function formatTime(seconds) {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+      if (h > 0) return h + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+      return m + ':' + String(s).padStart(2, '0');
+    }
+
+    function tick() {
+      const canAccess = WipecodingState.canAccessDay2();
+      if (canAccess) {
+        noAccess.classList.add('hidden');
+        day2Countdown.classList.add('hidden');
+        playerBlock.classList.remove('hidden');
+        const videoEl = document.getElementById('video');
+        if (videoEl && window.WIPECODING_DAY2_VIDEO_URL) videoEl.src = window.WIPECODING_DAY2_VIDEO_URL;
+        return;
+      }
+
+      const state = WipecodingState.getState();
+      if (!state || state.stage === WipecodingState.STAGES.NOT_REGISTERED || state.stage === WipecodingState.STAGES.WAITING_DAY1 || state.stage === WipecodingState.STAGES.DAY1_AVAILABLE) {
+        playerBlock.classList.add('hidden');
+        day2Countdown.classList.add('hidden');
+        noAccess.classList.remove('hidden');
+        return;
+      }
+
+      const sec = WipecodingState.getSecondsUntilDay2();
+      if (sec !== null && sec > 0) {
+        noAccess.classList.remove('hidden');
+        day2Countdown.classList.remove('hidden');
+        timerEl.textContent = formatTime(sec);
+        playerBlock.classList.add('hidden');
+      }
+    }
+
+    WipecodingState.initState();
+    tick();
+    setInterval(tick, 1000);
+
+    markWatched.addEventListener('click', function () {
+      WipecodingState.markDay2Watched();
+      markWatched.textContent = 'День 2 отмечен как просмотренный';
+      markWatched.disabled = true;
+    });
+  </script>
+</body>
+</html>

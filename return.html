@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Доступ к записи — Wipecoding</title>
+  <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Добро пожаловать на Wipecoding</h1>
+
+    <div id="not-registered" class="hidden">
+      <p class="alert alert-warning">Сначала зарегистрируйтесь на вебинар.</p>
+      <p class="subtitle">Если вы только что нажали «Зарегистрироваться» на лендинге, откройте ссылку из письма или вернитесь на страницу регистрации.</p>
+      <a href="index.html" class="btn btn-primary">Регистрация</a>
+    </div>
+
+    <div id="wait-block" class="hidden">
+      <p class="subtitle">Чтобы не пропустить запись первого дня, вернитесь на эту страницу через <strong>3 минуты</strong> после регистрации.</p>
+      <p>Оставьте эту страницу открытой или добавьте её в закладки — запись откроется автоматически.</p>
+      <div class="timer" id="timer">3:00</div>
+      <p class="subtitle">Когда таймер дойдёт до нуля, появится кнопка перехода к записи Дня 1.</p>
+      <a href="day1.html" class="btn btn-primary hidden" id="go-day1">Смотреть запись Дня 1</a>
+    </div>
+
+    <div id="day1-available" class="hidden">
+      <p class="alert alert-success">Запись первого дня доступна. Не пропустите — смотрите сейчас.</p>
+      <a href="day1.html" class="btn btn-primary">Смотреть запись Дня 1</a>
+    </div>
+
+    <div id="day1-done" class="hidden">
+      <p class="alert alert-success">День 1 просмотрен. Переходите ко второму дню.</p>
+      <a href="day2.html" class="btn btn-primary">Смотреть запись Дня 2</a>
+    </div>
+
+    <div class="nav-block">
+      <a href="index.html" class="btn btn-secondary">На главную</a>
+    </div>
+  </div>
+
+  <script src="js/state.js"></script>
+  <script>
+    const notReg = document.getElementById('not-registered');
+    const waitBlock = document.getElementById('wait-block');
+    const day1Available = document.getElementById('day1-available');
+    const day1Done = document.getElementById('day1-done');
+    const timerEl = document.getElementById('timer');
+    const goDay1 = document.getElementById('go-day1');
+
+    function showBlock(block) {
+      [notReg, waitBlock, day1Available, day1Done].forEach(b => b.classList.add('hidden'));
+      if (block) block.classList.remove('hidden');
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return m + ':' + String(s).padStart(2, '0');
+    }
+
+    function tick() {
+      WipecodingState.unlockDay1IfReady();
+      const state = WipecodingState.getState();
+
+      if (!state || state.stage === WipecodingState.STAGES.NOT_REGISTERED) {
+        showBlock(notReg);
+        return;
+      }
+
+      if (state.stage === WipecodingState.STAGES.DAY1_AVAILABLE || state.stage === WipecodingState.STAGES.DAY1_WATCHED ||
+          state.stage === WipecodingState.STAGES.DAY2_AVAILABLE || state.stage === WipecodingState.STAGES.DAY2_WATCHED ||
+          state.stage === WipecodingState.STAGES.QUIZ_PASSED) {
+        if (state.stage === WipecodingState.STAGES.DAY1_AVAILABLE) {
+          showBlock(day1Available);
+        } else {
+          showBlock(day1Done);
+        }
+        return;
+      }
+
+      showBlock(waitBlock);
+      const sec = WipecodingState.getSecondsUntilDay1();
+      if (sec === null || sec > 0) {
+        timerEl.textContent = sec !== null ? formatTime(sec) : '3:00';
+        goDay1.classList.add('hidden');
+      } else {
+        timerEl.textContent = '0:00';
+        goDay1.classList.remove('hidden');
+      }
+    }
+
+    WipecodingState.initState();
+
+    // Регистрация с внешнего лендинга (GitHub / neirovideo5): редирект на return.html?from_reg=1
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('from_reg') === '1') {
+      var email = params.get('email') || '';
+      var name = params.get('name') || '';
+      WipecodingState.registerFromExternal(email, name);
+      if (window.history && window.history.replaceState) {
+        var cleanUrl = window.location.pathname;
+        window.history.replaceState({}, '', cleanUrl);
+      }
+    }
+
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>

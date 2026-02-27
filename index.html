@@ -2,10 +2,8 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="refresh" content="0; url=https://xbaranova-neiro.ru/neirovideo5?utm_source=vibecod" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Вайб-кодинг: От идеи к реальным решениям</title>
-    <script>window.location.replace("https://xbaranova-neiro.ru/neirovideo5?utm_source=vibecod");</script>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -133,42 +131,39 @@
           return u.toString();
         }
 
-        // --- Модификация ссылок ---
+        // Все кнопки ведут на регистрацию (виджет 1558793)
         function modifyLinks() {
           var links = document.querySelectorAll(
             'a[href*="xeniabaranova-school.ru/pl/lite/widget"]'
           );
           var sections = document.querySelectorAll("section");
           var heroSections = [sections[0], sections[1]];
+          var regWidgetUrl = buildWidgetUrl("1558793");
 
           links.forEach(function (link) {
             var section = link.closest("section");
             var isHero = heroSections.indexOf(section) !== -1;
 
             if (isHero) {
-              // Hero-кнопки → прокрутка к тарифам
               link.removeAttribute("target");
-              link.href = "#pricing";
+              link.href = "#";
               link.addEventListener("click", function (e) {
                 e.preventDefault();
-                var pricing = document.getElementById("pricing");
-                if (pricing) pricing.scrollIntoView({ behavior: "smooth" });
+                openWidget(regWidgetUrl);
               });
             } else if (link.href.indexOf("id=1558793") !== -1) {
-              // Бесплатные кнопки → открываем виджет
               link.removeAttribute("target");
               link.href = "#";
               link.addEventListener("click", function (e) {
                 e.preventDefault();
-                openWidget(buildWidgetUrl("1558793"));
+                openWidget(regWidgetUrl);
               });
             } else if (link.href.indexOf("id=1558799") !== -1) {
-              // VIP-кнопки → открываем виджет
               link.removeAttribute("target");
               link.href = "#";
               link.addEventListener("click", function (e) {
                 e.preventDefault();
-                openWidget(buildWidgetUrl("1558799"), 99999);
+                openWidget(regWidgetUrl);
               });
             }
           });
