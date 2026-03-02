@@ -279,7 +279,7 @@
           hideCaptionTexts();
         }
 
-        // Добавляем «Старт через 3 минуты» к строке с датой и временем (22-23 февраля · 11:00 и 19:00)
+        // Заменяем строку с датой и временем на «22-23 февраля · 11:00 и 19:00 · Старт через 3 минуты»
         function addStartIn3Min() {
           var root = document.getElementById("root");
           if (!root) return;
@@ -287,8 +287,8 @@
           for (var i = 0; i < all.length; i++) {
             var el = all[i];
             var t = el.textContent || "";
-            if (t.indexOf("22-23 февраля") !== -1 && t.indexOf("11:00 и 19:00") !== -1 && t.indexOf("Старт через 3 минуты") === -1 && t.length < 200) {
-              el.appendChild(document.createTextNode(" · Старт через 3 минуты"));
+            if (t.indexOf("22-23 февраля") !== -1 && t.indexOf("11:00 и 19:00") !== -1 && t.length < 200) {
+              el.textContent = "22-23 февраля · 11:00 и 19:00 · Старт через 3 минуты";
               return;
             }
           }
