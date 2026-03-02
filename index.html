@@ -279,7 +279,7 @@
           hideCaptionTexts();
         }
 
-        // Заменяем строку с датой и временем на «Старт через 3 минуты»
+        // Заменяем дату и время на «Старт через 3 минуты» везде на странице
         function addStartIn3Min() {
           var root = document.getElementById("root");
           if (!root) return;
@@ -287,9 +287,8 @@
           for (var i = 0; i < all.length; i++) {
             var el = all[i];
             var t = el.textContent || "";
-            if (t.indexOf("22-23 февраля") !== -1 && t.indexOf("11:00 и 19:00") !== -1 && t.length < 200) {
+            if (t.indexOf("22-23 февраля") !== -1 && (t.indexOf("11:00 и 19:00") !== -1 || t.indexOf("МСК") !== -1) && t.length < 250) {
               el.textContent = "Старт через 3 минуты";
-              return;
             }
           }
         }
