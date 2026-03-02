@@ -279,15 +279,16 @@
           hideCaptionTexts();
         }
 
-        // Только замена текста с датой на «Старт через 3 минуты», ничего больше не трогаем
+        // Только замена строки с датой: меняем только элемент, в котором одна строка (без вложенных блоков)
         function addStartIn3Min() {
           var root = document.getElementById("root");
           if (!root) return;
-          var all = root.querySelectorAll("p, span, div");
+          var all = root.querySelectorAll("p, span");
           for (var i = 0; i < all.length; i++) {
             var el = all[i];
-            var t = el.textContent || "";
-            if (t.indexOf("22-23 февраля") !== -1 && (t.indexOf("11:00 и 19:00") !== -1 || t.indexOf("МСК") !== -1) && t.length < 250) {
+            if (el.children.length > 0) continue;
+            var t = (el.textContent || "").trim();
+            if (t.indexOf("22-23 февраля") !== -1 && (t.indexOf("11:00 и 19:00") !== -1 || t.indexOf("МСК") !== -1) && t.length < 80) {
               el.textContent = "Старт через 3 минуты";
             }
           }
