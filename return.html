@@ -67,6 +67,7 @@
 
   <script src="js/config.js"></script>
   <script src="js/state.js"></script>
+  <script src="js/video-player.js"></script>
   <script src="js/noseek.js"></script>
   <script>
     const notReg = document.getElementById('not-registered');
@@ -80,6 +81,7 @@
     const day1AvailableVideo = document.getElementById('day1-available-video');
     const waitBeforePlayer = document.getElementById('wait-before-player');
     const waitHeading = document.getElementById('wait-heading');
+    var returnPlayerInited = false;
 
     function showBlock(block) {
       [notReg, waitBlock, day1Available, day1Done].forEach(b => b.classList.add('hidden'));
@@ -121,9 +123,10 @@
         if (waitHeading) waitHeading.innerHTML = '<strong>Мастер-класс Дня 1</strong> — смотрите ниже, запуск автоматический.';
         if (waitBeforePlayer) waitBeforePlayer.classList.add('hidden');
         playerContainer.classList.remove('hidden');
-        if (returnVideo) {
-          var url = getEmbedUrlWithAutoplay();
-          if (url && returnVideo.src !== url) returnVideo.src = url;
+        if (!returnPlayerInited) {
+          var w = playerContainer.querySelector('.video-wrap');
+          if (w && window.WipecodingVideo) window.WipecodingVideo.initDay1InPlace(w, returnVideo, true);
+          returnPlayerInited = true;
         }
         return;
       }
@@ -140,9 +143,10 @@
         if (waitHeading) waitHeading.innerHTML = '<strong>Мастер-класс Дня 1</strong> — смотрите ниже, запуск автоматический.';
         if (waitBeforePlayer) waitBeforePlayer.classList.add('hidden');
         playerContainer.classList.remove('hidden');
-        if (returnVideo) {
-          var url = getEmbedUrlWithAutoplay();
-          if (url && returnVideo.src !== url) returnVideo.src = url;
+        if (!returnPlayerInited) {
+          var w = playerContainer.querySelector('.video-wrap');
+          if (w && window.WipecodingVideo) window.WipecodingVideo.initDay1InPlace(w, returnVideo, true);
+          returnPlayerInited = true;
         }
       }
     }

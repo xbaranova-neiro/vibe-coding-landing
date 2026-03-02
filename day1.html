@@ -17,8 +17,8 @@
 
     <div id="player-block" class="hidden">
       <p class="subtitle">Мастер-класс нельзя проматывать — досмотрите до конца, чтобы открыть День 2.</p>
-      <div class="video-wrap">
-        <iframe id="video" src="" title="День 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <div class="video-wrap" id="day1-video-wrap">
+        <iframe id="video" src="" title="Мастер-класс Дня 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
       <p class="subtitle" style="margin-top: 16px;">После просмотра нажмите кнопку ниже — откроется доступ к мастер-классу Дня 2 (сразу или на следующий день — выберите сами).</p>
       <button type="button" class="btn btn-primary" id="mark-watched">Я прошёл День 1 — открыть мастер-класс Дня 2</button>
@@ -39,6 +39,7 @@
 
   <script src="js/config.js"></script>
   <script src="js/state.js"></script>
+  <script src="js/video-player.js"></script>
   <script src="js/noseek.js"></script>
   <script>
     const noAccess = document.getElementById('no-access');
@@ -59,8 +60,9 @@
       noAccess.classList.remove('hidden');
     } else {
       playerBlock.classList.remove('hidden');
-      const videoEl = document.getElementById('video');
-      if (videoEl && window.WIPECODING_DAY1_VIDEO_EMBED) videoEl.src = window.WIPECODING_DAY1_VIDEO_EMBED;
+      var wrap = document.getElementById('day1-video-wrap');
+      var videoEl = document.getElementById('video');
+      if (window.WipecodingVideo) window.WipecodingVideo.initDay1InPlace(wrap, videoEl, false);
     }
 
     markWatched.addEventListener('click', function () {
