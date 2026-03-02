@@ -33,16 +33,26 @@
     </div>
 
     <div id="wait-block" class="hidden">
-      <p class="subtitle"><strong>Мастер-класс Дня 1 начнётся через 3 минуты.</strong> Оставьте страницу открытой или в закладках — не пропустите старт.</p>
+      <p class="subtitle" id="wait-heading"><strong>Мастер-класс Дня 1 начнётся через 3 минуты.</strong> Оставьте страницу открытой или в закладках — не пропустите старт.</p>
       <p class="subtitle">Проматывать мастер-класс будет нельзя — смотрите с начала.</p>
       <div class="timer" id="timer">3:00</div>
-      <p class="subtitle">Когда таймер дойдёт до нуля, появится кнопка перехода к мастер-классу Дня 1.</p>
-      <a href="https://rutube.ru/video/private/df7d69deb2ddeadd41aaa8c9e3291710/?p=Yf_UqFg14w_GxYHNXXzUwg" target="_blank" rel="noopener" class="btn btn-primary hidden" id="go-day1">Перейти к мастер-классу Дня 1</a>
+      <p class="subtitle" id="wait-before-player">Когда таймер дойдёт до нуля, плеер запустится здесь автоматически.</p>
+      <div id="player-container" class="hidden" style="margin-top: 1rem;">
+        <div class="video-wrap">
+          <iframe id="return-video" src="" title="Мастер-класс Дня 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p class="subtitle" style="margin-top: 1rem;">После просмотра перейдите на страницу Дня 1 и нажмите «Я прошёл» — откроется доступ ко второму дню.</p>
+        <a href="day1.html" class="btn btn-primary">Страница Дня 1 — отметить просмотр</a>
+      </div>
     </div>
 
     <div id="day1-available" class="hidden">
       <p class="alert alert-success">Мастер-класс Дня 1 доступен. Проматывать нельзя — смотрите с начала.</p>
-      <a href="https://rutube.ru/video/private/df7d69deb2ddeadd41aaa8c9e3291710/?p=Yf_UqFg14w_GxYHNXXzUwg" target="_blank" rel="noopener" class="btn btn-primary">Перейти к мастер-классу Дня 1</a>
+      <div class="video-wrap" style="margin-bottom: 1rem;">
+        <iframe id="day1-available-video" src="" title="Мастер-класс Дня 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <p class="subtitle">После просмотра перейдите на страницу Дня 1 и нажмите «Я прошёл» — откроется доступ ко второму дню.</p>
+      <a href="day1.html" class="btn btn-primary">Страница Дня 1 — отметить просмотр</a>
     </div>
 
     <div id="day1-done" class="hidden">
@@ -55,6 +65,7 @@
     </div>
   </div>
 
+  <script src="js/config.js"></script>
   <script src="js/state.js"></script>
   <script>
     const notReg = document.getElementById('not-registered');
@@ -63,7 +74,11 @@
     const day1Done = document.getElementById('day1-done');
     const giftBlock = document.getElementById('gift-block');
     const timerEl = document.getElementById('timer');
-    const goDay1 = document.getElementById('go-day1');
+    const playerContainer = document.getElementById('player-container');
+    const returnVideo = document.getElementById('return-video');
+    const day1AvailableVideo = document.getElementById('day1-available-video');
+    const waitBeforePlayer = document.getElementById('wait-before-player');
+    const waitHeading = document.getElementById('wait-heading');
 
     function showBlock(block) {
       [notReg, waitBlock, day1Available, day1Done].forEach(b => b.classList.add('hidden'));
@@ -77,6 +92,12 @@
       return m + ':' + String(s).padStart(2, '0');
     }
 
+    function getEmbedUrlWithAutoplay() {
+      var base = window.WIPECODING_DAY1_VIDEO_EMBED || '';
+      if (!base) return '';
+      return base + (base.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=true';
+    }
+
     function tick() {
       WipecodingState.unlockDay1IfReady();
       const state = WipecodingState.getState();
@@ -86,13 +107,22 @@
         return;
       }
 
-      if (state.stage === WipecodingState.STAGES.DAY1_AVAILABLE || state.stage === WipecodingState.STAGES.DAY1_WATCHED ||
+      if (state.stage === WipecodingState.STAGES.DAY1_WATCHED ||
           state.stage === WipecodingState.STAGES.DAY2_AVAILABLE || state.stage === WipecodingState.STAGES.DAY2_WATCHED ||
           state.stage === WipecodingState.STAGES.QUIZ_PASSED) {
-        if (state.stage === WipecodingState.STAGES.DAY1_AVAILABLE) {
-          showBlock(day1Available);
-        } else {
-          showBlock(day1Done);
+        showBlock(day1Done);
+        return;
+      }
+
+      if (state.stage === WipecodingState.STAGES.DAY1_AVAILABLE) {
+        showBlock(waitBlock);
+        timerEl.textContent = '0:00';
+        if (waitHeading) waitHeading.innerHTML = '<strong>Мастер-класс Дня 1</strong> — смотрите ниже, запуск автоматический.';
+        if (waitBeforePlayer) waitBeforePlayer.classList.add('hidden');
+        playerContainer.classList.remove('hidden');
+        if (returnVideo) {
+          var url = getEmbedUrlWithAutoplay();
+          if (url && returnVideo.src !== url) returnVideo.src = url;
         }
         return;
       }
@@ -101,10 +131,18 @@
       const sec = WipecodingState.getSecondsUntilDay1();
       if (sec === null || sec > 0) {
         timerEl.textContent = sec !== null ? formatTime(sec) : '3:00';
-        goDay1.classList.add('hidden');
+        if (waitHeading) waitHeading.innerHTML = '<strong>Мастер-класс Дня 1 начнётся через 3 минуты.</strong> Оставьте страницу открытой или в закладках — не пропустите старт.';
+        playerContainer.classList.add('hidden');
+        if (waitBeforePlayer) waitBeforePlayer.classList.remove('hidden');
       } else {
         timerEl.textContent = '0:00';
-        goDay1.classList.remove('hidden');
+        if (waitHeading) waitHeading.innerHTML = '<strong>Мастер-класс Дня 1</strong> — смотрите ниже, запуск автоматический.';
+        if (waitBeforePlayer) waitBeforePlayer.classList.add('hidden');
+        playerContainer.classList.remove('hidden');
+        if (returnVideo) {
+          var url = getEmbedUrlWithAutoplay();
+          if (url && returnVideo.src !== url) returnVideo.src = url;
+        }
       }
     }
 
