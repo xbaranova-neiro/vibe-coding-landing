@@ -169,12 +169,45 @@
           });
         }
 
-        // Ждём, пока React отрендерит приложение (скрытие VIP отключено — лендинг остаётся целиком)
+        // Убираем только кнопку «Хочу VIP за 570 ₽» (сам элемент a/button, не родители)
+        function hideVipButtonOnly() {
+          var root = document.getElementById("root");
+          if (!root) return;
+          var links = root.querySelectorAll("a, button");
+          for (var i = 0; i < links.length; i++) {
+            var el = links[i];
+            var t = (el.textContent || "").trim();
+            if (t.indexOf("Хочу VIP за 570") !== -1 || (t === "Хочу VIP за 570 ₽")) {
+              el.style.setProperty("display", "none", "important");
+            }
+          }
+        }
+        // Убираем весь блок «ВЫБЕРИТЕ ФОРМАТ УЧАСТИЯ» (одну секцию)
+        function hideFormatSection() {
+          var root = document.getElementById("root");
+          if (!root) return;
+          var sections = root.querySelectorAll("section");
+          for (var i = 0; i < sections.length; i++) {
+            if ((sections[i].textContent || "").indexOf("ВЫБЕРИТЕ ФОРМАТ УЧАСТИЯ") !== -1) {
+              sections[i].style.setProperty("display", "none", "important");
+              return;
+            }
+          }
+        }
+        function runHide() {
+          hideFormatSection();
+          hideVipButtonOnly();
+        }
+
+        // Ждём, пока React отрендерит приложение
         var observer = new MutationObserver(function (mutations, obs) {
           var root = document.getElementById("root");
           if (root && root.children.length > 0) {
             obs.disconnect();
-            setTimeout(modifyLinks, 100);
+            setTimeout(function () {
+              modifyLinks();
+              runHide();
+            }, 100);
           }
         });
 
@@ -182,6 +215,7 @@
           childList: true,
           subtree: true,
         });
+        setTimeout(runHide, 800);
       })();
     </script>
   </body>
