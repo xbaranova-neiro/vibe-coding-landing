@@ -169,51 +169,47 @@
           });
         }
 
-        // Скрываем блок VIP-тарифа (оставляем только бесплатную регистрацию)
+        // Скрываем только карточку VIP (вторую карточку), первый экран и «Бесплатно» не трогаем
         function hideVipCard() {
           var root = document.getElementById("root");
           if (!root) return false;
-          var hidden = root.querySelectorAll("[data-vip-card-hidden]");
-          if (hidden.length > 0) return true;
+          if (root.querySelectorAll("[data-vip-card-hidden]").length > 0) return true;
           var sections = root.querySelectorAll("section");
           for (var s = 0; s < sections.length; s++) {
             var sec = sections[s];
             var secText = sec.textContent || "";
-            if (secText.indexOf("ВЫБЕРИТЕ ФОРМАТ") === -1 && secText.indexOf("Бесплатно") === -1) continue;
-            var cards = sec.querySelectorAll("div > div, div[class*='rounded']");
+            if (secText.indexOf("ВЫБЕРИТЕ ФОРМАТ") === -1 || secText.indexOf("Бесплатно") === -1) continue;
+            var container = null;
+            var vipChildIndex = -1;
+            function findTwoCards(node, depth) {
+              if (depth > 6 || !node || node.nodeType !== 1) return;
+              var ch = node.children;
+              if (ch.length === 2) {
+                var t0 = (ch[0].textContent || "").indexOf("Бесплатно") !== -1;
+                var t1 = (ch[1].textContent || "").indexOf("VIP 570") !== -1 || (ch[1].textContent || "").indexOf("Хочу VIP") !== -1;
+                if (t0 && t1) {
+                  container = node;
+                  vipChildIndex = 1;
+                  return;
+                }
+              }
+              for (var i = 0; i < ch.length && !container; i++) findTwoCards(ch[i], depth + 1);
+            }
+            findTwoCards(sec, 0);
+            if (container && vipChildIndex >= 0 && container.children[vipChildIndex]) {
+              var vipCard = container.children[vipChildIndex];
+              vipCard.setAttribute("data-vip-card-hidden", "1");
+              vipCard.style.setProperty("display", "none", "important");
+              return true;
+            }
+            var cards = sec.querySelectorAll("div[class*='rounded']");
             for (var c = 0; c < cards.length; c++) {
               var card = cards[c];
               var ct = card.textContent || "";
-              if (ct.indexOf("VIP 570") !== -1 || (ct.indexOf("Хочу VIP") !== -1 && ct.indexOf("570") !== -1)) {
+              if ((ct.indexOf("VIP 570") !== -1 || (ct.indexOf("Хочу VIP") !== -1 && ct.indexOf("570") !== -1)) && ct.indexOf("Бесплатно") === -1) {
                 card.setAttribute("data-vip-card-hidden", "1");
                 card.style.setProperty("display", "none", "important");
                 return true;
-              }
-            }
-            var direct = sec.children;
-            for (var d = 0; d < direct.length; d++) {
-              var ch = direct[d];
-              var chText = (ch.textContent || "");
-              if (chText.indexOf("VIP 570") !== -1 || chText.indexOf("Хочу VIP за 570") !== -1) {
-                ch.setAttribute("data-vip-card-hidden", "1");
-                ch.style.setProperty("display", "none", "important");
-                return true;
-              }
-            }
-          }
-          var all = root.getElementsByTagName("*");
-          for (var i = 0; i < all.length; i++) {
-            var el = all[i];
-            var t = el.textContent || "";
-            if ((t.indexOf("VIP 570") !== -1 || t.indexOf("Хочу VIP за 570") !== -1) && t.length < 800) {
-              var parent = el.parentNode;
-              for (var up = 0; up < 10 && parent && parent !== root; up++) {
-                if (parent.children.length >= 1 && parent.children.length <= 4) {
-                  parent.setAttribute("data-vip-card-hidden", "1");
-                  parent.style.setProperty("display", "none", "important");
-                  return true;
-                }
-                parent = parent.parentNode;
               }
             }
           }
