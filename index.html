@@ -182,6 +182,22 @@
             }
           }
         }
+        // Убираем подписи «VIP — эфир + записи + сертификат» и «Бесплатно — только эфир»
+        function hideCaptionTexts() {
+          var root = document.getElementById("root");
+          if (!root) return;
+          var all = root.querySelectorAll("p, span, div");
+          for (var i = 0; i < all.length; i++) {
+            var el = all[i];
+            var t = (el.textContent || "").trim();
+            if (t.indexOf("VIP — эфир + записи + сертификат") !== -1 && t.length < 80) {
+              el.style.setProperty("display", "none", "important");
+            }
+            if (t.indexOf("Бесплатно — только эфир") !== -1 && t.length < 80) {
+              el.style.setProperty("display", "none", "important");
+            }
+          }
+        }
         // Убираем весь блок «ВЫБЕРИТЕ ФОРМАТ УЧАСТИЯ» (одну секцию)
         function hideFormatSection() {
           var root = document.getElementById("root");
@@ -197,6 +213,7 @@
         function runHide() {
           hideFormatSection();
           hideVipButtonOnly();
+          hideCaptionTexts();
         }
 
         // Ждём, пока React отрендерит приложение
@@ -216,6 +233,7 @@
           subtree: true,
         });
         setTimeout(runHide, 800);
+        setTimeout(hideCaptionTexts, 1200);
       })();
     </script>
   </body>
