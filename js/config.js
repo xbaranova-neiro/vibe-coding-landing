@@ -37,4 +37,4 @@ window.WIPECODING_CHAT_WIDGET_URL = '';
 
 // Сценарий чата из JSON (Bizon365 room_recs): сообщения справа, синхрон с видео по timeshift.
 // Если задан — показывается панель «Сценарий чата» (приоритет над CHAT_WIDGET_URL). При CORS с другого домена положите JSON в репо, например data/room_recs.json, и укажите относительный URL.
-window.WIPECODING_CHAT_SCRIPT_URL = 'https://start.bizon365.ru/usersgenerated/room_recs_93864-vibecode_day1_rW_uVEXKWg.json';
+window.WIPECODING_CHAT_SCRIPT_URL = 'data/room_recs.json';

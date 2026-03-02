@@ -132,7 +132,7 @@
   });
 
   function getStreamTime() {
-    var video = document.querySelector('#return-video-wrap video, .video-wrap-native video, [id*="day1"] .video-wrap-native video, .video-wrap video') || document.querySelector('video');
+    var video = document.querySelector('#return-video-wrap video, #return-video-wrap .video-wrap-native video, .video-wrap-native video, [id*="day1"] .video-wrap-native video, .video-wrap video') || document.querySelector('video');
     if (!video) return null;
     var t = video.currentTime;
     if (typeof t !== 'number' || isNaN(t)) return null;
@@ -149,15 +149,18 @@
     if (total !== cur || (total && !messagesEl.querySelector('.chat-script-msg'))) renderMessages(visible, streamTime);
   }
 
-  fetch(scriptUrl)
-    .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error(r.status)); })
+  fetch(scriptUrl, { mode: 'cors' })
+    .then(function (r) {
+      if (!r.ok) return Promise.reject(new Error(r.status + ' ' + r.statusText));
+      return r.json();
+    })
     .then(function (json) {
       var data = (json && json.data) || [];
       allPosts = data
         .filter(function (item) { return item.action === 'post'; })
         .map(function (item) {
           var raw = typeof item.timeshift === 'number' ? item.timeshift : 0;
-          var timeshiftSec = raw >= 1e5 ? raw / 1000 : raw;
+          var timeshiftSec = raw / 1000;
           return {
             timeshift: timeshiftSec,
             username: item.username || (item.data && item.data.username) || 'Гость',
@@ -172,7 +175,11 @@
       renderMessages(visible, streamTime);
       setInterval(updateByVideo, 500);
     })
-    .catch(function () {
-      messagesEl.innerHTML = '<div class="chat-script-error">Не удалось загрузить сценарий чата.</div>';
+    .catch(function (err) {
+      var msg = 'Не удалось загрузить сценарий чата.';
+      if (err && err.message && (err.message.indexOf('Failed') !== -1 || err.message.indexOf('CORS') !== -1)) {
+        msg += ' Загрузите JSON в репо (например data/room_recs.json) и укажите в config.js относительный URL.';
+      }
+      messagesEl.innerHTML = '<div class="chat-script-error">' + msg + '</div>';
     });
 })();
