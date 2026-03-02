@@ -45,6 +45,7 @@
   <script src="js/config.js"></script>
   <script src="js/state.js"></script>
   <script src="js/video-player.js"></script>
+  <script src="js/chat-script-panel.js"></script>
   <script>
     const noAccess = document.getElementById('no-access');
     const playerBlock = document.getElementById('player-block');
@@ -129,6 +130,27 @@
       p.textContent = 'Запись Дня 2 откроется завтра. Сохраните страницу в закладках.';
       unlockChoice.parentNode.insertBefore(p, unlockChoice.nextSibling);
     });
+
+    // Виджет чата справа (iframe), если задан WIPECODING_CHAT_WIDGET_URL и не задан сценарий из JSON
+    (function () {
+      if (typeof window.WIPECODING_CHAT_SCRIPT_URL !== 'undefined' && (window.WIPECODING_CHAT_SCRIPT_URL || '').trim()) return;
+      var url = typeof window.WIPECODING_CHAT_WIDGET_URL !== 'undefined' && window.WIPECODING_CHAT_WIDGET_URL;
+      if (!url) return;
+      var panel = document.createElement('div');
+      panel.className = 'chat-widget-panel';
+      panel.innerHTML = '<iframe src="' + url.replace(/"/g, '&quot;') + '" title="Чат"></iframe>';
+      var toggle = document.createElement('button');
+      toggle.className = 'chat-widget-toggle';
+      toggle.setAttribute('type', 'button');
+      toggle.setAttribute('aria-label', 'Открыть чат');
+      toggle.innerHTML = '💬';
+      toggle.addEventListener('click', function () {
+        panel.classList.toggle('hidden');
+        toggle.setAttribute('aria-label', panel.classList.contains('hidden') ? 'Открыть чат' : 'Закрыть чат');
+      });
+      document.body.appendChild(toggle);
+      document.body.appendChild(panel);
+    })();
   </script>
 </body>
 </html>

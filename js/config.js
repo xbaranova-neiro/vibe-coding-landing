@@ -10,6 +10,8 @@
 window.WIPECODING_DAY1_VIDEO_MP4 = 'https://storage.yandexcloud.net/vibe-coding/93864-vibecode_day1_2026-02-18-18-59.mp4';
 // Старт с указанной секунды (например 60 = с 1-й минуты, заставка не показывается). 0 или не задано — с начала.
 window.WIPECODING_DAY1_VIDEO_START_SECONDS = 60;
+// Показать кнопку «Я посмотрел 1 день» когда до конца видео осталось столько секунд (например 300 = за 5 мин до конца). 0 = показывать сразу.
+window.WIPECODING_DAY1_BUTTON_SHOW_WHEN_SECONDS_LEFT = 300;
 
 // День 2
 window.WIPECODING_DAY2_VIDEO_MP4 = '';
@@ -29,3 +31,10 @@ window.WIPECODING_PAYMENT_BUTTONS = [
 window.WIPECODING_PAYMENT_BUTTON_TEXT = 'Перейти к оплате';
 window.WIPECODING_PAYMENT_BUTTON_URL = '';
 window.WIPECODING_PAYMENT_LABEL = '';
+
+// Сценарий чата / виджет справа: URL iframe (пусто = не показывать). Показывается на return.html, day1.html, gift.html.
+window.WIPECODING_CHAT_WIDGET_URL = '';
+
+// Сценарий чата из JSON (Bizon365 room_recs): сообщения справа, синхрон с видео по timeshift.
+// Если задан — показывается панель «Сценарий чата» (приоритет над CHAT_WIDGET_URL). При CORS с другого домена положите JSON в репо, например data/room_recs.json, и укажите относительный URL.
+window.WIPECODING_CHAT_SCRIPT_URL = 'https://start.bizon365.ru/usersgenerated/room_recs_93864-vibecode_day1_rW_uVEXKWg.json';

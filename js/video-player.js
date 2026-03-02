@@ -127,7 +127,11 @@
         btnWrap.appendChild(payBtn);
       }
       paymentWrap.appendChild(btnWrap);
-      wrap.appendChild(paymentWrap);
+      if (wrap.parentNode) {
+        wrap.parentNode.insertBefore(paymentWrap, wrap.nextSibling);
+      } else {
+        wrap.appendChild(paymentWrap);
+      }
 
       var onTimeUpdate = function () {
         if (video.currentTime >= paymentAt) {

@@ -39,7 +39,9 @@
           <p class="subtitle" style="margin: 0.5rem 0;">Загрузите MP4 на хостинг и укажите прямую ссылку в <code>js/config.js</code> (WIPECODING_DAY1_VIDEO_MP4).</p>
           <p><a href="КУДА_ЗАГРУЗИТЬ_ВИДЕО.md" target="_blank" rel="noopener">Инструкция: куда загрузить видео →</a></p>
         </div>
-        <a href="day1.html" class="btn btn-primary" style="margin-top: 1rem;">Я посмотрел 1 день</a>
+        <div id="return-day1-btn-wrap" class="hidden" style="margin-top: 1rem;">
+          <a href="day1.html" class="btn btn-primary">Я посмотрел 1 день</a>
+        </div>
       </div>
     </div>
 
@@ -67,6 +69,7 @@
   <script src="js/config.js"></script>
   <script src="js/state.js"></script>
   <script src="js/video-player.js"></script>
+  <script src="js/chat-script-panel.js"></script>
   <script>
     const notReg = document.getElementById('not-registered');
     const waitBlock = document.getElementById('wait-block');
@@ -178,6 +181,63 @@
     tick();
     giftBlock.classList.toggle('hidden', !WipecodingState.getState() || WipecodingState.getState().stage === WipecodingState.STAGES.NOT_REGISTERED);
     setInterval(tick, 1000);
+
+    var showBtnSecondsLeft = Math.max(0, parseInt(window.WIPECODING_DAY1_BUTTON_SHOW_WHEN_SECONDS_LEFT, 10) || 0);
+    if (showBtnSecondsLeft > 0) {
+      var day1BtnShown = false;
+      var listenerAttached = false;
+      function tryAttachNearEnd() {
+        if (listenerAttached) return;
+        var video = document.querySelector('#return-video-wrap video');
+        var btnWrap = document.getElementById('return-day1-btn-wrap');
+        if (!video || !btnWrap) return;
+        listenerAttached = true;
+        var onTime = function () {
+          if (day1BtnShown) return;
+          var dur = video.duration;
+          if (!dur || isNaN(dur)) return;
+          if (dur - video.currentTime <= showBtnSecondsLeft) {
+            btnWrap.classList.remove('hidden');
+            day1BtnShown = true;
+            video.removeEventListener('timeupdate', onTime);
+          }
+        };
+        video.addEventListener('timeupdate', onTime);
+        if (video.readyState >= 1 && video.duration && !isNaN(video.duration) && video.duration - video.currentTime <= showBtnSecondsLeft) {
+          btnWrap.classList.remove('hidden');
+          day1BtnShown = true;
+        }
+      }
+      var nearEndInterval = setInterval(function () {
+        tryAttachNearEnd();
+        if (listenerAttached) clearInterval(nearEndInterval);
+      }, 500);
+      setTimeout(function () { clearInterval(nearEndInterval); }, 60000);
+    } else {
+      var w = document.getElementById('return-day1-btn-wrap');
+      if (w) w.classList.remove('hidden');
+    }
+
+    // Виджет чата справа (iframe), если задан WIPECODING_CHAT_WIDGET_URL и не задан сценарий из JSON
+    (function () {
+      if (typeof window.WIPECODING_CHAT_SCRIPT_URL !== 'undefined' && (window.WIPECODING_CHAT_SCRIPT_URL || '').trim()) return;
+      var url = typeof window.WIPECODING_CHAT_WIDGET_URL !== 'undefined' && window.WIPECODING_CHAT_WIDGET_URL;
+      if (!url) return;
+      var panel = document.createElement('div');
+      panel.className = 'chat-widget-panel';
+      panel.innerHTML = '<iframe src="' + url.replace(/"/g, '&quot;') + '" title="Чат"></iframe>';
+      var toggle = document.createElement('button');
+      toggle.className = 'chat-widget-toggle';
+      toggle.setAttribute('type', 'button');
+      toggle.setAttribute('aria-label', 'Открыть чат');
+      toggle.innerHTML = '💬';
+      toggle.addEventListener('click', function () {
+        panel.classList.toggle('hidden');
+        toggle.setAttribute('aria-label', panel.classList.contains('hidden') ? 'Открыть чат' : 'Закрыть чат');
+      });
+      document.body.appendChild(toggle);
+      document.body.appendChild(panel);
+    })();
   </script>
 </body>
 </html>
