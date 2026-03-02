@@ -5,7 +5,9 @@
 
 // Мастер-класс Дня 1 — прямая ссылка на MP4 (свой плеер: без перемотки, только пауза).
 // Как получить ссылку — см. КУДА_ЗАГРУЗИТЬ_ВИДЕО.md
-window.WIPECODING_DAY1_VIDEO_MP4 = 'https://storage.yandexcloud.ru/vibe-coding/93864-vibecode_day1_2026-02-18-18-59.mp4';
+// Публичная ссылка без подписи (подписанные URL с X-Amz-* истекают через 60 сек).
+// Домен .net — если с .ru была ошибка SSL, используй этот.
+window.WIPECODING_DAY1_VIDEO_MP4 = 'https://storage.yandexcloud.net/vibe-coding/93864-vibecode_day1_2026-02-18-18-59.mp4';
 
 // День 2
 window.WIPECODING_DAY2_VIDEO_MP4 = '';

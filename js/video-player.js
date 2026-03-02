@@ -9,8 +9,8 @@
     wrap.classList.add('video-wrap-native');
     wrap.classList.remove('video-wrap-no-seek');
     var video = document.createElement('video');
-    video.src = mp4;
     video.playsInline = true;
+    video.src = mp4;
     video.disablePictureInPicture = true;
     video.disableRemotePlayback = true;
     video.controls = false;
@@ -29,6 +29,40 @@
     });
     video.addEventListener('play', function () { btnPlay.textContent = '⏸'; });
     video.addEventListener('pause', function () { btnPlay.textContent = '▶'; });
+    function addErrorBlock(text, isLink) {
+      var msg = wrap.querySelector('.video-load-error') || document.createElement('p');
+      msg.className = 'video-load-error';
+      msg.style.cssText = 'margin-top:8px;padding:12px;background:rgba(220,38,38,0.15);border-radius:8px;color:#fca5a5;font-size:14px;';
+      msg.innerHTML = '';
+      if (isLink) {
+        var a = document.createElement('a');
+        a.href = mp4;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.style.color = '#fcd34d';
+        a.textContent = 'Откройте ссылку на видео в новой вкладке';
+        msg.appendChild(document.createTextNode(text));
+        msg.appendChild(document.createElement('br'));
+        msg.appendChild(a);
+        msg.appendChild(document.createTextNode(' — если там 403 или не открывается, проверьте доступ к бакету в Облаке.'));
+      } else {
+        msg.textContent = text;
+      }
+      if (!msg.parentNode) wrap.appendChild(msg);
+    }
+    video.addEventListener('error', function () {
+      var code = video.error && video.error.code;
+      var text = 'Не удалось загрузить видео. ';
+      if (code === 2) text += 'Сеть или CORS (MEDIA_ERR_NETWORK). ';
+      else if (code === 4) text += 'Формат/источник (MEDIA_ERR_SRC_NOT_SUPPORTED). ';
+      else text += 'Проверьте ссылку и CORS в облаке. ';
+      addErrorBlock(text, true);
+    });
+    setTimeout(function () {
+      if (video.readyState < 2 && !wrap.querySelector('.video-load-error')) {
+        addErrorBlock('Видео долго не загружается. ', true);
+      }
+    }, 8000);
     vol.addEventListener('input', function () { video.volume = vol.value / 100; });
     if (autoplay) video.play().catch(function () {});
     return true;
