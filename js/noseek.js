@@ -4,14 +4,14 @@
  */
 (function () {
   var maxAllowedTime = 0;
-  var isPlaying = false;
   var lastCurrentTime = 0;
-  var SEEK_BACK_TOLERANCE = 2;   // сек — если время откатилось больше чем на 2 сек, считаем перемоткой назад
-  var SEEK_FWD_TOLERANCE = 5;    // сек — если время прыгнуло вперёд больше чем на 5 сек, считаем перемоткой вперёд
+  var MIN_SAFE_SECONDS = 20;     // не трогать плеер первые N секунд — избегаем ложных сбросов из-за задержек Rutube
+  var SEEK_BACK_TOLERANCE = 5;   // сек — откат больше чем на N сек = перемотка назад
+  var SEEK_FWD_TOLERANCE = 10;   // сек — прыжок вперёд больше чем на N сек = перемотка вперёд
 
   window.addEventListener('message', function (event) {
     if (!event.source || !event.source.postMessage) return;
-    if (event.origin.indexOf('rutube') === -1) return;
+    if (String(event.origin).toLowerCase().indexOf('rutube') === -1) return;
     var msg;
     try {
       msg = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
@@ -20,23 +20,18 @@
     }
     if (!msg || !msg.type) return;
 
-    if (msg.type === 'player:changeState') {
-      isPlaying = (msg.data && msg.data.state === 'playing');
-      return;
-    }
-
     if (msg.type === 'player:currentTime' && msg.data && typeof msg.data.time === 'number') {
       var t = msg.data.time;
-      // Обновляем макс. позицию при любом постепенном движении вперёд (события могут прийти до changeState(playing))
-      if (t > lastCurrentTime && t - lastCurrentTime < 15) {
+      if (t > lastCurrentTime && t - lastCurrentTime < 20) {
         maxAllowedTime = Math.max(maxAllowedTime, t);
       }
       lastCurrentTime = t;
+      if (maxAllowedTime < MIN_SAFE_SECONDS) return;
       var needReset = false;
       var targetTime = maxAllowedTime;
       if (t < maxAllowedTime - SEEK_BACK_TOLERANCE) {
         needReset = true;
-      } else if (maxAllowedTime > 3 && t > maxAllowedTime + SEEK_FWD_TOLERANCE) {
+      } else if (t > maxAllowedTime + SEEK_FWD_TOLERANCE) {
         needReset = true;
       }
       if (needReset && event.source && event.source.postMessage) {
