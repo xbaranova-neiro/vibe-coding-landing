@@ -203,6 +203,18 @@ h1 {
   accent-color: var(--accent);
 }
 
+/* Полный экран: весь блок на весь экран */
+.video-wrap-native:fullscreen,
+.video-wrap-native:-webkit-full-screen {
+  background: #000;
+  max-width: none;
+  max-height: none;
+}
+.video-wrap-native:fullscreen video,
+.video-wrap-native:-webkit-full-screen video {
+  object-fit: contain;
+}
+
 .alert {
   padding: 14px 16px;
   border-radius: 8px;

@@ -8,6 +8,8 @@
 // Публичная ссылка без подписи (подписанные URL с X-Amz-* истекают через 60 сек).
 // Домен .net — если с .ru была ошибка SSL, используй этот.
 window.WIPECODING_DAY1_VIDEO_MP4 = 'https://storage.yandexcloud.net/vibe-coding/93864-vibecode_day1_2026-02-18-18-59.mp4';
+// Старт с указанной секунды (например 60 = с 1-й минуты, заставка не показывается). 0 или не задано — с начала.
+window.WIPECODING_DAY1_VIDEO_START_SECONDS = 60;
 
 // День 2
 window.WIPECODING_DAY2_VIDEO_MP4 = '';

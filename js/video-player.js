@@ -10,20 +10,49 @@
     wrap.classList.remove('video-wrap-no-seek');
     var video = document.createElement('video');
     video.playsInline = true;
+    video.crossOrigin = 'anonymous';
     video.src = mp4;
     video.disablePictureInPicture = true;
     video.disableRemotePlayback = true;
     video.controls = false;
+    var startSec = Math.max(0, parseInt(window.WIPECODING_DAY1_VIDEO_START_SECONDS, 10) || 0);
+    if (startSec > 0) {
+      video.addEventListener('loadedmetadata', function setStart() {
+        if (video.duration >= startSec) video.currentTime = startSec;
+        video.removeEventListener('loadedmetadata', setStart);
+      });
+    }
     video.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     video.addEventListener('click', function () { video.paused ? video.play() : video.pause(); });
     var controls = document.createElement('div');
     controls.className = 'custom-video-controls';
-    controls.innerHTML = '<button type="button" id="btn-play" title="Play/Pause" aria-label="Play/Pause">▶</button><div class="vol-wrap"><input type="range" id="vol" min="0" max="100" value="100" title="Volume"></div>';
+    controls.innerHTML = '<button type="button" id="btn-play" title="Play/Pause" aria-label="Play/Pause">▶</button><div class="vol-wrap"><input type="range" id="vol" min="0" max="100" value="100" title="Volume"></div><button type="button" id="btn-fullscreen" title="Полный экран" aria-label="Полный экран">⛶</button>';
     wrap.innerHTML = '';
     wrap.appendChild(video);
     wrap.appendChild(controls);
     var btnPlay = controls.querySelector('#btn-play');
     var vol = controls.querySelector('#vol');
+    var btnFullscreen = controls.querySelector('#btn-fullscreen');
+    function updateFullscreenBtn() {
+      var isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      btnFullscreen.textContent = isFs ? '✕' : '⛶';
+      btnFullscreen.title = isFs ? 'Выйти из полного экрана' : 'Полный экран';
+    }
+    function toggleFullscreen() {
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      } else {
+        var el = wrap;
+        (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+      }
+    }
+    if (btnFullscreen && (wrap.requestFullscreen || wrap.webkitRequestFullscreen)) {
+      btnFullscreen.addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', updateFullscreenBtn);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenBtn);
+    } else if (btnFullscreen) {
+      btnFullscreen.style.display = 'none';
+    }
     btnPlay.addEventListener('click', function () {
       if (video.paused) { video.play(); btnPlay.textContent = '⏸'; } else { video.pause(); btnPlay.textContent = '▶'; }
     });
@@ -56,6 +85,7 @@
       if (code === 2) text += 'Сеть или CORS (MEDIA_ERR_NETWORK). ';
       else if (code === 4) text += 'Формат/источник (MEDIA_ERR_SRC_NOT_SUPPORTED). ';
       else text += 'Проверьте ссылку и CORS в облаке. ';
+      text += ' В бакете vibe-coding (Настройки → CORS) укажи Allowed Origins: https://xbaranova-neiro.github.io, Allowed Headers: Range, Expose Headers: Content-Range, Content-Length.';
       addErrorBlock(text, true);
     });
     setTimeout(function () {
