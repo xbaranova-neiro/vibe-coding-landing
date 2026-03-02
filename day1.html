@@ -20,6 +20,11 @@
       <div class="video-wrap" id="day1-video-wrap">
         <iframe id="video" src="" title="Мастер-класс Дня 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
+      <div id="day1-video-not-configured" class="hidden" style="padding: 1.5rem; background: rgba(255,255,255,0.06); border-radius: 12px; margin-bottom: 1rem;">
+        <p><strong>Видео мастер-класса не настроено.</strong></p>
+        <p class="subtitle" style="margin: 0.5rem 0;">Укажите прямую ссылку на MP4 в <code>js/config.js</code> (WIPECODING_DAY1_VIDEO_MP4).</p>
+        <p><a href="КУДА_ЗАГРУЗИТЬ_ВИДЕО.md" target="_blank" rel="noopener">Инструкция: куда загрузить видео →</a></p>
+      </div>
       <p class="subtitle" style="margin-top: 16px;">После просмотра нажмите кнопку ниже — откроется доступ к мастер-классу Дня 2 (сразу или на следующий день — выберите сами).</p>
       <button type="button" class="btn btn-primary" id="mark-watched">Я прошёл День 1 — открыть мастер-класс Дня 2</button>
 
@@ -40,7 +45,6 @@
   <script src="js/config.js"></script>
   <script src="js/state.js"></script>
   <script src="js/video-player.js"></script>
-  <script src="js/noseek.js"></script>
   <script>
     const noAccess = document.getElementById('no-access');
     const playerBlock = document.getElementById('player-block');
@@ -61,12 +65,13 @@
     } else {
       playerBlock.classList.remove('hidden');
       var wrap = document.getElementById('day1-video-wrap');
-      var videoEl = document.getElementById('video');
-      if (window.WipecodingVideo) {
-        window.WipecodingVideo.initDay1InPlace(wrap, videoEl, false);
-      } else if (videoEl && window.WIPECODING_DAY1_VIDEO_EMBED) {
-        if (wrap) wrap.classList.add('video-wrap-no-seek');
-        videoEl.src = window.WIPECODING_DAY1_VIDEO_EMBED;
+      var noCfg = document.getElementById('day1-video-not-configured');
+      if (window.WipecodingVideo && window.WipecodingVideo.hasVideo()) {
+        if (noCfg) noCfg.classList.add('hidden');
+        if (wrap) window.WipecodingVideo.initDay1InPlace(wrap, false);
+      } else {
+        if (wrap) wrap.classList.add('hidden');
+        if (noCfg) noCfg.classList.remove('hidden');
       }
     }
 

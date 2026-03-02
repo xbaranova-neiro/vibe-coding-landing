@@ -38,8 +38,13 @@
       <div class="timer" id="timer">3:00</div>
       <p class="subtitle" id="wait-before-player">Когда таймер дойдёт до нуля, плеер запустится здесь автоматически.</p>
       <div id="player-container" class="hidden" style="margin-top: 1rem;">
-        <div class="video-wrap">
+        <div id="return-video-wrap" class="video-wrap">
           <iframe id="return-video" src="" title="Мастер-класс Дня 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div id="return-video-not-configured" class="hidden" style="padding: 1.5rem; background: rgba(255,255,255,0.06); border-radius: 12px; margin-bottom: 1rem;">
+          <p><strong>Видео мастер-класса не настроено.</strong></p>
+          <p class="subtitle" style="margin: 0.5rem 0;">Загрузите MP4 на хостинг и укажите прямую ссылку в <code>js/config.js</code> (WIPECODING_DAY1_VIDEO_MP4).</p>
+          <p><a href="КУДА_ЗАГРУЗИТЬ_ВИДЕО.md" target="_blank" rel="noopener">Инструкция: куда загрузить видео →</a></p>
         </div>
         <p class="subtitle" style="margin-top: 1rem;">После просмотра перейдите на страницу Дня 1 и нажмите «Я прошёл» — откроется доступ ко второму дню.</p>
         <a href="day1.html" class="btn btn-primary">Страница Дня 1 — отметить просмотр</a>
@@ -68,7 +73,6 @@
   <script src="js/config.js"></script>
   <script src="js/state.js"></script>
   <script src="js/video-player.js"></script>
-  <script src="js/noseek.js"></script>
   <script>
     const notReg = document.getElementById('not-registered');
     const waitBlock = document.getElementById('wait-block');
@@ -95,12 +99,6 @@
       return m + ':' + String(s).padStart(2, '0');
     }
 
-    function getEmbedUrlWithAutoplay() {
-      var base = window.WIPECODING_DAY1_VIDEO_EMBED || '';
-      if (!base) return '';
-      return base + (base.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=true';
-    }
-
     function tick() {
       WipecodingState.unlockDay1IfReady();
       const state = WipecodingState.getState();
@@ -124,12 +122,14 @@
         if (waitBeforePlayer) waitBeforePlayer.classList.add('hidden');
         playerContainer.classList.remove('hidden');
         if (!returnPlayerInited) {
-          var w = playerContainer.querySelector('.video-wrap');
-          if (w && window.WipecodingVideo) {
-            window.WipecodingVideo.initDay1InPlace(w, returnVideo, true);
-          } else if (returnVideo && window.WIPECODING_DAY1_VIDEO_EMBED) {
-            w.classList.add('video-wrap-no-seek');
-            returnVideo.src = window.WIPECODING_DAY1_VIDEO_EMBED + (window.WIPECODING_DAY1_VIDEO_EMBED.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=true';
+          var w = document.getElementById('return-video-wrap');
+          var noCfg = document.getElementById('return-video-not-configured');
+          if (window.WipecodingVideo && window.WipecodingVideo.hasVideo()) {
+            if (noCfg) noCfg.classList.add('hidden');
+            if (w) window.WipecodingVideo.initDay1InPlace(w, true);
+          } else {
+            if (w) w.classList.add('hidden');
+            if (noCfg) noCfg.classList.remove('hidden');
           }
           returnPlayerInited = true;
         }
@@ -149,12 +149,14 @@
         if (waitBeforePlayer) waitBeforePlayer.classList.add('hidden');
         playerContainer.classList.remove('hidden');
         if (!returnPlayerInited) {
-          var w = playerContainer.querySelector('.video-wrap');
-          if (w && window.WipecodingVideo) {
-            window.WipecodingVideo.initDay1InPlace(w, returnVideo, true);
-          } else if (returnVideo && window.WIPECODING_DAY1_VIDEO_EMBED) {
-            w.classList.add('video-wrap-no-seek');
-            returnVideo.src = window.WIPECODING_DAY1_VIDEO_EMBED + (window.WIPECODING_DAY1_VIDEO_EMBED.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=true';
+          var w = document.getElementById('return-video-wrap');
+          var noCfg = document.getElementById('return-video-not-configured');
+          if (window.WipecodingVideo && window.WipecodingVideo.hasVideo()) {
+            if (noCfg) noCfg.classList.add('hidden');
+            if (w) window.WipecodingVideo.initDay1InPlace(w, true);
+          } else {
+            if (w) w.classList.add('hidden');
+            if (noCfg) noCfg.classList.remove('hidden');
           }
           returnPlayerInited = true;
         }
