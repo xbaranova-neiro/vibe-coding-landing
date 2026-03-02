@@ -215,11 +215,39 @@
           }
           return false;
         }
+        // Скрываем кнопку «Хочу VIP за 570 ₽» и блок с ней, если карточка не скрылась целиком
+        function hideVipButton() {
+          var root = document.getElementById("root");
+          if (!root) return;
+          var all = root.querySelectorAll("a, button, div");
+          for (var i = 0; i < all.length; i++) {
+            var el = all[i];
+            var t = (el.textContent || "").trim();
+            if (t.indexOf("Хочу VIP за 570") !== -1 || (t.indexOf("570") !== -1 && t.indexOf("VIP") !== -1 && t.length < 80)) {
+              var block = el.closest("div");
+              if (block && !block.hasAttribute("data-vip-card-hidden")) {
+                for (var up = 0; up < 5 && block && block !== root; up++) {
+                  if ((block.textContent || "").indexOf("Бесплатно") === -1) {
+                    block.setAttribute("data-vip-card-hidden", "1");
+                    block.style.setProperty("display", "none", "important");
+                    return;
+                  }
+                  block = block.parentNode;
+                }
+              }
+              el.setAttribute("data-vip-card-hidden", "1");
+              el.style.setProperty("display", "none", "important");
+            }
+          }
+        }
         function runHideVip() {
           hideVipCard();
+          hideVipButton();
           var attempts = 0;
           var id = setInterval(function () {
-            if (hideVipCard() || attempts++ > 25) clearInterval(id);
+            hideVipCard();
+            hideVipButton();
+            if (attempts++ > 25) clearInterval(id);
           }, 300);
         }
 
@@ -243,6 +271,7 @@
         // Дополнительно следим за появлением VIP-блока и скрываем его
         var obs2 = new MutationObserver(function () {
           hideVipCard();
+          hideVipButton();
         });
         obs2.observe(document.getElementById("root"), { childList: true, subtree: true, characterData: true });
         setTimeout(function () { obs2.disconnect(); }, 10000);
