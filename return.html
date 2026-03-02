@@ -125,7 +125,12 @@
         playerContainer.classList.remove('hidden');
         if (!returnPlayerInited) {
           var w = playerContainer.querySelector('.video-wrap');
-          if (w && window.WipecodingVideo) window.WipecodingVideo.initDay1InPlace(w, returnVideo, true);
+          if (w && window.WipecodingVideo) {
+            window.WipecodingVideo.initDay1InPlace(w, returnVideo, true);
+          } else if (returnVideo && window.WIPECODING_DAY1_VIDEO_EMBED) {
+            w.classList.add('video-wrap-no-seek');
+            returnVideo.src = window.WIPECODING_DAY1_VIDEO_EMBED + (window.WIPECODING_DAY1_VIDEO_EMBED.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=true';
+          }
           returnPlayerInited = true;
         }
         return;
@@ -145,7 +150,12 @@
         playerContainer.classList.remove('hidden');
         if (!returnPlayerInited) {
           var w = playerContainer.querySelector('.video-wrap');
-          if (w && window.WipecodingVideo) window.WipecodingVideo.initDay1InPlace(w, returnVideo, true);
+          if (w && window.WipecodingVideo) {
+            window.WipecodingVideo.initDay1InPlace(w, returnVideo, true);
+          } else if (returnVideo && window.WIPECODING_DAY1_VIDEO_EMBED) {
+            w.classList.add('video-wrap-no-seek');
+            returnVideo.src = window.WIPECODING_DAY1_VIDEO_EMBED + (window.WIPECODING_DAY1_VIDEO_EMBED.indexOf('?') >= 0 ? '&' : '?') + 'autoplay=true';
+          }
           returnPlayerInited = true;
         }
       }

@@ -62,7 +62,12 @@
       playerBlock.classList.remove('hidden');
       var wrap = document.getElementById('day1-video-wrap');
       var videoEl = document.getElementById('video');
-      if (window.WipecodingVideo) window.WipecodingVideo.initDay1InPlace(wrap, videoEl, false);
+      if (window.WipecodingVideo) {
+        window.WipecodingVideo.initDay1InPlace(wrap, videoEl, false);
+      } else if (videoEl && window.WIPECODING_DAY1_VIDEO_EMBED) {
+        if (wrap) wrap.classList.add('video-wrap-no-seek');
+        videoEl.src = window.WIPECODING_DAY1_VIDEO_EMBED;
+      }
     }
 
     markWatched.addEventListener('click', function () {
