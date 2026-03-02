@@ -21,8 +21,8 @@
     <h1>Добро пожаловать на Вайб-кодинг</h1>
 
     <div id="not-registered" class="hidden">
-      <p class="alert alert-warning">Откройте эту страницу по ссылке после регистрации на лендинге.</p>
-      <a href="index.html" class="btn btn-primary">На лендинг</a>
+      <p class="subtitle">Если вы ещё не регистрировались, перейдите на лендинг.</p>
+      <a href="index.html" class="btn btn-secondary">На лендинг</a>
     </div>
 
     <!-- Подарок: гайд по вайб-кодингу (доступен сразу после перехода с лендинга) -->
@@ -109,15 +109,19 @@
 
     WipecodingState.initState();
 
-    // Регистрация с внешнего лендинга (GitHub / neirovideo5): редирект на return.html?from_reg=1
     var params = new URLSearchParams(window.location.search);
     if (params.get('from_reg') === '1') {
       var email = params.get('email') || '';
       var name = params.get('name') || '';
       WipecodingState.registerFromExternal(email, name);
       if (window.history && window.history.replaceState) {
-        var cleanUrl = window.location.pathname;
-        window.history.replaceState({}, '', cleanUrl);
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    } else {
+      // Попали на страницу без ?from_reg=1 — считаем, что пришли с лендинга после регистрации
+      var state = WipecodingState.getState();
+      if (state && state.stage === WipecodingState.STAGES.NOT_REGISTERED) {
+        WipecodingState.registerFromExternal('', '');
       }
     }
 
