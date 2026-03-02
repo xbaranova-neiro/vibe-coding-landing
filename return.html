@@ -13,6 +13,7 @@
     .return-page h1 { font-family: 'Montserrat', sans-serif; font-size: 2rem; background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem; }
     .return-page .btn-primary { background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); }
     .return-page .btn-primary:hover { box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
+    .gift-block { margin-bottom: 2rem; padding: 1.25rem; background: rgba(255,255,255,0.04); border-radius: 12px; border: 1px solid rgba(168, 85, 247, 0.2); }
   </style>
 </head>
 <body class="return-page">
@@ -20,22 +21,27 @@
     <h1>Добро пожаловать на Вайб-кодинг</h1>
 
     <div id="not-registered" class="hidden">
-      <p class="alert alert-warning">Сначала зарегистрируйтесь на вебинар.</p>
-      <p class="subtitle">Если вы только что нажали «Зарегистрироваться» на лендинге, откройте ссылку из письма или вернитесь на страницу регистрации.</p>
-      <a href="index.html" class="btn btn-primary">Регистрация</a>
+      <p class="alert alert-warning">Откройте эту страницу по ссылке после регистрации на лендинге.</p>
+      <a href="index.html" class="btn btn-primary">На лендинг</a>
+    </div>
+
+    <!-- Подарок: гайд по вайб-кодингу (доступен сразу после перехода с лендинга) -->
+    <div id="gift-block" class="hidden gift-block">
+      <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Ваш подарок</h2>
+      <p class="subtitle" style="margin-bottom: 1rem;">Гайд по вайб-кодингу — создавайте сайты, ботов и приложения с нейросетями без кода.</p>
+      <a href="https://xbaranova-neiro.github.io/vibe-cod/" target="_blank" rel="noopener" class="btn btn-gift">Открыть гайд</a>
     </div>
 
     <div id="wait-block" class="hidden">
-      <p class="subtitle">Чтобы не пропустить запись первого дня, вернитесь на эту страницу через <strong>3 минуты</strong> после регистрации.</p>
-      <p>Оставьте эту страницу открытой или добавьте её в закладки — запись откроется автоматически.</p>
+      <p class="subtitle">Запись первого дня откроется через <strong>3 минуты</strong>. Оставьте страницу открытой или в закладках.</p>
       <div class="timer" id="timer">3:00</div>
-      <p class="subtitle">Когда таймер дойдёт до нуля, появится кнопка перехода к записи Дня 1.</p>
-      <a href="day1.html" class="btn btn-primary hidden" id="go-day1">Смотреть запись Дня 1</a>
+      <p class="subtitle">Когда таймер дойдёт до нуля, появится кнопка к записи Дня 1.</p>
+      <a href="https://rutube.ru/video/private/df7d69deb2ddeadd41aaa8c9e3291710/?p=Yf_UqFg14w_GxYHNXXzUwg" target="_blank" rel="noopener" class="btn btn-primary hidden" id="go-day1">Смотреть запись Дня 1</a>
     </div>
 
     <div id="day1-available" class="hidden">
-      <p class="alert alert-success">Запись первого дня доступна. Не пропустите — смотрите сейчас.</p>
-      <a href="day1.html" class="btn btn-primary">Смотреть запись Дня 1</a>
+      <p class="alert alert-success">Запись первого дня доступна.</p>
+      <a href="https://rutube.ru/video/private/df7d69deb2ddeadd41aaa8c9e3291710/?p=Yf_UqFg14w_GxYHNXXzUwg" target="_blank" rel="noopener" class="btn btn-primary">Смотреть запись Дня 1</a>
     </div>
 
     <div id="day1-done" class="hidden">
@@ -54,12 +60,14 @@
     const waitBlock = document.getElementById('wait-block');
     const day1Available = document.getElementById('day1-available');
     const day1Done = document.getElementById('day1-done');
+    const giftBlock = document.getElementById('gift-block');
     const timerEl = document.getElementById('timer');
     const goDay1 = document.getElementById('go-day1');
 
     function showBlock(block) {
       [notReg, waitBlock, day1Available, day1Done].forEach(b => b.classList.add('hidden'));
       if (block) block.classList.remove('hidden');
+      giftBlock.classList.toggle('hidden', !WipecodingState.getState() || WipecodingState.getState().stage === WipecodingState.STAGES.NOT_REGISTERED);
     }
 
     function formatTime(seconds) {
@@ -114,6 +122,7 @@
     }
 
     tick();
+    giftBlock.classList.toggle('hidden', !WipecodingState.getState() || WipecodingState.getState().stage === WipecodingState.STAGES.NOT_REGISTERED);
     setInterval(tick, 1000);
   </script>
 </body>
