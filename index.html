@@ -279,20 +279,6 @@
           hideCaptionTexts();
         }
 
-        // Заменяем дату и время на «Старт через 3 минуты» везде на странице
-        function addStartIn3Min() {
-          var root = document.getElementById("root");
-          if (!root) return;
-          var all = root.querySelectorAll("p, span, div");
-          for (var i = 0; i < all.length; i++) {
-            var el = all[i];
-            var t = el.textContent || "";
-            if (t.indexOf("22-23 февраля") !== -1 && (t.indexOf("11:00 и 19:00") !== -1 || t.indexOf("МСК") !== -1) && t.length < 250) {
-              el.textContent = "Старт через 3 минуты";
-            }
-          }
-        }
-
         // Кнопка «Записаться бесплатно» сразу после фразы «Простым языком, много практики...»
         function addHeroButton() {
           var root = document.getElementById("root");
@@ -331,7 +317,6 @@
             setTimeout(function () {
               modifyLinks();
               runHide();
-              addStartIn3Min();
               addHeroButton();
             }, 100);
           }
@@ -343,7 +328,6 @@
         });
         setTimeout(function () {
           runHide();
-          addStartIn3Min();
           addHeroButton();
         }, 800);
         setTimeout(hideCaptionTexts, 1200);
