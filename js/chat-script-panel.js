@@ -85,17 +85,16 @@
   });
 
   function getStreamTime() {
-    var video = document.querySelector('#return-video-wrap video, .video-wrap-native video, [id*="day1"] .video-wrap-native video, .video-wrap video');
-    if (!video || !video.duration) return null;
-    return videoStartOffset + (video.currentTime || 0);
+    var video = document.querySelector('#return-video-wrap video, .video-wrap-native video, [id*="day1"] .video-wrap-native video, .video-wrap video') || document.querySelector('video');
+    if (!video) return null;
+    var t = video.currentTime;
+    if (typeof t !== 'number' || isNaN(t)) return null;
+    return videoStartOffset + t;
   }
 
   function updateByVideo() {
     var streamTime = getStreamTime();
-    if (streamTime == null) {
-      if (allPosts.length && messagesEl.querySelector('.chat-script-loading')) renderMessages(allPosts);
-      return;
-    }
+    if (streamTime == null) streamTime = 0;
     var visible = allPosts.filter(function (p) { return p.timeshift <= streamTime; });
     var notesCount = userNotes.filter(function (n) { return n.timeshift <= streamTime; }).length;
     var total = visible.length + notesCount;
@@ -119,12 +118,9 @@
         });
       messagesEl.innerHTML = '';
       var streamTime = getStreamTime();
-      if (streamTime != null) {
-        var visible = allPosts.filter(function (p) { return p.timeshift <= streamTime; });
-        renderMessages(visible, streamTime);
-      } else {
-        renderMessages(allPosts);
-      }
+      if (streamTime == null) streamTime = 0;
+      var visible = allPosts.filter(function (p) { return p.timeshift <= streamTime; });
+      renderMessages(visible, streamTime);
       setInterval(updateByVideo, 500);
     })
     .catch(function () {
