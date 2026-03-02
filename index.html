@@ -69,6 +69,31 @@
         animation: float-delayed 7s ease-in-out infinite;
         animation-delay: 1s;
       }
+      .hero-reg-btn {
+        display: inline-block;
+        padding: 1rem 2rem;
+        border-radius: 9999px;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        color: #fff !important;
+        font-weight: 700;
+        font-size: 1.125rem;
+        text-align: center;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        transition: transform 0.15s, box-shadow 0.2s;
+        margin-top: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .hero-reg-btn:hover {
+        transform: scale(1.02);
+        box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
+      }
+      .hero-reg-wrap {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+      }
     </style>
 
     <link rel="stylesheet" href="./index.css" />
@@ -219,6 +244,31 @@
           hideCaptionTexts();
         }
 
+        // Кнопка «Записаться бесплатно» над блоком «Подарок после регистрации»
+        function addHeroButton() {
+          var root = document.getElementById("root");
+          if (!root || root.querySelector(".hero-reg-wrap")) return;
+          var all = root.querySelectorAll("*");
+          for (var i = 0; i < all.length; i++) {
+            var el = all[i];
+            if ((el.textContent || "").indexOf("Подарок после регистрации") !== -1 && (el.textContent || "").length < 500) {
+              var wrap = document.createElement("div");
+              wrap.className = "hero-reg-wrap";
+              var btn = document.createElement("a");
+              btn.href = "#";
+              btn.className = "hero-reg-btn";
+              btn.textContent = "Записаться бесплатно";
+              btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                openWidget(buildWidgetUrl("1558793"));
+              });
+              wrap.appendChild(btn);
+              el.parentNode.insertBefore(wrap, el);
+              return;
+            }
+          }
+        }
+
         // Ждём, пока React отрендерит приложение
         var observer = new MutationObserver(function (mutations, obs) {
           var root = document.getElementById("root");
@@ -227,6 +277,7 @@
             setTimeout(function () {
               modifyLinks();
               runHide();
+              addHeroButton();
             }, 100);
           }
         });
@@ -235,7 +286,10 @@
           childList: true,
           subtree: true,
         });
-        setTimeout(runHide, 800);
+        setTimeout(function () {
+          runHide();
+          addHeroButton();
+        }, 800);
         setTimeout(hideCaptionTexts, 1200);
       })();
     </script>
