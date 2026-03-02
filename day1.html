@@ -68,7 +68,7 @@
       var noCfg = document.getElementById('day1-video-not-configured');
       if (window.WipecodingVideo && window.WipecodingVideo.hasVideo()) {
         if (noCfg) noCfg.classList.add('hidden');
-        if (wrap) window.WipecodingVideo.initDay1InPlace(wrap, false);
+        if (wrap) window.WipecodingVideo.initDay1InPlace(wrap, true);
       } else {
         if (wrap) wrap.classList.add('hidden');
         if (noCfg) noCfg.classList.remove('hidden');

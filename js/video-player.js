@@ -20,6 +20,7 @@
       video.addEventListener('loadedmetadata', function setStart() {
         if (video.duration >= startSec) video.currentTime = startSec;
         video.removeEventListener('loadedmetadata', setStart);
+        if (autoplay) video.play().catch(function () {});
       });
     }
     video.addEventListener('contextmenu', function (e) { e.preventDefault(); });
@@ -94,7 +95,7 @@
       }
     }, 8000);
     vol.addEventListener('input', function () { video.volume = vol.value / 100; });
-    if (autoplay) video.play().catch(function () {});
+    if (autoplay && startSec === 0) video.play().catch(function () {});
     return true;
   }
 
