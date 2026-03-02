@@ -40,3 +40,5 @@ window.WIPECODING_CHAT_WIDGET_URL = '';
 window.WIPECODING_CHAT_SCRIPT_URL = 'data/room_recs.json';
 // Доп. смещение времени эфира для чата (сек). 0 = время чата = videoStartSec + currentTime (синхрон при обрезке видео с 1-й минуты).
 window.WIPECODING_CHAT_STREAM_OFFSET_SEC = 0;
+// Вернуть в начале сценария N секунд (сообщения с timeshift от videoStartSec−N показываются). Например 10 = показывать с 50‑й сек при старте видео с 60‑й.
+window.WIPECODING_CHAT_SCRIPT_EXTRA_FIRST_SEC = 10;

@@ -63,7 +63,7 @@
 
   function renderMessages(visiblePosts, streamTimeForNotes) {
     var streamTime = streamTimeForNotes != null ? streamTimeForNotes : (getStreamTime() ?? 1e9);
-    var minTime = videoStartSec;
+    var minTime = minStreamTime;
     var notesToShow = userNotes.filter(function (n) { return n.timeshift >= minTime && n.timeshift <= streamTime; });
     var merged = visiblePosts.concat(notesToShow.map(function (n) { return { timeshift: n.timeshift, username: 'Вы', message: n.message, role: '', isNote: true }; }));
     merged.sort(function (a, b) { return (a.timeshift || 0) - (b.timeshift || 0); });
@@ -127,7 +127,7 @@
     userNotes.push({ timeshift: Math.round(streamTime), message: text });
     saveUserNotes(userNotes);
     notesInput.value = '';
-    var minTime = videoStartSec;
+    var minTime = minStreamTime;
     var visible = allPosts.filter(function (p) { return p.timeshift >= minTime && p.timeshift <= streamTime; });
     renderMessages(visible, streamTime);
   }
@@ -138,6 +138,8 @@
 
   var videoStartSec = Math.max(0, parseInt(window.WIPECODING_DAY1_VIDEO_START_SECONDS, 10) || 0);
   var chatStreamOffset = Math.max(0, parseInt(window.WIPECODING_CHAT_STREAM_OFFSET_SEC, 10) || 0);
+  var scriptExtraFirstSec = Math.max(0, parseInt(window.WIPECODING_CHAT_SCRIPT_EXTRA_FIRST_SEC, 10) || 0);
+  var minStreamTime = Math.max(0, videoStartSec - scriptExtraFirstSec);
 
   function getStreamTime() {
     var video = document.querySelector('#return-video-wrap video, #return-video-wrap .video-wrap-native video, .video-wrap-native video, [id*="day1"] .video-wrap-native video, .video-wrap video') || document.querySelector('video');
@@ -153,9 +155,9 @@
   function updateByVideo() {
     var streamTime = getStreamTime();
     if (streamTime == null) streamTime = 0;
-    var minTime = videoStartSec;
+    var minTime = minStreamTime;
     var visible = allPosts.filter(function (p) { return p.timeshift >= minTime && p.timeshift <= streamTime; });
-    var notesCount = userNotes.filter(function (n) { return n.timeshift <= streamTime; }).length;
+    var notesCount = userNotes.filter(function (n) { return n.timeshift >= minTime && n.timeshift <= streamTime; }).length;
     var total = visible.length + notesCount;
     var cur = messagesEl.querySelectorAll('.chat-script-msg').length;
     if (total !== cur || (total && !messagesEl.querySelector('.chat-script-msg'))) renderMessages(visible, streamTime);
@@ -183,7 +185,7 @@
       messagesEl.innerHTML = '';
       var streamTime = getStreamTime();
       if (streamTime == null) streamTime = 0;
-      var minTime = videoStartSec;
+      var minTime = minStreamTime;
       var visible = allPosts.filter(function (p) { return p.timeshift >= minTime && p.timeshift <= streamTime; });
       renderMessages(visible, streamTime);
       setInterval(updateByVideo, 500);
