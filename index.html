@@ -94,6 +94,29 @@
         margin-top: 1rem;
         margin-bottom: 1rem;
       }
+      .float-reg-btn {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 9998;
+        display: inline-block;
+        padding: 0.875rem 1.5rem;
+        border-radius: 9999px;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        color: #fff !important;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-align: center;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.5);
+        transition: transform 0.15s, box-shadow 0.2s;
+      }
+      .float-reg-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 24px rgba(168, 85, 247, 0.6);
+      }
     </style>
 
     <link rel="stylesheet" href="./index.css" />
@@ -102,6 +125,9 @@
 
   <body class="bg-[#0a0a0c] text-white">
     <div id="root"></div>
+
+    <!-- Плавающая кнопка в углу -->
+    <a href="#" id="float-reg-btn" class="float-reg-btn" style="display:none;">Записаться бесплатно</a>
 
     <!-- Модальное окно для виджетов -->
     <div id="widget-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
@@ -146,6 +172,15 @@
         document.addEventListener("keydown", function (e) {
           if (e.key === "Escape") closeWidget();
         });
+
+        var floatBtn = document.getElementById("float-reg-btn");
+        if (floatBtn) {
+          floatBtn.style.display = "inline-block";
+          floatBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            openWidget(buildWidgetUrl("1558793"));
+          });
+        }
 
         // --- Формирование URL виджета ---
         function buildWidgetUrl(id) {
