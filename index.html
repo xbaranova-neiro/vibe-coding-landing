@@ -198,14 +198,16 @@
             }
           }
         }
-        // Убираем весь блок «Выберите формат участия» (одну секцию, без учёта регистра)
+        // Убираем только блок «Выберите формат участия» (секция с карточками Бесплатно/VIP), первый экран не трогаем
         function hideFormatSection() {
           var root = document.getElementById("root");
           if (!root) return;
           var sections = root.querySelectorAll("section");
           for (var i = 0; i < sections.length; i++) {
             var text = (sections[i].textContent || "").toUpperCase();
-            if (text.indexOf("ВЫБЕРИТЕ ФОРМАТ УЧАСТИЯ") !== -1 || text.indexOf("ФОРМАТ УЧАСТИЯ") !== -1) {
+            var hasTitle = text.indexOf("ВЫБЕРИТЕ ФОРМАТ УЧАСТИЯ") !== -1;
+            var hasCards = text.indexOf("БЕСПЛАТНО") !== -1 && (text.indexOf("570") !== -1 || text.indexOf("VIP") !== -1);
+            if (hasTitle && hasCards) {
               sections[i].style.setProperty("display", "none", "important");
               return;
             }
