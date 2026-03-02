@@ -198,13 +198,14 @@
             }
           }
         }
-        // Убираем весь блок «ВЫБЕРИТЕ ФОРМАТ УЧАСТИЯ» (одну секцию)
+        // Убираем весь блок «Выберите формат участия» (одну секцию, без учёта регистра)
         function hideFormatSection() {
           var root = document.getElementById("root");
           if (!root) return;
           var sections = root.querySelectorAll("section");
           for (var i = 0; i < sections.length; i++) {
-            if ((sections[i].textContent || "").indexOf("ВЫБЕРИТЕ ФОРМАТ УЧАСТИЯ") !== -1) {
+            var text = (sections[i].textContent || "").toUpperCase();
+            if (text.indexOf("ВЫБЕРИТЕ ФОРМАТ УЧАСТИЯ") !== -1 || text.indexOf("ФОРМАТ УЧАСТИЯ") !== -1) {
               sections[i].style.setProperty("display", "none", "important");
               return;
             }
