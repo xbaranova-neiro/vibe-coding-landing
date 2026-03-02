@@ -356,7 +356,7 @@ h1 {
 .chat-widget-toggle:hover {
   background: var(--accent-hover);
 }
-/* На мобилке: чат внизу, ниже кнопок оплаты, компактный */
+/* На мобилке: чат внизу, по умолчанию скрыт — страница скроллится, открыть по кнопке 💬 */
 @media (max-width: 768px) {
   body.chat-panel-open { padding-bottom: 38vh; }
   .chat-widget-panel {

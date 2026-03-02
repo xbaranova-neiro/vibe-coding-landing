@@ -8,7 +8,7 @@
 
   var panel = document.createElement('div');
   panel.className = 'chat-widget-panel';
-  panel.innerHTML = '<div class="chat-script-header">Сценарий чата</div><div class="chat-script-messages"><div class="chat-script-loading">Загрузка…</div></div><div class="chat-script-your"><p class="chat-script-your-label">Написать в чат (видно только вам)</p><div class="chat-script-your-form"><textarea class="chat-script-input" rows="2" placeholder="Сообщение…" maxlength="2000"></textarea><button type="button" class="chat-script-send">Отправить</button></div></div>';
+  panel.innerHTML = '<div class="chat-script-header">Сценарий чата</div><div class="chat-script-messages"><div class="chat-script-loading">Загрузка…</div></div><div class="chat-script-your"><p class="chat-script-your-label">Написать в чат</p><div class="chat-script-your-form"><textarea class="chat-script-input" rows="2" placeholder="Сообщение…" maxlength="2000"></textarea><button type="button" class="chat-script-send">Отправить</button></div></div>';
   var messagesEl = panel.querySelector('.chat-script-messages');
   var notesForm = panel.querySelector('.chat-script-your');
   var notesInput = panel.querySelector('.chat-script-input');
@@ -38,6 +38,9 @@
   });
   document.body.appendChild(toggle);
   document.body.appendChild(panel);
+  if (window.matchMedia('(max-width: 768px)').matches) {
+    panel.classList.add('hidden');
+  }
 
   var allPosts = [];
   // Время эфира = текущее время видео (плеер уже стартует с 1-й минуты, currentTime отражает позицию в эфире).
@@ -60,7 +63,8 @@
 
   function renderMessages(visiblePosts, streamTimeForNotes) {
     var streamTime = streamTimeForNotes != null ? streamTimeForNotes : (getStreamTime() ?? 1e9);
-    var notesToShow = userNotes.filter(function (n) { return n.timeshift <= streamTime; });
+    var minTime = videoStartSec;
+    var notesToShow = userNotes.filter(function (n) { return n.timeshift >= minTime && n.timeshift <= streamTime; });
     var merged = visiblePosts.concat(notesToShow.map(function (n) { return { timeshift: n.timeshift, username: 'Вы', message: n.message, role: '', isNote: true }; }));
     merged.sort(function (a, b) { return (a.timeshift || 0) - (b.timeshift || 0); });
 
@@ -123,7 +127,8 @@
     userNotes.push({ timeshift: Math.round(streamTime), message: text });
     saveUserNotes(userNotes);
     notesInput.value = '';
-    var visible = allPosts.filter(function (p) { return p.timeshift <= streamTime; });
+    var minTime = videoStartSec;
+    var visible = allPosts.filter(function (p) { return p.timeshift >= minTime && p.timeshift <= streamTime; });
     renderMessages(visible, streamTime);
   }
   notesBtn.addEventListener('click', addUserNote);
@@ -131,18 +136,25 @@
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addUserNote(); }
   });
 
+  var videoStartSec = Math.max(0, parseInt(window.WIPECODING_DAY1_VIDEO_START_SECONDS, 10) || 0);
+  var chatStreamOffset = Math.max(0, parseInt(window.WIPECODING_CHAT_STREAM_OFFSET_SEC, 10) || 0);
+
   function getStreamTime() {
     var video = document.querySelector('#return-video-wrap video, #return-video-wrap .video-wrap-native video, .video-wrap-native video, [id*="day1"] .video-wrap-native video, .video-wrap video') || document.querySelector('video');
     if (!video) return null;
     var t = video.currentTime;
     if (typeof t !== 'number' || isNaN(t)) return null;
-    return t;
+    // Время эфира: видео обрезано с videoStartSec, поэтому streamTime = videoStartSec + currentTime
+    var stream = videoStartSec + t;
+    if (chatStreamOffset) stream = stream + (chatStreamOffset - videoStartSec);
+    return stream < 0 ? 0 : stream;
   }
 
   function updateByVideo() {
     var streamTime = getStreamTime();
     if (streamTime == null) streamTime = 0;
-    var visible = allPosts.filter(function (p) { return p.timeshift <= streamTime; });
+    var minTime = videoStartSec;
+    var visible = allPosts.filter(function (p) { return p.timeshift >= minTime && p.timeshift <= streamTime; });
     var notesCount = userNotes.filter(function (n) { return n.timeshift <= streamTime; }).length;
     var total = visible.length + notesCount;
     var cur = messagesEl.querySelectorAll('.chat-script-msg').length;
@@ -160,7 +172,7 @@
         .filter(function (item) { return item.action === 'post'; })
         .map(function (item) {
           var raw = typeof item.timeshift === 'number' ? item.timeshift : 0;
-          var timeshiftSec = raw / 1000;
+          var timeshiftSec = raw >= 1e5 ? raw / 1000 : raw;
           return {
             timeshift: timeshiftSec,
             username: item.username || (item.data && item.data.username) || 'Гость',
@@ -171,7 +183,8 @@
       messagesEl.innerHTML = '';
       var streamTime = getStreamTime();
       if (streamTime == null) streamTime = 0;
-      var visible = allPosts.filter(function (p) { return p.timeshift <= streamTime; });
+      var minTime = videoStartSec;
+      var visible = allPosts.filter(function (p) { return p.timeshift >= minTime && p.timeshift <= streamTime; });
       renderMessages(visible, streamTime);
       setInterval(updateByVideo, 500);
     })
