@@ -169,97 +169,12 @@
           });
         }
 
-        // Скрываем только карточку VIP (вторую карточку), первый экран и «Бесплатно» не трогаем
-        function hideVipCard() {
-          var root = document.getElementById("root");
-          if (!root) return false;
-          if (root.querySelectorAll("[data-vip-card-hidden]").length > 0) return true;
-          var sections = root.querySelectorAll("section");
-          for (var s = 0; s < sections.length; s++) {
-            var sec = sections[s];
-            var secText = sec.textContent || "";
-            if (secText.indexOf("ВЫБЕРИТЕ ФОРМАТ") === -1 || secText.indexOf("Бесплатно") === -1) continue;
-            var container = null;
-            var vipChildIndex = -1;
-            function findTwoCards(node, depth) {
-              if (depth > 6 || !node || node.nodeType !== 1) return;
-              var ch = node.children;
-              if (ch.length === 2) {
-                var t0 = (ch[0].textContent || "").indexOf("Бесплатно") !== -1;
-                var t1 = (ch[1].textContent || "").indexOf("VIP 570") !== -1 || (ch[1].textContent || "").indexOf("Хочу VIP") !== -1;
-                if (t0 && t1) {
-                  container = node;
-                  vipChildIndex = 1;
-                  return;
-                }
-              }
-              for (var i = 0; i < ch.length && !container; i++) findTwoCards(ch[i], depth + 1);
-            }
-            findTwoCards(sec, 0);
-            if (container && vipChildIndex >= 0 && container.children[vipChildIndex]) {
-              var vipCard = container.children[vipChildIndex];
-              vipCard.setAttribute("data-vip-card-hidden", "1");
-              vipCard.style.setProperty("display", "none", "important");
-              return true;
-            }
-            var cards = sec.querySelectorAll("div[class*='rounded']");
-            for (var c = 0; c < cards.length; c++) {
-              var card = cards[c];
-              var ct = card.textContent || "";
-              if ((ct.indexOf("VIP 570") !== -1 || (ct.indexOf("Хочу VIP") !== -1 && ct.indexOf("570") !== -1)) && ct.indexOf("Бесплатно") === -1) {
-                card.setAttribute("data-vip-card-hidden", "1");
-                card.style.setProperty("display", "none", "important");
-                return true;
-              }
-            }
-          }
-          return false;
-        }
-        // Скрываем кнопку «Хочу VIP за 570 ₽» и блок с ней, если карточка не скрылась целиком
-        function hideVipButton() {
-          var root = document.getElementById("root");
-          if (!root) return;
-          var all = root.querySelectorAll("a, button, div");
-          for (var i = 0; i < all.length; i++) {
-            var el = all[i];
-            var t = (el.textContent || "").trim();
-            if (t.indexOf("Хочу VIP за 570") !== -1 || (t.indexOf("570") !== -1 && t.indexOf("VIP") !== -1 && t.length < 80)) {
-              var block = el.closest("div");
-              if (block && !block.hasAttribute("data-vip-card-hidden")) {
-                for (var up = 0; up < 5 && block && block !== root; up++) {
-                  if ((block.textContent || "").indexOf("Бесплатно") === -1) {
-                    block.setAttribute("data-vip-card-hidden", "1");
-                    block.style.setProperty("display", "none", "important");
-                    return;
-                  }
-                  block = block.parentNode;
-                }
-              }
-              el.setAttribute("data-vip-card-hidden", "1");
-              el.style.setProperty("display", "none", "important");
-            }
-          }
-        }
-        function runHideVip() {
-          hideVipCard();
-          hideVipButton();
-          var attempts = 0;
-          var id = setInterval(function () {
-            hideVipCard();
-            hideVipButton();
-            if (attempts++ > 25) clearInterval(id);
-          }, 300);
-        }
-
-        // Ждём, пока React отрендерит приложение
+        // Ждём, пока React отрендерит приложение (скрытие VIP отключено — лендинг остаётся целиком)
         var observer = new MutationObserver(function (mutations, obs) {
           var root = document.getElementById("root");
           if (root && root.children.length > 0) {
             obs.disconnect();
-            setTimeout(function () {
-              modifyLinks();
-              runHideVip();
-            }, 100);
+            setTimeout(modifyLinks, 100);
           }
         });
 
@@ -267,14 +182,6 @@
           childList: true,
           subtree: true,
         });
-
-        // Дополнительно следим за появлением VIP-блока и скрываем его
-        var obs2 = new MutationObserver(function () {
-          hideVipCard();
-          hideVipButton();
-        });
-        obs2.observe(document.getElementById("root"), { childList: true, subtree: true, characterData: true });
-        setTimeout(function () { obs2.disconnect(); }, 10000);
       })();
     </script>
   </body>
