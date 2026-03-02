@@ -17,3 +17,15 @@ window.WIPECODING_DAY2_VIDEO_URL = '';
 
 // Подарок: гайд по вайб-кодингу
 window.WIPECODING_GIFT_URL = 'https://xbaranova-neiro.github.io/vibe-cod/';
+
+// Кнопки оплаты: показываются после N секунд видео (2 ч 14 мин 51 сек = 8091).
+window.WIPECODING_PAYMENT_SHOW_AT_SECONDS = 8091;
+// Массив кнопок: { text: 'Текст', url: 'https://...' }. Для одной кнопки можно задать PAYMENT_BUTTON_TEXT и PAYMENT_BUTTON_URL.
+window.WIPECODING_PAYMENT_BUTTONS = [
+  { text: 'Оплатить', url: 'https://xbaranova-neiro.ru/vibe-coding?utm=' },
+  { text: 'Оставить заявку', url: 'https://xbaranova-neiro.ru/vibe-code_rassr_day1?utm=' }
+];
+// Устаревшие (если PAYMENT_BUTTONS не задан): одна кнопка
+window.WIPECODING_PAYMENT_BUTTON_TEXT = 'Перейти к оплате';
+window.WIPECODING_PAYMENT_BUTTON_URL = '';
+window.WIPECODING_PAYMENT_LABEL = '';

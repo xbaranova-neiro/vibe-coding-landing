@@ -90,6 +90,54 @@
       addErrorBlock(text, true);
     });
     vol.addEventListener('input', function () { video.volume = vol.value / 100; });
+
+    var paymentAt = Math.max(0, parseInt(window.WIPECODING_PAYMENT_SHOW_AT_SECONDS, 10) || 0);
+    var paymentButtons = window.WIPECODING_PAYMENT_BUTTONS;
+    var hasPaymentButtons = Array.isArray(paymentButtons) && paymentButtons.length > 0;
+    if (!hasPaymentButtons) {
+      var singleUrl = (window.WIPECODING_PAYMENT_BUTTON_URL || '').trim();
+      if (paymentAt > 0 && singleUrl) {
+        paymentButtons = [{ text: (window.WIPECODING_PAYMENT_BUTTON_TEXT || 'Перейти к оплате').trim(), url: singleUrl }];
+        hasPaymentButtons = true;
+      }
+    }
+    if (paymentAt > 0 && hasPaymentButtons) {
+      var paymentWrap = document.createElement('div');
+      paymentWrap.className = 'video-payment-cta hidden';
+      var paymentLabel = (window.WIPECODING_PAYMENT_LABEL || '').trim();
+      if (paymentLabel) {
+        var p = document.createElement('p');
+        p.className = 'subtitle';
+        p.style.cssText = 'margin:0 0 8px;font-size:14px;';
+        p.textContent = paymentLabel;
+        paymentWrap.appendChild(p);
+      }
+      var btnWrap = document.createElement('div');
+      btnWrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:10px;';
+      for (var i = 0; i < paymentButtons.length; i++) {
+        var b = paymentButtons[i];
+        var url = (b.url || '').trim();
+        if (!url) continue;
+        var payBtn = document.createElement('a');
+        payBtn.href = url;
+        payBtn.target = '_blank';
+        payBtn.rel = 'noopener';
+        payBtn.className = 'btn ' + (i === 0 ? 'btn-primary' : 'btn-secondary');
+        payBtn.textContent = (b.text || 'Оплатить').trim();
+        btnWrap.appendChild(payBtn);
+      }
+      paymentWrap.appendChild(btnWrap);
+      wrap.appendChild(paymentWrap);
+
+      var onTimeUpdate = function () {
+        if (video.currentTime >= paymentAt) {
+          paymentWrap.classList.remove('hidden');
+          video.removeEventListener('timeupdate', onTimeUpdate);
+        }
+      };
+      video.addEventListener('timeupdate', onTimeUpdate);
+    }
+
     if (autoplay && startSec === 0) video.play().catch(function () {});
     return true;
   }
