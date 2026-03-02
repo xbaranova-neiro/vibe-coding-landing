@@ -27,17 +27,16 @@
 
     if (msg.type === 'player:currentTime' && msg.data && typeof msg.data.time === 'number') {
       var t = msg.data.time;
-      if (isPlaying) {
-        if (t > lastCurrentTime && t - lastCurrentTime < 15) {
-          maxAllowedTime = Math.max(maxAllowedTime, t);
-        }
-        lastCurrentTime = t;
+      // Обновляем макс. позицию при любом постепенном движении вперёд (события могут прийти до changeState(playing))
+      if (t > lastCurrentTime && t - lastCurrentTime < 15) {
+        maxAllowedTime = Math.max(maxAllowedTime, t);
       }
+      lastCurrentTime = t;
       var needReset = false;
       var targetTime = maxAllowedTime;
       if (t < maxAllowedTime - SEEK_BACK_TOLERANCE) {
         needReset = true;
-      } else if (t > maxAllowedTime + SEEK_FWD_TOLERANCE) {
+      } else if (maxAllowedTime > 3 && t > maxAllowedTime + SEEK_FWD_TOLERANCE) {
         needReset = true;
       }
       if (needReset && event.source && event.source.postMessage) {
