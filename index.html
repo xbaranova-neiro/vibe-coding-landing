@@ -69,30 +69,6 @@
         animation: float-delayed 7s ease-in-out infinite;
         animation-delay: 1s;
       }
-      .injected-reg-btn {
-        display: inline-block;
-        padding: 1rem 2rem;
-        border-radius: 9999px;
-        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-        color: #fff !important;
-        font-weight: 700;
-        font-size: 1.125rem;
-        text-align: center;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
-        transition: transform 0.15s, box-shadow 0.2s;
-      }
-      .injected-reg-btn:hover {
-        transform: scale(1.02);
-        box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
-      }
-      .injected-reg-wrap {
-        text-align: center;
-        margin-top: 1.5rem;
-        margin-bottom: 1rem;
-      }
     </style>
 
     <link rel="stylesheet" href="./index.css" />
@@ -243,29 +219,6 @@
           hideCaptionTexts();
         }
 
-        // Кнопка «Записаться бесплатно» в каждом блоке (секции)
-        function addButtonToSections() {
-          var root = document.getElementById("root");
-          if (!root) return;
-          var sections = root.querySelectorAll("section");
-          var regUrl = buildWidgetUrl("1558793");
-          for (var i = 0; i < sections.length; i++) {
-            if (sections[i].querySelector(".injected-reg-wrap")) continue;
-            var wrap = document.createElement("div");
-            wrap.className = "injected-reg-wrap";
-            var btn = document.createElement("a");
-            btn.href = "#";
-            btn.className = "injected-reg-btn";
-            btn.textContent = "Записаться бесплатно";
-            btn.addEventListener("click", function (e) {
-              e.preventDefault();
-              openWidget(regUrl);
-            });
-            wrap.appendChild(btn);
-            sections[i].appendChild(wrap);
-          }
-        }
-
         // Ждём, пока React отрендерит приложение
         var observer = new MutationObserver(function (mutations, obs) {
           var root = document.getElementById("root");
@@ -274,7 +227,6 @@
             setTimeout(function () {
               modifyLinks();
               runHide();
-              addButtonToSections();
             }, 100);
           }
         });
@@ -283,10 +235,7 @@
           childList: true,
           subtree: true,
         });
-        setTimeout(function () {
-          runHide();
-          addButtonToSections();
-        }, 800);
+        setTimeout(runHide, 800);
         setTimeout(hideCaptionTexts, 1200);
       })();
     </script>
