@@ -32,13 +32,31 @@
   toggle.innerHTML = '💬';
   toggle.addEventListener('click', function () {
     panel.classList.toggle('hidden');
-    toggle.setAttribute('aria-label', panel.classList.contains('hidden') ? 'Открыть чат' : 'Закрыть чат');
+    var open = !panel.classList.contains('hidden');
+    toggle.setAttribute('aria-label', open ? 'Закрыть чат' : 'Открыть чат');
+    if (window.matchMedia('(max-width: 768px)').matches) document.body.classList.toggle('chat-panel-open', open);
   });
   document.body.appendChild(toggle);
   document.body.appendChild(panel);
 
   var allPosts = [];
-  var videoStartOffset = Math.max(0, parseInt(window.WIPECODING_DAY1_VIDEO_START_SECONDS, 10) || 0);
+  // Время эфира = текущее время видео (плеер уже стартует с 1-й минуты, currentTime отражает позицию в эфире).
+  var lastRenderedCount = 0;
+  var staggerTimeout = null;
+
+  function createMessageEl(p) {
+    var div = document.createElement('div');
+    div.className = 'chat-script-msg chat-msg-appear' + (p.isNote ? ' chat-script-note' : (p.role ? ' role-' + p.role : ''));
+    var user = document.createElement('div');
+    user.className = 'chat-script-user';
+    user.textContent = p.isNote ? 'Вы' : (p.username || 'Гость') + (p.role === 'admin' || p.role === 'moder' ? ' • ' + (p.role === 'admin' ? 'Админ' : 'Модератор') : '');
+    var text = document.createElement('div');
+    text.className = 'chat-script-text';
+    text.textContent = p.message || '';
+    div.appendChild(user);
+    div.appendChild(text);
+    return div;
+  }
 
   function renderMessages(visiblePosts, streamTimeForNotes) {
     var streamTime = streamTimeForNotes != null ? streamTimeForNotes : (getStreamTime() ?? 1e9);
@@ -46,26 +64,55 @@
     var merged = visiblePosts.concat(notesToShow.map(function (n) { return { timeshift: n.timeshift, username: 'Вы', message: n.message, role: '', isNote: true }; }));
     merged.sort(function (a, b) { return (a.timeshift || 0) - (b.timeshift || 0); });
 
-    messagesEl.innerHTML = '';
     if (!merged.length) {
+      if (staggerTimeout) clearTimeout(staggerTimeout);
+      staggerTimeout = null;
+      lastRenderedCount = 0;
       messagesEl.innerHTML = '<div class="chat-script-loading">Нет сообщений за этот момент эфира.</div>';
       messagesEl.scrollTop = 0;
       return;
     }
-    merged.forEach(function (p) {
-      var div = document.createElement('div');
-      div.className = 'chat-script-msg' + (p.isNote ? ' chat-script-note' : (p.role ? ' role-' + p.role : ''));
-      var user = document.createElement('div');
-      user.className = 'chat-script-user';
-      user.textContent = p.isNote ? 'Вы' : (p.username || 'Гость') + (p.role === 'admin' || p.role === 'moder' ? ' • ' + (p.role === 'admin' ? 'Админ' : 'Модератор') : '');
-      var text = document.createElement('div');
-      text.className = 'chat-script-text';
-      text.textContent = p.message || '';
-      div.appendChild(user);
-      div.appendChild(text);
-      messagesEl.appendChild(div);
-    });
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+
+    if (merged.length <= lastRenderedCount) {
+      if (staggerTimeout) clearTimeout(staggerTimeout);
+      staggerTimeout = null;
+      lastRenderedCount = 0;
+      messagesEl.innerHTML = '';
+      merged.forEach(function (p) { messagesEl.appendChild(createMessageEl(p)); });
+      lastRenderedCount = merged.length;
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return;
+    }
+
+    var newMessages = merged.slice(lastRenderedCount);
+    if (lastRenderedCount === 0) {
+      messagesEl.innerHTML = '';
+      newMessages.forEach(function (p) { messagesEl.appendChild(createMessageEl(p)); });
+      lastRenderedCount = merged.length;
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return;
+    }
+
+    var prevTimeshift = merged[lastRenderedCount - 1].timeshift || 0;
+    function appendNext(i) {
+      if (i >= newMessages.length) {
+        lastRenderedCount = merged.length;
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        staggerTimeout = null;
+        return;
+      }
+      var p = newMessages[i];
+      messagesEl.appendChild(createMessageEl(p));
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      var delay = 120;
+      if (i > 0) {
+        var gap = (p.timeshift || 0) - (newMessages[i - 1].timeshift || 0);
+        if (gap > 0 && gap < 30) delay = Math.max(80, Math.min(350, gap * 80));
+      }
+      staggerTimeout = setTimeout(function () { appendNext(i + 1); }, delay);
+    }
+    if (staggerTimeout) clearTimeout(staggerTimeout);
+    appendNext(0);
   }
 
   function addUserNote() {
@@ -89,7 +136,7 @@
     if (!video) return null;
     var t = video.currentTime;
     if (typeof t !== 'number' || isNaN(t)) return null;
-    return videoStartOffset + t;
+    return t;
   }
 
   function updateByVideo() {
@@ -109,8 +156,10 @@
       allPosts = data
         .filter(function (item) { return item.action === 'post'; })
         .map(function (item) {
+          var raw = typeof item.timeshift === 'number' ? item.timeshift : 0;
+          var timeshiftSec = raw >= 1e5 ? raw / 1000 : raw;
           return {
-            timeshift: typeof item.timeshift === 'number' ? item.timeshift : 0,
+            timeshift: timeshiftSec,
             username: item.username || (item.data && item.data.username) || 'Гость',
             message: item.message || (item.data && item.data.message) || '',
             role: item.role || (item.data && item.data.role) || ''
