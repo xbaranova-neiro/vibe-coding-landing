@@ -244,14 +244,15 @@
           hideCaptionTexts();
         }
 
-        // Кнопка «Записаться бесплатно» над блоком «Подарок после регистрации»
+        // Кнопка «Записаться бесплатно» сразу после фразы «Простым языком, много практики...»
         function addHeroButton() {
           var root = document.getElementById("root");
           if (!root || root.querySelector(".hero-reg-wrap")) return;
-          var all = root.querySelectorAll("*");
+          var all = root.querySelectorAll("p, div, span");
           for (var i = 0; i < all.length; i++) {
             var el = all[i];
-            if ((el.textContent || "").indexOf("Подарок после регистрации") !== -1 && (el.textContent || "").length < 500) {
+            var t = (el.textContent || "").trim();
+            if (t.indexOf("Простым языком, много практики") !== -1 && t.indexOf("ни строчки кода") !== -1 && t.length < 400) {
               var wrap = document.createElement("div");
               wrap.className = "hero-reg-wrap";
               var btn = document.createElement("a");
@@ -263,7 +264,11 @@
                 openWidget(buildWidgetUrl("1558793"));
               });
               wrap.appendChild(btn);
-              el.parentNode.insertBefore(wrap, el);
+              if (el.nextSibling) {
+                el.parentNode.insertBefore(wrap, el.nextSibling);
+              } else {
+                el.parentNode.appendChild(wrap);
+              }
               return;
             }
           }
