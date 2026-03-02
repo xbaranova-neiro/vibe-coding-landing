@@ -25,13 +25,6 @@
       <a href="index.html" class="btn btn-secondary">На лендинг</a>
     </div>
 
-    <!-- Подарок: гайд по вайб-кодингу (доступен сразу после перехода с лендинга) -->
-    <div id="gift-block" class="hidden gift-block">
-      <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Ваш подарок</h2>
-      <p class="subtitle" style="margin-bottom: 1rem;">Гайд по вайб-кодингу — создавайте сайты, ботов и приложения с нейросетями без кода.</p>
-      <a href="https://xbaranova-neiro.github.io/vibe-cod/" target="_blank" rel="noopener" class="btn btn-gift">Открыть гайд</a>
-    </div>
-
     <div id="wait-block" class="hidden">
       <p class="subtitle" id="wait-heading"><strong>Мастер-класс Дня 1 начнётся через 3 минуты.</strong> Оставьте страницу открытой или в закладках — не пропустите старт.</p>
       <p class="subtitle">Проматывать мастер-класс будет нельзя — смотрите с начала.</p>
@@ -46,8 +39,7 @@
           <p class="subtitle" style="margin: 0.5rem 0;">Загрузите MP4 на хостинг и укажите прямую ссылку в <code>js/config.js</code> (WIPECODING_DAY1_VIDEO_MP4).</p>
           <p><a href="КУДА_ЗАГРУЗИТЬ_ВИДЕО.md" target="_blank" rel="noopener">Инструкция: куда загрузить видео →</a></p>
         </div>
-        <p class="subtitle" style="margin-top: 1rem;">После просмотра перейдите на страницу Дня 1 и нажмите «Я прошёл» — откроется доступ ко второму дню.</p>
-        <a href="day1.html" class="btn btn-primary">Страница Дня 1 — отметить просмотр</a>
+        <a href="day1.html" class="btn btn-primary" style="margin-top: 1rem;">Я посмотрел 1 день</a>
       </div>
     </div>
 
@@ -56,13 +48,19 @@
       <div class="video-wrap" style="margin-bottom: 1rem;">
         <iframe id="day1-available-video" src="" title="Мастер-класс Дня 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
-      <p class="subtitle">После просмотра перейдите на страницу Дня 1 и нажмите «Я прошёл» — откроется доступ ко второму дню.</p>
-      <a href="day1.html" class="btn btn-primary">Страница Дня 1 — отметить просмотр</a>
+      <a href="day1.html" class="btn btn-primary">Я посмотрел 1 день</a>
     </div>
 
     <div id="day1-done" class="hidden">
       <p class="alert alert-success">День 1 пройден. Переходите ко второму дню.</p>
       <a href="day2.html" class="btn btn-primary">Мастер-класс Дня 2</a>
+    </div>
+
+    <!-- Подарок: гайд по вайб-кодингу (показывается ниже основного контента) -->
+    <div id="gift-block" class="hidden gift-block">
+      <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Ваш подарок</h2>
+      <p class="subtitle" style="margin-bottom: 1rem;">Гайд по вайб-кодингу — создавайте сайты, ботов и приложения с нейросетями без кода.</p>
+      <a href="https://xbaranova-neiro.github.io/vibe-cod/" target="_blank" rel="noopener" class="btn btn-gift">Открыть гайд</a>
     </div>
 
     <div class="nav-block">
@@ -118,7 +116,7 @@
       if (state.stage === WipecodingState.STAGES.DAY1_AVAILABLE) {
         showBlock(waitBlock);
         timerEl.textContent = '0:00';
-        if (waitHeading) waitHeading.innerHTML = '<strong>Мастер-класс Дня 1</strong> — смотрите ниже, запуск автоматический.';
+        if (waitHeading) waitHeading.innerHTML = '<strong>День 1</strong> — смотрите ниже.';
         if (waitBeforePlayer) waitBeforePlayer.classList.add('hidden');
         playerContainer.classList.remove('hidden');
         if (!returnPlayerInited) {
@@ -145,7 +143,7 @@
         if (waitBeforePlayer) waitBeforePlayer.classList.remove('hidden');
       } else {
         timerEl.textContent = '0:00';
-        if (waitHeading) waitHeading.innerHTML = '<strong>Мастер-класс Дня 1</strong> — смотрите ниже, запуск автоматический.';
+        if (waitHeading) waitHeading.innerHTML = '<strong>День 1</strong> — смотрите ниже.';
         if (waitBeforePlayer) waitBeforePlayer.classList.add('hidden');
         playerContainer.classList.remove('hidden');
         if (!returnPlayerInited) {

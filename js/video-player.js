@@ -89,11 +89,6 @@
       text += ' В бакете vibe-coding (Настройки → CORS) укажи Allowed Origins: https://xbaranova-neiro.github.io, Allowed Headers: Range, Expose Headers: Content-Range, Content-Length.';
       addErrorBlock(text, true);
     });
-    setTimeout(function () {
-      if (video.readyState < 2 && !wrap.querySelector('.video-load-error')) {
-        addErrorBlock('Видео долго не загружается. ', true);
-      }
-    }, 8000);
     vol.addEventListener('input', function () { video.volume = vol.value / 100; });
     if (autoplay && startSec === 0) video.play().catch(function () {});
     return true;
