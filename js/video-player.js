@@ -16,13 +16,35 @@
     video.disableRemotePlayback = true;
     video.controls = false;
     var startSec = Math.max(0, parseInt(window.WIPECODING_DAY1_VIDEO_START_SECONDS, 10) || 0);
-    if (startSec > 0) {
-      video.addEventListener('loadedmetadata', function setStart() {
-        if (video.duration >= startSec) video.currentTime = startSec;
-        video.removeEventListener('loadedmetadata', setStart);
-        if (autoplay) video.play().catch(function () {});
-      });
+
+    // ── Сохранение и восстановление позиции ──────────────
+    var POS_KEY = 'wipecoding_day1_pos';
+    function savePos() {
+      try {
+        var pos = Math.floor(video.currentTime);
+        if (pos > startSec) localStorage.setItem(POS_KEY, pos);
+      } catch (e) {}
     }
+    function getSavedPos() {
+      try { var p = parseInt(localStorage.getItem(POS_KEY), 10); return isNaN(p) ? null : p; } catch (e) { return null; }
+    }
+    // Сохраняем каждые 5 сек и при паузе
+    var saveTimer = setInterval(savePos, 5000);
+    video.addEventListener('pause', savePos);
+    // Очищаем когда видео дошло до конца
+    video.addEventListener('ended', function () {
+      try { localStorage.removeItem(POS_KEY); } catch (e) {}
+      clearInterval(saveTimer);
+    });
+
+    // При загрузке — восстанавливаем позицию (но не раньше startSec)
+    video.addEventListener('loadedmetadata', function setStart() {
+      var saved = getSavedPos();
+      var target = (saved && saved > startSec) ? saved : startSec;
+      if (target > 0 && video.duration >= target) video.currentTime = target;
+      video.removeEventListener('loadedmetadata', setStart);
+      if (autoplay) video.play().catch(function () {});
+    });
     video.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     video.addEventListener('click', function () { video.paused ? video.play() : video.pause(); });
     var controls = document.createElement('div');
