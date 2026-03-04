@@ -8,7 +8,7 @@
 
   var panel = document.createElement('div');
   panel.className = 'chat-widget-panel';
-  panel.innerHTML = '<div class="chat-script-header">Сценарий чата</div><div class="chat-script-messages"><div class="chat-script-loading">Загрузка…</div></div><div class="chat-script-your"><p class="chat-script-your-label">Написать в чат</p><div class="chat-script-your-form"><textarea class="chat-script-input" rows="2" placeholder="Сообщение…" maxlength="2000"></textarea><button type="button" class="chat-script-send">Отправить</button></div></div>';
+  panel.innerHTML = '<div class="chat-script-header">Чат</div><div class="chat-script-messages"><div class="chat-script-loading">Загрузка…</div></div><div class="chat-script-your"><p class="chat-script-your-label">Написать в чат</p><div class="chat-script-your-form"><textarea class="chat-script-input" rows="2" placeholder="Сообщение…" maxlength="2000"></textarea><button type="button" class="chat-script-send">Отправить</button></div></div>';
   var messagesEl = panel.querySelector('.chat-script-messages');
   var notesForm = panel.querySelector('.chat-script-your');
   var notesInput = panel.querySelector('.chat-script-input');
