@@ -24,9 +24,12 @@ window.WIPECODING_DAY2_BUTTON_SHOW_WHEN_SECONDS_LEFT = 300;
 window.WIPECODING_DAY2_CHAT_SCRIPT_URL = 'data/room_recs_day2.json';
 window.WIPECODING_DAY2_CHAT_STREAM_OFFSET_SEC = 0;
 window.WIPECODING_DAY2_CHAT_SCRIPT_EXTRA_FIRST_SEC = 3;
-// Кнопки оплаты Дня 2 (0 = не показывать)
-window.WIPECODING_DAY2_PAYMENT_SHOW_AT_SECONDS = 0;
-window.WIPECODING_DAY2_PAYMENT_BUTTONS = [];
+// Кнопки оплаты Дня 2: 1 ч 28 мин 13 сек = 5293 сек
+window.WIPECODING_DAY2_PAYMENT_SHOW_AT_SECONDS = 5294;
+window.WIPECODING_DAY2_PAYMENT_BUTTONS = [
+  { text: 'Оплатить', url: 'https://xbaranova-neiro.ru/vibe-coding_day2?utm=' },
+  { text: 'Оставить заявку', url: 'https://xbaranova-neiro.ru/vibe-code_rassr_day2?utm=' }
+];
 window.WIPECODING_DAY2_PAYMENT_LABEL = '';
 
 // Подарок: гайд по вайб-кодингу
