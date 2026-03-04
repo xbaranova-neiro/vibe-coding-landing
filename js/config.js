@@ -14,7 +14,7 @@ window.WIPECODING_DAY1_VIDEO_START_SECONDS = 60;
 window.WIPECODING_DAY1_BUTTON_SHOW_WHEN_SECONDS_LEFT = 300;
 
 // День 2
-window.WIPECODING_DAY2_VIDEO_MP4 = 'https://storage.yandexcloud.net/vibe-coding/%D0%92%D0%B0%D0%B9%D0%B1%D0%BA%D0%BE%D0%B4%D0%B8%D0%BD%D0%B3_2%D0%B4%D0%B5%D0%BD%D1%8C_NEW.mp4';
+window.WIPECODING_DAY2_VIDEO_MP4 = 'https://storage.yandexcloud.net/vibe-coding/%D0%92%D0%B0%D0%B8%CC%86%D0%B1%D0%BA%D0%BE%D0%B4%D0%B8%D0%BD%D0%B3_2%D0%B4%D0%B5%D0%BD%D1%8C_NEW.mp4';
 window.WIPECODING_DAY2_VIDEO_URL = '';
 // Старт с указанной секунды (0 = с начала)
 window.WIPECODING_DAY2_VIDEO_START_SECONDS = 0;
