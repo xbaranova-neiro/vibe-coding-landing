@@ -32,7 +32,9 @@ window.WIPECODING_DAY2_PAYMENT_BUTTONS = [
 ];
 window.WIPECODING_DAY2_PAYMENT_LABEL = '';
 
-// Подарок: гайд по вайб-кодингу
+// Подарок за День 1: чек-лист вайб-кодера
+window.WIPECODING_DAY1_GIFT_URL = 'https://xbaranova-neiro.github.io/vibe-coder-checklist/vibe-coder-checklist.html';
+// Подарок за День 2: гайд по вайб-кодингу
 window.WIPECODING_GIFT_URL = 'https://xbaranova-neiro.github.io/vibe-cod/';
 
 // Кнопки оплаты: показываются после N секунд видео (2 ч 14 мин 51 сек = 8091).
