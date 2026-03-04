@@ -279,17 +279,19 @@
           hideCaptionTexts();
         }
 
-        // Только замена строки с датой: меняем только элемент, в котором одна строка (без вложенных блоков)
+        // Заменяем дату эфира на актуальный текст везде на странице
         function addStartIn3Min() {
           var root = document.getElementById("root");
           if (!root) return;
-          var all = root.querySelectorAll("p, span");
+          var all = root.querySelectorAll("p, span, div, h1, h2, h3, h4, li");
           for (var i = 0; i < all.length; i++) {
             var el = all[i];
             if (el.children.length > 0) continue;
             var t = (el.textContent || "").trim();
-            if (t.indexOf("22-23 февраля") !== -1 && (t.indexOf("11:00 и 19:00") !== -1 || t.indexOf("МСК") !== -1) && t.length < 80) {
-              el.textContent = "Старт через 3 минуты";
+            if (t.indexOf("22-23 февраля") !== -1 || t.indexOf("22 февраля") !== -1 || t.indexOf("23 февраля") !== -1) {
+              el.textContent = "Записи доступны сразу после регистрации";
+            } else if ((t.indexOf("11:00") !== -1 || t.indexOf("19:00") !== -1) && t.indexOf("МСК") !== -1 && t.length < 80) {
+              el.textContent = "Смотрите в удобное время";
             }
           }
         }
@@ -342,12 +344,10 @@
           childList: true,
           subtree: true,
         });
-        setTimeout(function () {
-          runHide();
-          addStartIn3Min();
-          addHeroButton();
-        }, 800);
-        setTimeout(hideCaptionTexts, 1200);
+        setTimeout(function () { runHide(); addStartIn3Min(); addHeroButton(); }, 300);
+        setTimeout(function () { runHide(); addStartIn3Min(); addHeroButton(); }, 800);
+        setTimeout(function () { runHide(); addStartIn3Min(); }, 1500);
+        setTimeout(function () { addStartIn3Min(); hideCaptionTexts(); }, 2500);
       })();
     </script>
   </body>
