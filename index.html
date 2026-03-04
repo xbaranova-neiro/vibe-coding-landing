@@ -296,6 +296,48 @@
           }
         }
 
+        // Добавляем бейдж «Доступ сразу после регистрации» в 1-й и последний блок
+        function addAccessBadge() {
+          var root = document.getElementById("root");
+          if (!root || root.querySelector(".access-badge")) return;
+          var badge = '<span class="access-badge" style="display:inline-block;padding:6px 16px;border-radius:9999px;border:1px solid rgba(168,85,247,0.4);color:#a855f7;font-size:0.9rem;font-weight:500;">Доступ сразу после регистрации</span>';
+          var sections = root.querySelectorAll("section");
+          if (!sections.length) return;
+          // В первый блок — ищем где уже есть бейдж с датой/мастер-классом и ставим рядом
+          var first = sections[0];
+          var existing = first.querySelector(".access-badge");
+          if (!existing) {
+            // Ищем любой span/p с текстом «2-х дневный» или «мастер-класс» и вставляем после
+            var pills = first.querySelectorAll("span, p");
+            var inserted = false;
+            for (var i = 0; i < pills.length; i++) {
+              if (pills[i].textContent.indexOf("2-х дневный") !== -1 || pills[i].textContent.indexOf("мастер-класс") !== -1) {
+                var wrap = document.createElement("div");
+                wrap.style.marginTop = "8px";
+                wrap.innerHTML = badge;
+                pills[i].parentNode.insertBefore(wrap, pills[i].nextSibling);
+                inserted = true;
+                break;
+              }
+            }
+            // Если не нашли — вставляем в начало первой секции
+            if (!inserted) {
+              var wrap2 = document.createElement("div");
+              wrap2.style.cssText = "margin-bottom:16px;";
+              wrap2.innerHTML = badge;
+              first.insertBefore(wrap2, first.firstChild);
+            }
+          }
+          // В последний блок
+          var last = sections[sections.length - 1];
+          if (!last.querySelector(".access-badge")) {
+            var wrap3 = document.createElement("div");
+            wrap3.style.cssText = "text-align:center;margin-bottom:16px;";
+            wrap3.innerHTML = badge;
+            last.insertBefore(wrap3, last.firstChild);
+          }
+        }
+
         // Кнопка «Записаться бесплатно» сразу после фразы «Простым языком, много практики...»
         function addHeroButton() {
           var root = document.getElementById("root");
@@ -344,10 +386,10 @@
           childList: true,
           subtree: true,
         });
-        setTimeout(function () { runHide(); addStartIn3Min(); addHeroButton(); }, 300);
-        setTimeout(function () { runHide(); addStartIn3Min(); addHeroButton(); }, 800);
-        setTimeout(function () { runHide(); addStartIn3Min(); }, 1500);
-        setTimeout(function () { addStartIn3Min(); hideCaptionTexts(); }, 2500);
+        setTimeout(function () { runHide(); addStartIn3Min(); addHeroButton(); addAccessBadge(); }, 300);
+        setTimeout(function () { runHide(); addStartIn3Min(); addHeroButton(); addAccessBadge(); }, 800);
+        setTimeout(function () { runHide(); addStartIn3Min(); addAccessBadge(); }, 1500);
+        setTimeout(function () { addStartIn3Min(); hideCaptionTexts(); addAccessBadge(); }, 2500);
       })();
     </script>
   </body>
