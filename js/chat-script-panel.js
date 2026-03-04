@@ -84,7 +84,9 @@
         (p.role === 'admin' ? ' • Админ' : p.role === 'moder' ? ' • Модератор' : '');
     var text = document.createElement('div');
     text.className = 'chat-script-text';
-    text.textContent = p.message || '';
+    var msg = (p.message || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    msg = msg.replace(/(https?:\/\/[^\s<>"]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:#818cf8;word-break:break-all;">$1</a>');
+    text.innerHTML = msg;
     div.appendChild(user);
     div.appendChild(text);
     return div;
