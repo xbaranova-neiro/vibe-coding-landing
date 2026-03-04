@@ -349,6 +349,10 @@
             if (t.indexOf("Простым языком, много практики") !== -1 && t.indexOf("ни строчки кода") !== -1 && t.length < 400) {
               var wrap = document.createElement("div");
               wrap.className = "hero-reg-wrap";
+              var badge = document.createElement("div");
+              badge.style.cssText = "margin-bottom:10px;";
+              badge.innerHTML = '<span style="display:inline-block;padding:6px 16px;border-radius:9999px;border:1px solid rgba(168,85,247,0.4);color:#a855f7;font-size:0.9rem;font-weight:500;">Доступ сразу после регистрации</span>';
+              wrap.appendChild(badge);
               var btn = document.createElement("a");
               btn.href = "#";
               btn.className = "hero-reg-btn";
