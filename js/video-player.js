@@ -73,7 +73,8 @@
         video.webkitEnterFullscreen();
       }
     }
-    var canFullscreen = !!(wrap.requestFullscreen || wrap.webkitRequestFullscreen || video.webkitEnterFullscreen);
+    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    var canFullscreen = !isIOS && !!(wrap.requestFullscreen || wrap.webkitRequestFullscreen || video.webkitEnterFullscreen);
     if (btnFullscreen && canFullscreen) {
       btnFullscreen.addEventListener('click', toggleFullscreen);
       document.addEventListener('fullscreenchange', updateFullscreenBtn);
