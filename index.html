@@ -117,6 +117,45 @@
         transform: scale(1.05);
         box-shadow: 0 6px 24px rgba(168, 85, 247, 0.6);
       }
+    /* ── Scroll-in анимации ────────────────────────────── */
+    .anim-hidden {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .anim-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .anim-hidden:nth-child(2) { transition-delay: 0.1s; }
+    .anim-hidden:nth-child(3) { transition-delay: 0.18s; }
+    .anim-hidden:nth-child(4) { transition-delay: 0.26s; }
+
+    /* ── Кнопка: пульсация ─────────────────────────────── */
+    @keyframes btn-pulse {
+      0%, 100% { box-shadow: 0 4px 14px rgba(99,102,241,0.4); }
+      50%       { box-shadow: 0 4px 28px rgba(168,85,247,0.7), 0 0 0 6px rgba(99,102,241,0.12); }
+    }
+    .hero-reg-btn {
+      animation: btn-pulse 2.4s ease-in-out infinite;
+    }
+    .hero-reg-btn:hover {
+      animation: none;
+      transform: scale(1.04) !important;
+      box-shadow: 0 6px 32px rgba(168,85,247,0.65) !important;
+    }
+
+    /* ── Плавающая кнопка: пульсация ───────────────────── */
+    @keyframes float-pulse {
+      0%, 100% { box-shadow: 0 4px 20px rgba(99,102,241,0.5); }
+      50%       { box-shadow: 0 4px 32px rgba(168,85,247,0.75), 0 0 0 5px rgba(99,102,241,0.1); }
+    }
+    .float-reg-btn {
+      animation: float-pulse 2.4s ease-in-out infinite;
+    }
+    .float-reg-btn:hover {
+      animation: none;
+    }
     </style>
 
     <link rel="stylesheet" href="./index.css" />
@@ -296,6 +335,29 @@
           }
         }
 
+        // Анимации появления при скролле
+        function addScrollAnimations() {
+          if (!('IntersectionObserver' in window)) return;
+          var root = document.getElementById("root");
+          if (!root) return;
+          var sections = root.querySelectorAll("section");
+          if (!sections.length) return;
+          var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('anim-visible');
+                entry.target.classList.remove('anim-hidden');
+                observer.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+          sections.forEach(function (section, i) {
+            if (i === 0) return; // первый блок сразу виден
+            section.classList.add('anim-hidden');
+            observer.observe(section);
+          });
+        }
+
         // Добавляем бейдж «Доступ сразу после регистрации» в 1-й и последний блок
         function addAccessBadge() {
           var root = document.getElementById("root");
@@ -392,8 +454,8 @@
           childList: true,
           subtree: true,
         });
-        setTimeout(function () { runHide(); addStartIn3Min(); addHeroButton(); addAccessBadge(); }, 300);
-        setTimeout(function () { runHide(); addStartIn3Min(); addHeroButton(); addAccessBadge(); }, 800);
+        setTimeout(function () { runHide(); addStartIn3Min(); addHeroButton(); addAccessBadge(); addScrollAnimations(); }, 300);
+        setTimeout(function () { runHide(); addStartIn3Min(); addHeroButton(); addAccessBadge(); addScrollAnimations(); }, 800);
         setTimeout(function () { runHide(); addStartIn3Min(); addAccessBadge(); }, 1500);
         setTimeout(function () { addStartIn3Min(); hideCaptionTexts(); addAccessBadge(); }, 2500);
       })();
