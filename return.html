@@ -599,6 +599,11 @@
       }
     }
 
+    // Если return.html загрузился внутри iframe (после редиректа из виджета) — выходим на верхний уровень
+    if (window.top !== window) {
+      window.top.location.href = window.location.href;
+    }
+
     WipecodingState.initState();
 
     var params = new URLSearchParams(window.location.search);
