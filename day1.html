@@ -3,40 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Мастер-класс День 1 — Вайб-кодинг</title>
+  <title>День 1 — Вайб-кодинг</title>
   <link rel="stylesheet" href="css/common.css">
 </head>
 <body>
   <div class="container">
-    <h1>Мастер-класс Дня 1</h1>
+    <h1>Вайб-кодинг — День 1</h1>
 
     <div id="no-access" class="hidden">
-      <p class="alert alert-warning">Мастер-класс начнётся через 3 минуты. Вернитесь на страницу доступа.</p>
-      <a href="return.html" class="btn btn-primary">Вернуться</a>
+      <p class="alert alert-warning">Доступ к мастер-классу ещё не открылся. Вернитесь на страницу записей.</p>
+      <a href="return.html" class="btn btn-primary">Мои записи</a>
     </div>
 
     <div id="player-block" class="hidden">
-      <p class="subtitle">Мастер-класс нельзя проматывать — досмотрите до конца, чтобы открыть День 2.</p>
+      <p class="subtitle">Видео нельзя перематывать — досмотрите до конца, чтобы открыть День 2.</p>
       <div class="video-wrap" id="day1-video-wrap">
-        <iframe id="video" src="" title="Мастер-класс Дня 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe id="video" src="" title="День 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
       <div id="day1-video-not-configured" class="hidden" style="padding: 1.5rem; background: rgba(255,255,255,0.06); border-radius: 12px; margin-bottom: 1rem;">
-        <p><strong>Видео мастер-класса не настроено.</strong></p>
+        <p><strong>Видео не настроено.</strong></p>
         <p class="subtitle" style="margin: 0.5rem 0;">Укажите прямую ссылку на MP4 в <code>js/config.js</code> (WIPECODING_DAY1_VIDEO_MP4).</p>
         <p><a href="КУДА_ЗАГРУЗИТЬ_ВИДЕО.md" target="_blank" rel="noopener">Инструкция: куда загрузить видео →</a></p>
       </div>
-      <p class="subtitle" style="margin-top: 16px;">После просмотра нажмите кнопку ниже — откроется доступ к мастер-классу Дня 2 (сразу или на следующий день — выберите сами).</p>
-      <button type="button" class="btn btn-primary" id="mark-watched">Я прошёл День 1 — открыть мастер-класс Дня 2</button>
+      <p class="subtitle" style="margin-top: 16px;">После просмотра нажмите кнопку ниже — откроется доступ ко второму дню (сразу или завтра — выберите сами).</p>
+      <button type="button" class="btn btn-primary" id="mark-watched">Я досмотрел День 1 — перейти ко Дню 2</button>
 
       <div id="unlock-choice" class="hidden" style="margin-top: 20px;">
-        <p><strong>Когда открыть мастер-класс Дня 2?</strong></p>
+        <p><strong>Когда открыть День 2?</strong></p>
         <button type="button" class="btn btn-primary" id="choice-now">Сразу</button>
         <button type="button" class="btn btn-secondary" id="choice-tomorrow">Завтра</button>
       </div>
     </div>
 
     <div class="nav-block">
-      <a href="return.html" class="btn btn-secondary">К списку мастер-классов</a>
+      <a href="return.html" class="btn btn-secondary">Мои записи</a>
       <a href="index.html" class="btn btn-secondary">На главную</a>
       <a href="gift.html" class="btn btn-gift">Получить подарок</a>
     </div>
@@ -88,7 +88,7 @@
       if (st.day2UnlockChoice === 'immediate') {
         const p = document.createElement('p');
         p.className = 'alert alert-success';
-        p.textContent = 'День 2 открыт.';
+        p.textContent = 'День 2 открыт — переходите!';
         markWatched.parentNode.insertBefore(p, markWatched.nextSibling);
         const link = document.createElement('a');
         link.href = 'day2.html';
@@ -113,7 +113,7 @@
       unlockChoice.classList.add('hidden');
       const p = document.createElement('p');
       p.className = 'alert alert-success';
-      p.textContent = 'День 2 открыт. Можете перейти к записи.';
+      p.textContent = 'День 2 открыт — переходите!';
       unlockChoice.parentNode.insertBefore(p, unlockChoice.nextSibling);
       const link = document.createElement('a');
       link.href = 'day2.html';

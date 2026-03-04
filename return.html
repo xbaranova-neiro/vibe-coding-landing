@@ -343,7 +343,7 @@
     </div>
 
     <h1>Добро пожаловать на Вайб-кодинг</h1>
-    <p class="page-sub" id="page-sub">Ваш прогресс по мастер-классу</p>
+    <p class="page-sub" id="page-sub">Ваш прогресс</p>
 
     <!-- Не зарегистрирован -->
     <div id="not-registered" class="hidden">
@@ -358,12 +358,12 @@
     <div id="wait-block" class="hidden">
       <div class="r-card">
         <p class="r-card-label"><span class="pdot pdot-yellow"></span><span id="wait-heading-label">Ожидание открытия</span></p>
-        <p class="subtitle" id="wait-heading"><strong>Мастер-класс Дня 1 начнётся через 3 минуты.</strong> Оставьте страницу открытой или в закладках — не пропустите старт.</p>
-        <p class="subtitle" id="wait-before-player" style="margin-bottom: 0;">Проматывать мастер-класс будет нельзя — смотрите с начала.</p>
+        <p class="subtitle" id="wait-heading"><strong>Мастер-класс начнётся через несколько минут.</strong> Оставьте страницу открытой или добавьте в закладки — не пропустите старт.</p>
+        <p class="subtitle" id="wait-before-player" style="margin-bottom: 0;">Видео нельзя перематывать — смотрите с самого начала.</p>
 
         <div class="timer-box">
           <span class="timer" id="timer">3:00</span>
-          <p class="timer-caption">до открытия мастер-класса Дня 1</p>
+          <p class="timer-caption">до начала мастер-класса</p>
         </div>
 
         <div id="player-container" class="hidden video-section">
@@ -373,7 +373,7 @@
               allowfullscreen></iframe>
           </div>
           <div id="return-video-not-configured" class="hidden" style="padding: 1.5rem; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 1rem;">
-            <p><strong>Видео мастер-класса не настроено.</strong></p>
+            <p><strong>Видео не настроено.</strong></p>
             <p class="subtitle" style="margin: 0.5rem 0;">Загрузите MP4 и укажите ссылку в <code>js/config.js</code> (WIPECODING_DAY1_VIDEO_MP4).</p>
             <p><a href="КУДА_ЗАГРУЗИТЬ_ВИДЕО.md" target="_blank" rel="noopener">Инструкция: куда загрузить видео →</a></p>
           </div>
@@ -388,7 +388,7 @@
     <div id="day1-available" class="hidden">
       <div class="r-card">
         <p class="r-card-label"><span class="pdot pdot-green"></span>Доступно сейчас</p>
-        <p class="alert alert-success">Мастер-класс Дня 1 открыт — смотрите прямо сейчас. Проматывать нельзя.</p>
+        <p class="alert alert-success">Мастер-класс открыт — смотрите прямо сейчас. Видео нельзя перематывать.</p>
         <div class="video-wrap" style="margin-bottom: 16px;">
           <iframe id="day1-available-video" src="" title="Мастер-класс Дня 1"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -402,8 +402,8 @@
     <div id="day1-done" class="hidden">
       <div class="r-card">
         <p class="r-card-label"><span class="pdot pdot-green"></span>День 1 завершён</p>
-        <p class="alert alert-success">День 1 пройден. Переходите ко второму дню.</p>
-        <a href="day2.html" class="btn btn-primary btn-block">Мастер-класс Дня 2</a>
+        <p class="alert alert-success">День 1 пройден — отличная работа! Теперь открыт второй день.</p>
+        <a href="day2.html" class="btn btn-primary btn-block">Перейти ко Дню 2 →</a>
       </div>
     </div>
 
@@ -476,8 +476,8 @@
         conns[0].classList.add('done');
         steps[1].classList.add('active');
         if (pageSub) pageSub.textContent = stage === STAGES.WAITING_DAY1
-          ? 'Мастер-класс Дня 1 откроется через несколько минут'
-          : 'Мастер-класс Дня 1 открыт — смотрите сейчас';
+          ? 'Мастер-класс скоро начнётся — не закрывайте страницу'
+          : 'Мастер-класс открыт — смотрите прямо сейчас';
         return;
       }
 
@@ -488,7 +488,7 @@
 
       if (stage === STAGES.DAY1_WATCHED || stage === STAGES.DAY2_AVAILABLE) {
         steps[2].classList.add('active');
-        if (pageSub) pageSub.textContent = 'День 1 пройден — переходите ко второму дню';
+        if (pageSub) pageSub.textContent = 'День 1 завершён — открыт второй день';
         return;
       }
 
@@ -505,7 +505,7 @@
       if (stage === STAGES.QUIZ_PASSED) {
         steps[3].classList.add('done');
         steps[3].querySelector('.step-dot').textContent = '✓';
-        if (pageSub) pageSub.textContent = 'Мастер-класс пройден полностью. Отличная работа!';
+        if (pageSub) pageSub.textContent = 'Оба дня пройдены — отличная работа!';
       }
     }
 
@@ -552,7 +552,7 @@
       const sec = WipecodingState.getSecondsUntilDay1();
       if (sec === null || sec > 0) {
         timerEl.textContent = sec !== null ? formatTime(sec) : '3:00';
-        if (waitHeading) waitHeading.innerHTML = '<strong>Мастер-класс Дня 1 начнётся через 3 минуты.</strong> Оставьте страницу открытой или в закладках — не пропустите старт.';
+        if (waitHeading) waitHeading.innerHTML = '<strong>Мастер-класс начнётся через несколько минут.</strong> Оставьте страницу открытой или добавьте в закладки — не пропустите старт.';
         playerContainer.classList.add('hidden');
         if (waitBeforePlayer) waitBeforePlayer.classList.remove('hidden');
       } else {

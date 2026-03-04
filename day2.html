@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Мастер-класс День 2 — Вайб-кодинг</title>
+  <title>День 2 — Вайб-кодинг</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
@@ -311,15 +311,15 @@
       </div>
     </div>
 
-    <h1>Мастер-класс Дня 2</h1>
-    <p class="page-sub" id="page-sub">Второй день вайб-кодинга</p>
+    <h1>Вайб-кодинг — День 2</h1>
+    <p class="page-sub" id="page-sub">Второй день мастер-класса</p>
 
     <!-- Нет доступа -->
     <div id="no-access" class="hidden">
       <div class="r-card">
         <p class="r-card-label"><span class="pdot pdot-yellow"></span>Доступ закрыт</p>
-        <p class="alert alert-warning">Сначала завершите мастер-класс Дня 1. День 2 откроется после этого.</p>
-        <a href="return.html" class="btn btn-primary btn-block">К моим записям</a>
+        <p class="alert alert-warning">Сначала досмотрите День 1. День 2 откроется сразу после этого.</p>
+        <a href="return.html" class="btn btn-primary btn-block">Мои записи</a>
       </div>
       <div id="day2-countdown" class="hidden r-card" style="margin-top:0;">
         <p class="r-card-label"><span class="pdot pdot-yellow"></span>До открытия</p>
@@ -332,7 +332,7 @@
     <div id="player-block" class="hidden">
       <div class="r-card">
         <p class="r-card-label"><span class="pdot pdot-green"></span>Доступно сейчас</p>
-        <p class="subtitle" style="margin-bottom: 14px;">Мастер-класс второго дня. Проматывать нельзя — смотрите с начала.</p>
+        <p class="subtitle" style="margin-bottom: 14px;">Видео нельзя перематывать — смотрите с самого начала.</p>
 
         <div class="video-section">
           <div id="day2-video-wrap" class="video-wrap">
@@ -344,7 +344,7 @@
         </div>
 
         <div id="day2-watched-btn-wrap" class="hidden" style="margin-top: 16px;">
-          <button type="button" class="btn btn-primary btn-block" id="mark-watched">Я посмотрел День 2 — получить подарок</button>
+          <button type="button" class="btn btn-primary btn-block" id="mark-watched">Я досмотрел День 2 — забрать подарок</button>
         </div>
       </div>
 
@@ -432,7 +432,7 @@
         if (state && (state.stage === WipecodingState.STAGES.DAY2_WATCHED || state.stage === WipecodingState.STAGES.QUIZ_PASSED)) {
           watchedBtnWrap.classList.add('hidden');
           giftBlock.classList.remove('hidden');
-          if (pageSub) pageSub.textContent = 'День 2 завершён — заберите подарок!';
+          if (pageSub) pageSub.textContent = 'День 2 завершён — забирайте подарок!';
         }
         return;
       }
@@ -447,7 +447,7 @@
         if (pageSub) pageSub.textContent = 'День 2 откроется через ' + formatTime(sec);
       } else {
         day2Countdown.classList.add('hidden');
-        if (pageSub) pageSub.textContent = 'Завершите День 1, чтобы открыть День 2';
+        if (pageSub) pageSub.textContent = 'Досмотрите День 1, чтобы открылся День 2';
       }
     }
 
@@ -459,7 +459,7 @@
       WipecodingState.markDay2Watched();
       watchedBtnWrap.classList.add('hidden');
       giftBlock.classList.remove('hidden');
-      if (pageSub) pageSub.textContent = 'День 2 завершён — заберите подарок!';
+      if (pageSub) pageSub.textContent = 'День 2 завершён — забирайте подарок!';
     });
 
     // Кнопка «Я посмотрел» — показывается ближе к концу
