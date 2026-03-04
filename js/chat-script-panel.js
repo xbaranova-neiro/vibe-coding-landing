@@ -174,7 +174,7 @@
         .filter(function (item) { return item.action === 'post'; })
         .map(function (item) {
           var raw = typeof item.timeshift === 'number' ? item.timeshift : 0;
-          var timeshiftSec = raw >= 1e5 ? raw / 1000 : raw;
+          var timeshiftSec = raw / 1000; // Bizon365 всегда отдаёт ms
           return {
             timeshift: timeshiftSec,
             username: item.username || (item.data && item.data.username) || 'Гость',
