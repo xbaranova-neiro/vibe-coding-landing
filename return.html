@@ -550,6 +550,10 @@
       if (state.stage === WipecodingState.STAGES.DAY1_AVAILABLE) {
         showBlock(waitBlock);
         timerEl.textContent = '0:00';
+        var waitLabel = document.getElementById('wait-heading-label');
+        if (waitLabel) waitLabel.textContent = 'Доступно сейчас';
+        var waitDot = document.querySelector('#wait-block .pdot');
+        if (waitDot) { waitDot.classList.remove('pdot-yellow'); waitDot.classList.add('pdot-green'); }
         if (waitHeading) waitHeading.innerHTML = '<strong>День 1</strong> — смотрите ниже.';
         if (waitBeforePlayer) waitBeforePlayer.classList.add('hidden');
         playerContainer.classList.remove('hidden');
