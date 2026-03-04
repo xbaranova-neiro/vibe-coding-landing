@@ -64,15 +64,28 @@
     function toggleFullscreen() {
       if (document.fullscreenElement || document.webkitFullscreenElement) {
         (document.exitFullscreen || document.webkitExitFullscreen).call(document);
-      } else {
-        var el = wrap;
-        (el.requestFullscreen || el.webkitRequestFullscreen).call(el);
+      } else if (wrap.requestFullscreen) {
+        wrap.requestFullscreen();
+      } else if (wrap.webkitRequestFullscreen) {
+        wrap.webkitRequestFullscreen();
+      } else if (video.webkitEnterFullscreen) {
+        // iOS Safari: только video элемент поддерживает fullscreen
+        video.webkitEnterFullscreen();
       }
     }
-    if (btnFullscreen && (wrap.requestFullscreen || wrap.webkitRequestFullscreen)) {
+    var canFullscreen = !!(wrap.requestFullscreen || wrap.webkitRequestFullscreen || video.webkitEnterFullscreen);
+    if (btnFullscreen && canFullscreen) {
       btnFullscreen.addEventListener('click', toggleFullscreen);
       document.addEventListener('fullscreenchange', updateFullscreenBtn);
       document.addEventListener('webkitfullscreenchange', updateFullscreenBtn);
+      video.addEventListener('webkitbeginfullscreen', function () {
+        btnFullscreen.textContent = '✕';
+        btnFullscreen.title = 'Выйти из полного экрана';
+      });
+      video.addEventListener('webkitendfullscreen', function () {
+        btnFullscreen.textContent = '⛶';
+        btnFullscreen.title = 'Полный экран';
+      });
     } else if (btnFullscreen) {
       btnFullscreen.style.display = 'none';
     }
