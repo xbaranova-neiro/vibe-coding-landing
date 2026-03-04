@@ -411,7 +411,7 @@
     <div id="gift-block" class="gift-block">
       <h2>Ваши подарки</h2>
 
-      <div id="gift-day1">
+      <div id="gift-day1" class="hidden">
         <p class="r-card-label" style="margin-top: 12px;">За День 1</p>
         <p class="subtitle" style="margin-bottom: 12px;">Чек-лист вайб-кодера — пошаговый гайд для создания продуктов с нейросетями.</p>
         <a id="gift-day1-link" href="https://xbaranova-neiro.github.io/vibe-coder-checklist/vibe-coder-checklist.html" target="_blank" rel="noopener" class="btn btn-gift">Открыть чек-лист</a>
@@ -454,7 +454,10 @@
     var giftDay1Link = document.getElementById('gift-day1-link');
     var giftDay2Link = document.getElementById('gift-day2-link');
 
-    function updateGifts() {
+    function updateGifts(state) {
+      var STAGES = WipecodingState.STAGES;
+      var day1Done = state && [STAGES.DAY1_WATCHED, STAGES.DAY2_AVAILABLE, STAGES.DAY2_WATCHED, STAGES.QUIZ_PASSED].includes(state.stage);
+      if (giftDay1El) giftDay1El.classList.toggle('hidden', !day1Done);
       if (window.WIPECODING_DAY1_GIFT_URL && giftDay1Link) giftDay1Link.href = window.WIPECODING_DAY1_GIFT_URL;
       if (window.WIPECODING_GIFT_URL && giftDay2Link) giftDay2Link.href = window.WIPECODING_GIFT_URL;
     }
