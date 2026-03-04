@@ -289,9 +289,9 @@
             if (el.children.length > 0) continue;
             var t = (el.textContent || "").trim();
             if (t.indexOf("22-23 февраля") !== -1 || t.indexOf("22 февраля") !== -1 || t.indexOf("23 февраля") !== -1) {
-              el.textContent = "Записи доступны сразу после регистрации";
+              el.textContent = "Доступ сразу после регистрации";
             } else if ((t.indexOf("11:00") !== -1 || t.indexOf("19:00") !== -1) && t.indexOf("МСК") !== -1 && t.length < 80) {
-              el.textContent = "Смотрите в удобное время";
+              el.textContent = "Доступ сразу после регистрации";
             }
           }
         }
