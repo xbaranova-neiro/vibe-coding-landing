@@ -78,7 +78,10 @@
       }
     }
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    if (isIOS && vol) vol.style.display = 'none';
+    if (isIOS && vol) {
+      vol.style.display = 'none';
+      if (vol.parentNode) vol.parentNode.style.display = 'none';
+    }
     var canFullscreen = !isIOS && !!(wrap.requestFullscreen || wrap.webkitRequestFullscreen || video.webkitEnterFullscreen);
     if (btnFullscreen && canFullscreen) {
       btnFullscreen.addEventListener('click', toggleFullscreen);
