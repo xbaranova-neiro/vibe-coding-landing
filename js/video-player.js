@@ -45,9 +45,18 @@
     video.addEventListener('loadedmetadata', function setStart() {
       var saved = getSavedPos();
       var target = (saved && saved > startSec) ? saved : startSec;
-      if (target > 0) try { video.currentTime = target; } catch (e) {}
       video.removeEventListener('loadedmetadata', setStart);
-      if (autoplay) video.play().catch(function () {});
+      if (target > 0) {
+        try { video.currentTime = target; } catch (e) {}
+        if (autoplay) {
+          video.addEventListener('seeked', function onSeeked() {
+            video.removeEventListener('seeked', onSeeked);
+            video.play().catch(function () {});
+          });
+        }
+      } else {
+        if (autoplay) video.play().catch(function () {});
+      }
     });
     video.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     video.addEventListener('click', function () { video.paused ? video.play() : video.pause(); });
