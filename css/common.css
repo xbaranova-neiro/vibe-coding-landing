@@ -167,6 +167,23 @@ h1 {
 .video-wrap-native video::-webkit-media-controls-time-remaining-display {
   display: none !important;
 }
+.unmute-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 50px;
+  padding: 12px 22px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.unmute-btn:hover { background: rgba(0,0,0,0.9); }
 .custom-video-controls {
   position: absolute;
   bottom: 0;

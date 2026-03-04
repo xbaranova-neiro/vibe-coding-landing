@@ -41,21 +41,47 @@
       clearInterval(saveTimer);
     });
 
+    // Кнопка включения звука (для мобильного автозапуска без звука)
+    var unmuteBtn = document.createElement('button');
+    unmuteBtn.type = 'button';
+    unmuteBtn.className = 'unmute-btn hidden';
+    unmuteBtn.textContent = '🔇 Нажмите для включения звука';
+    unmuteBtn.addEventListener('click', function () {
+      video.muted = false;
+      if (vol) vol.value = 100;
+      unmuteBtn.classList.add('hidden');
+    });
+
     // При загрузке — восстанавливаем позицию (но не раньше startSec)
     video.addEventListener('loadedmetadata', function setStart() {
       var saved = getSavedPos();
       var target = (saved && saved > startSec) ? saved : startSec;
       video.removeEventListener('loadedmetadata', setStart);
+      function doPlay() {
+        video.play().catch(function () {});
+      }
+      function doPlayMuted() {
+        video.muted = true;
+        video.play().then(function () {
+          unmuteBtn.classList.remove('hidden');
+        }).catch(function () {});
+      }
+      function startPlay() {
+        video.muted = false;
+        video.play().catch(function () {
+          doPlayMuted();
+        });
+      }
       if (target > 0) {
         try { video.currentTime = target; } catch (e) {}
         if (autoplay) {
           video.addEventListener('seeked', function onSeeked() {
             video.removeEventListener('seeked', onSeeked);
-            video.play().catch(function () {});
+            startPlay();
           });
         }
       } else {
-        if (autoplay) video.play().catch(function () {});
+        if (autoplay) startPlay();
       }
     });
     video.addEventListener('contextmenu', function (e) { e.preventDefault(); });
@@ -65,6 +91,7 @@
     controls.innerHTML = '<button type="button" id="btn-play" title="Play/Pause" aria-label="Play/Pause">▶</button><div class="vol-wrap"><input type="range" id="vol" min="0" max="100" value="100" title="Volume"></div><button type="button" id="btn-fullscreen" title="Полный экран" aria-label="Полный экран">⛶</button>';
     wrap.innerHTML = '';
     wrap.appendChild(video);
+    wrap.appendChild(unmuteBtn);
     wrap.appendChild(controls);
     var btnPlay = controls.querySelector('#btn-play');
     var vol = controls.querySelector('#vol');
