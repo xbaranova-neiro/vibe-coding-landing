@@ -28,9 +28,13 @@
     function getSavedPos() {
       try { var p = parseInt(localStorage.getItem(POS_KEY), 10); return isNaN(p) ? null : p; } catch (e) { return null; }
     }
-    // Сохраняем каждые 5 сек и при паузе
+    // Сохраняем каждые 5 сек, при паузе и при уходе со страницы (iOS)
     var saveTimer = setInterval(savePos, 5000);
     video.addEventListener('pause', savePos);
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') savePos();
+    });
+    window.addEventListener('pagehide', savePos);
     // Очищаем когда видео дошло до конца
     video.addEventListener('ended', function () {
       try { localStorage.removeItem(POS_KEY); } catch (e) {}
