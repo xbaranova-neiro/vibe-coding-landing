@@ -123,6 +123,32 @@
         hasPaymentButtons = true;
       }
     }
+    // ── Модальное окно для кнопок оплаты ─────────────────────
+    var payModal = document.createElement('div');
+    payModal.id = 'pay-modal';
+    payModal.style.cssText = 'display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.75);align-items:center;justify-content:center;padding:16px;';
+    payModal.innerHTML =
+      '<div style="position:relative;width:100%;max-width:520px;height:80vh;max-height:700px;background:#fff;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;">' +
+        '<button id="pay-modal-close" type="button" style="position:absolute;top:8px;right:10px;z-index:2;width:32px;height:32px;border:none;background:rgba(0,0,0,0.15);border-radius:50%;font-size:18px;cursor:pointer;color:#333;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>' +
+        '<iframe id="pay-modal-iframe" src="" style="flex:1;width:100%;border:none;" allow="payment"></iframe>' +
+      '</div>';
+    document.body.appendChild(payModal);
+    var payIframe = payModal.querySelector('#pay-modal-iframe');
+    payModal.querySelector('#pay-modal-close').addEventListener('click', function () {
+      payModal.style.display = 'none';
+      payIframe.src = '';
+    });
+    payModal.addEventListener('click', function (e) {
+      if (e.target === payModal) {
+        payModal.style.display = 'none';
+        payIframe.src = '';
+      }
+    });
+    function openPayModal(url) {
+      payIframe.src = url;
+      payModal.style.display = 'flex';
+    }
+
     if (paymentAt > 0 && hasPaymentButtons) {
       var paymentWrap = document.createElement('div');
       paymentWrap.className = 'video-payment-cta hidden';
@@ -137,16 +163,16 @@
       var btnWrap = document.createElement('div');
       btnWrap.style.cssText = 'display:flex;flex-wrap:wrap;gap:10px;';
       for (var i = 0; i < paymentButtons.length; i++) {
-        var b = paymentButtons[i];
-        var url = (b.url || '').trim();
-        if (!url) continue;
-        var payBtn = document.createElement('a');
-        payBtn.href = url;
-        payBtn.target = '_blank';
-        payBtn.rel = 'noopener';
-        payBtn.className = 'btn ' + (i === 0 ? 'btn-primary' : 'btn-secondary');
-        payBtn.textContent = (b.text || 'Оплатить').trim();
-        btnWrap.appendChild(payBtn);
+        (function (b, idx) {
+          var url = (b.url || '').trim();
+          if (!url) return;
+          var payBtn = document.createElement('button');
+          payBtn.type = 'button';
+          payBtn.className = 'btn ' + (idx === 0 ? 'btn-primary' : 'btn-secondary');
+          payBtn.textContent = (b.text || 'Оплатить').trim();
+          payBtn.addEventListener('click', function () { openPayModal(url); });
+          btnWrap.appendChild(payBtn);
+        })(paymentButtons[i], i);
       }
       paymentWrap.appendChild(btnWrap);
       if (wrap.parentNode) {
