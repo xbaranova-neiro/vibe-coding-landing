@@ -28,8 +28,12 @@
     function getSavedPos() {
       try { var p = parseInt(localStorage.getItem(POS_KEY), 10); return isNaN(p) ? null : p; } catch (e) { return null; }
     }
-    // Сохраняем каждые 5 сек, при паузе и при уходе со страницы (iOS)
-    var saveTimer = setInterval(savePos, 5000);
+    // Сохраняем каждые 2 сек во время воспроизведения, при паузе и уходе со страницы
+    var lastSaveTime = 0;
+    video.addEventListener('timeupdate', function () {
+      var now = Date.now();
+      if (now - lastSaveTime > 2000) { savePos(); lastSaveTime = now; }
+    });
     video.addEventListener('pause', savePos);
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'hidden') savePos();
