@@ -45,7 +45,7 @@
     video.addEventListener('loadedmetadata', function setStart() {
       var saved = getSavedPos();
       var target = (saved && saved > startSec) ? saved : startSec;
-      if (target > 0 && video.duration >= target) video.currentTime = target;
+      if (target > 0) try { video.currentTime = target; } catch (e) {}
       video.removeEventListener('loadedmetadata', setStart);
       if (autoplay) video.play().catch(function () {});
     });
