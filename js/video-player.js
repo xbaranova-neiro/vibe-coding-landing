@@ -18,7 +18,7 @@
     var startSec = Math.max(0, parseInt(window.WIPECODING_DAY1_VIDEO_START_SECONDS, 10) || 0);
 
     // ── Сохранение и восстановление позиции ──────────────
-    var POS_KEY = 'wipecoding_day1_pos';
+    var POS_KEY = window.WIPECODING_VIDEO_POS_KEY || 'wipecoding_day1_pos';
     function savePos() {
       try {
         var pos = Math.floor(video.currentTime);

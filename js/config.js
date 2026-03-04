@@ -14,8 +14,20 @@ window.WIPECODING_DAY1_VIDEO_START_SECONDS = 60;
 window.WIPECODING_DAY1_BUTTON_SHOW_WHEN_SECONDS_LEFT = 300;
 
 // День 2
-window.WIPECODING_DAY2_VIDEO_MP4 = '';
+window.WIPECODING_DAY2_VIDEO_MP4 = 'https://storage.yandexcloud.net/vibe-coding/%D0%92%D0%B0%D0%B9%D0%B1%D0%BA%D0%BE%D0%B4%D0%B8%D0%BD%D0%B3_2%D0%B4%D0%B5%D0%BD%D1%8C_NEW.mp4';
 window.WIPECODING_DAY2_VIDEO_URL = '';
+// Старт с указанной секунды (0 = с начала)
+window.WIPECODING_DAY2_VIDEO_START_SECONDS = 0;
+// Показать кнопку «Я посмотрел День 2» когда до конца видео осталось столько секунд
+window.WIPECODING_DAY2_BUTTON_SHOW_WHEN_SECONDS_LEFT = 300;
+// Чат Дня 2 (Bizon365 room_recs JSON)
+window.WIPECODING_DAY2_CHAT_SCRIPT_URL = 'data/room_recs_day2.json';
+window.WIPECODING_DAY2_CHAT_STREAM_OFFSET_SEC = 0;
+window.WIPECODING_DAY2_CHAT_SCRIPT_EXTRA_FIRST_SEC = 3;
+// Кнопки оплаты Дня 2 (0 = не показывать)
+window.WIPECODING_DAY2_PAYMENT_SHOW_AT_SECONDS = 0;
+window.WIPECODING_DAY2_PAYMENT_BUTTONS = [];
+window.WIPECODING_DAY2_PAYMENT_LABEL = '';
 
 // Подарок: гайд по вайб-кодингу
 window.WIPECODING_GIFT_URL = 'https://xbaranova-neiro.github.io/vibe-cod/';

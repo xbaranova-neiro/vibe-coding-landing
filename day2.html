@@ -4,77 +4,450 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Мастер-класс День 2 — Вайб-кодинг</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/common.css">
-</head>
-<body>
-  <div class="container">
-    <h1>Мастер-класс Дня 2</h1>
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #0a0a0c; overflow-x: hidden; }
 
-    <div id="no-access" class="hidden">
-      <p class="alert alert-warning">Сначала пройдите мастер-класс Дня 1. День 2 откроется после этого (сразу или на следующий день — по вашему выбору).</p>
-      <a href="day1.html" class="btn btn-primary">К Дню 1</a>
-      <div id="day2-countdown" class="hidden" style="margin-top: 16px;">
-        <p>День 2 откроется через: <span class="timer" id="timer">--:--</span></p>
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 100% 55% at 15% -5%, rgba(99,102,241,0.09) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 55% at 85% 110%, rgba(168,85,247,0.07) 0%, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Header ──────────────────────────────────────────── */
+    .page-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,12,0.85);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .page-header-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .page-logo {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(130deg, #c7d2fe 20%, #818cf8 60%, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+    }
+    .page-header-tag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #72728a;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 3px 11px;
+      white-space: nowrap;
+    }
+
+    /* ── Layout ──────────────────────────────────────────── */
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 36px 20px 56px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Steps ───────────────────────────────────────────── */
+    .steps {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 36px;
+    }
+    .step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      color: #72728a;
+      text-align: center;
+      padding: 0 2px;
+      min-width: 0;
+    }
+    .step-dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.1);
+      background: #131320;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #72728a;
+      flex-shrink: 0;
+      transition: all 0.35s ease;
+    }
+    .step.active .step-dot {
+      background: #6366f1;
+      border-color: #6366f1;
+      color: white;
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.12), 0 0 20px rgba(99,102,241,0.3);
+    }
+    .step.done .step-dot {
+      background: #22c55e;
+      border-color: #22c55e;
+      color: white;
+    }
+    .step-label {
+      font-size: 0.63rem;
+      font-weight: 500;
+      line-height: 1.3;
+      transition: color 0.3s;
+    }
+    .step.active .step-label { color: #818cf8; font-weight: 600; }
+    .step.done .step-label { color: #22c55e; }
+    .step-connector {
+      flex: 1 0 16px;
+      max-width: 52px;
+      height: 1.5px;
+      background: rgba(255,255,255,0.07);
+      margin-top: 14px;
+      transition: background 0.4s ease;
+    }
+    .step-connector.done { background: #22c55e; }
+
+    /* ── Heading ─────────────────────────────────────────── */
+    .day2-page h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.4rem, 4vw + 0.3rem, 1.9rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0 0 6px;
+      line-height: 1.2;
+    }
+    .page-sub {
+      color: #72728a;
+      font-size: 0.92rem;
+      margin: 0 0 28px;
+      line-height: 1.6;
+    }
+
+    /* ── Card ────────────────────────────────────────────── */
+    .r-card {
+      background: rgba(255,255,255,0.022);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 18px;
+      padding: 26px 24px;
+      margin-bottom: 16px;
+    }
+    .r-card-label {
+      font-size: 0.67rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #72728a;
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    /* ── Pulse dot ───────────────────────────────────────── */
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+    .pdot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: pulse-dot 2s ease infinite;
+      flex-shrink: 0;
+    }
+    .pdot-green { color: #4ade80; }
+    .pdot-yellow { color: #fbbf24; }
+
+    /* ── Buttons ─────────────────────────────────────────── */
+    .day2-page .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.93rem;
+      letter-spacing: -0.01em;
+      -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .day2-page .btn:active { transform: scale(0.97) !important; }
+    .day2-page .btn-primary {
+      background: linear-gradient(135deg, #5658ea, #6366f1 50%, #7c7ff5);
+      box-shadow: 0 4px 16px rgba(99,102,241,0.3);
+    }
+    .day2-page .btn-primary:hover {
+      background: linear-gradient(135deg, #6568ef, #7375f3 50%, #9297f9);
+      box-shadow: 0 6px 24px rgba(99,102,241,0.45);
+      transform: translateY(-1px);
+    }
+    .day2-page .btn-secondary {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+    .day2-page .btn-secondary:hover { background: rgba(255,255,255,0.09); }
+    .btn-block { width: 100%; }
+
+    /* ── Gift block ──────────────────────────────────────── */
+    .gift-block {
+      margin-top: 12px;
+      padding: 22px 24px;
+      background: rgba(245,158,11,0.06);
+      border-radius: 16px;
+      border: 1px solid rgba(245,158,11,0.2);
+    }
+    .gift-block h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+    .day2-page .btn-gift {
+      background: linear-gradient(135deg, #f59e0b, #e08c00);
+      box-shadow: 0 4px 14px rgba(245,158,11,0.28);
+    }
+    .day2-page .btn-gift:hover {
+      box-shadow: 0 6px 22px rgba(245,158,11,0.42);
+      transform: translateY(-1px);
+      filter: brightness(1.07);
+    }
+
+    /* ── Video section ───────────────────────────────────── */
+    .video-section { margin-bottom: 16px; }
+
+    /* ── Nav block ───────────────────────────────────────── */
+    .nav-block {
+      margin-top: 36px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* ── Responsive ──────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .container { padding: 24px 16px 48px; }
+      .page-header-inner { padding: 0 16px; }
+      .r-card { padding: 20px 16px; }
+      .day2-page h1 { font-size: 1.35rem; }
+      .step-label { display: none; }
+      .nav-block { flex-direction: column; }
+      .nav-block .btn { width: 100%; justify-content: center; }
+    }
+    @media (min-width: 600px) {
+      .container { padding: 44px 28px 64px; }
+      .r-card { padding: 30px 28px; }
+      .page-header-inner { padding: 0 28px; }
+    }
+  </style>
+</head>
+<body class="day2-page">
+
+  <header class="page-header">
+    <div class="page-header-inner">
+      <a href="index.html" class="page-logo">Вайб-кодинг</a>
+      <span class="page-header-tag">День 2</span>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Прогресс-шаги -->
+    <div class="steps">
+      <div class="step done" id="step-1">
+        <div class="step-dot">✓</div>
+        <span class="step-label">Регистрация</span>
+      </div>
+      <div class="step-connector done" id="conn-1"></div>
+      <div class="step done" id="step-2">
+        <div class="step-dot">✓</div>
+        <span class="step-label">День 1</span>
+      </div>
+      <div class="step-connector done" id="conn-2"></div>
+      <div class="step active" id="step-3">
+        <div class="step-dot">3</div>
+        <span class="step-label">День 2</span>
+      </div>
+      <div class="step-connector" id="conn-3"></div>
+      <div class="step" id="step-4">
+        <div class="step-dot">4</div>
+        <span class="step-label">Подарок</span>
       </div>
     </div>
 
-    <div id="player-block" class="hidden">
-      <p class="subtitle">Мастер-класс второго дня. Проматывать нельзя — смотрите с начала.</p>
-      <div class="video-wrap">
-        <iframe id="video" src="" title="День 2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <h1>Мастер-класс Дня 2</h1>
+    <p class="page-sub" id="page-sub">Второй день вайб-кодинга</p>
+
+    <!-- Нет доступа -->
+    <div id="no-access" class="hidden">
+      <div class="r-card">
+        <p class="r-card-label"><span class="pdot pdot-yellow"></span>Доступ закрыт</p>
+        <p class="alert alert-warning">Сначала завершите мастер-класс Дня 1. День 2 откроется после этого.</p>
+        <a href="return.html" class="btn btn-primary btn-block">К моим записям</a>
       </div>
-      <button type="button" class="btn btn-primary" id="mark-watched">Я прошёл мастер-класс Дня 2</button>
+      <div id="day2-countdown" class="hidden r-card" style="margin-top:0;">
+        <p class="r-card-label"><span class="pdot pdot-yellow"></span>До открытия</p>
+        <p class="subtitle" style="margin: 0 0 8px;">День 2 откроется через:</p>
+        <span class="timer" id="timer" style="font-size:2.4rem;font-weight:800;color:#6366f1;font-family:'Montserrat',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-0.04em;">--:--</span>
+      </div>
+    </div>
+
+    <!-- Видеоплеер (доступен) -->
+    <div id="player-block" class="hidden">
+      <div class="r-card">
+        <p class="r-card-label"><span class="pdot pdot-green"></span>Доступно сейчас</p>
+        <p class="subtitle" style="margin-bottom: 14px;">Мастер-класс второго дня. Проматывать нельзя — смотрите с начала.</p>
+
+        <div class="video-section">
+          <div id="day2-video-wrap" class="video-wrap">
+            <div id="day2-video-not-configured" style="padding:1.5rem;background:rgba(255,255,255,0.05);border-radius:12px;">
+              <p><strong>Видео Дня 2 не настроено.</strong></p>
+              <p class="subtitle" style="margin:0.5rem 0;">Укажите ссылку в <code>js/config.js</code> (WIPECODING_DAY2_VIDEO_MP4).</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="day2-watched-btn-wrap" class="hidden" style="margin-top: 16px;">
+          <button type="button" class="btn btn-primary btn-block" id="mark-watched">Я посмотрел День 2 — получить подарок</button>
+        </div>
+      </div>
+
+      <!-- Подарок (показывается после отметки) -->
+      <div id="gift-block" class="hidden gift-block">
+        <h2>Ваш подарок</h2>
+        <p class="subtitle" style="margin-bottom: 16px;">Гайд по вайб-кодингу — создавайте сайты, ботов и приложения с нейросетями без кода.</p>
+        <a href="https://xbaranova-neiro.github.io/vibe-cod/" target="_blank" rel="noopener" class="btn btn-gift">Открыть гайд</a>
+      </div>
     </div>
 
     <div class="nav-block">
-      <a href="return.html" class="btn btn-secondary">К списку мастер-классов</a>
+      <a href="return.html" class="btn btn-secondary">Мои записи</a>
       <a href="day1.html" class="btn btn-secondary">День 1</a>
-      <a href="gift.html" class="btn btn-gift">Получить подарок</a>
     </div>
+
   </div>
 
   <script src="js/config.js"></script>
-  <script src="js/state.js"></script>
   <script>
-    const noAccess = document.getElementById('no-access');
-    const playerBlock = document.getElementById('player-block');
-    const day2Countdown = document.getElementById('day2-countdown');
-    const timerEl = document.getElementById('timer');
-    const markWatched = document.getElementById('mark-watched');
+    // Перекладываем переменные Дня 2 на то что читает video-player.js и chat-script-panel.js
+    window.WIPECODING_VIDEO_POS_KEY = 'wipecoding_day2_pos';
+    if (window.WIPECODING_DAY2_VIDEO_MP4) {
+      window.WIPECODING_DAY1_VIDEO_MP4 = window.WIPECODING_DAY2_VIDEO_MP4;
+      window.WIPECODING_DAY1_VIDEO_START_SECONDS = window.WIPECODING_DAY2_VIDEO_START_SECONDS || 0;
+      window.WIPECODING_DAY1_BUTTON_SHOW_WHEN_SECONDS_LEFT = window.WIPECODING_DAY2_BUTTON_SHOW_WHEN_SECONDS_LEFT || 300;
+      window.WIPECODING_PAYMENT_SHOW_AT_SECONDS = window.WIPECODING_DAY2_PAYMENT_SHOW_AT_SECONDS || 0;
+      window.WIPECODING_PAYMENT_BUTTONS = window.WIPECODING_DAY2_PAYMENT_BUTTONS || [];
+      window.WIPECODING_PAYMENT_LABEL = window.WIPECODING_DAY2_PAYMENT_LABEL || '';
+    }
+    if (window.WIPECODING_DAY2_CHAT_SCRIPT_URL) {
+      window.WIPECODING_CHAT_SCRIPT_URL = window.WIPECODING_DAY2_CHAT_SCRIPT_URL;
+      window.WIPECODING_CHAT_STREAM_OFFSET_SEC = window.WIPECODING_DAY2_CHAT_STREAM_OFFSET_SEC || 0;
+      window.WIPECODING_CHAT_SCRIPT_EXTRA_FIRST_SEC = window.WIPECODING_DAY2_CHAT_SCRIPT_EXTRA_FIRST_SEC || 3;
+    }
+  </script>
+  <script src="js/state.js"></script>
+  <script src="js/video-player.js"></script>
+  <script src="js/chat-script-panel.js"></script>
+  <script>
+    var noAccess     = document.getElementById('no-access');
+    var day2Countdown = document.getElementById('day2-countdown');
+    var timerEl      = document.getElementById('timer');
+    var playerBlock  = document.getElementById('player-block');
+    var markWatched  = document.getElementById('mark-watched');
+    var giftBlock    = document.getElementById('gift-block');
+    var pageSub      = document.getElementById('page-sub');
+    var watchedBtnWrap = document.getElementById('day2-watched-btn-wrap');
+
+    var playerInited = false;
 
     function formatTime(seconds) {
-      const h = Math.floor(seconds / 3600);
-      const m = Math.floor((seconds % 3600) / 60);
-      const s = seconds % 60;
-      if (h > 0) return h + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
-      return m + ':' + String(s).padStart(2, '0');
+      var h = Math.floor(seconds / 3600);
+      var m = Math.floor((seconds % 3600) / 60);
+      var s = seconds % 60;
+      if (h > 0) return h + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+      return m + ':' + String(s).padStart(2,'0');
+    }
+
+    function initPlayer() {
+      if (playerInited) return;
+      playerInited = true;
+      var wrap  = document.getElementById('day2-video-wrap');
+      var noCfg = document.getElementById('day2-video-not-configured');
+      if (window.WipecodingVideo && window.WipecodingVideo.hasVideo()) {
+        if (noCfg) noCfg.style.display = 'none';
+        if (wrap) window.WipecodingVideo.initDay1InPlace(wrap, true);
+      } else {
+        if (wrap) wrap.classList.add('hidden');
+        if (noCfg) noCfg.style.display = '';
+      }
     }
 
     function tick() {
-      const canAccess = WipecodingState.canAccessDay2();
+      WipecodingState.unlockDay1IfReady();
+      var state = WipecodingState.getState();
+      var canAccess = WipecodingState.canAccessDay2();
+
       if (canAccess) {
         noAccess.classList.add('hidden');
-        day2Countdown.classList.add('hidden');
         playerBlock.classList.remove('hidden');
-        const videoEl = document.getElementById('video');
-        if (videoEl && window.WIPECODING_DAY2_VIDEO_URL) videoEl.src = window.WIPECODING_DAY2_VIDEO_URL;
+        initPlayer();
+
+        // Если уже просмотрел — показываем подарок
+        if (state && (state.stage === WipecodingState.STAGES.DAY2_WATCHED || state.stage === WipecodingState.STAGES.QUIZ_PASSED)) {
+          watchedBtnWrap.classList.add('hidden');
+          giftBlock.classList.remove('hidden');
+          if (pageSub) pageSub.textContent = 'День 2 завершён — заберите подарок!';
+        }
         return;
       }
 
-      const state = WipecodingState.getState();
-      if (!state || state.stage === WipecodingState.STAGES.NOT_REGISTERED || state.stage === WipecodingState.STAGES.WAITING_DAY1 || state.stage === WipecodingState.STAGES.DAY1_AVAILABLE) {
-        playerBlock.classList.add('hidden');
-        day2Countdown.classList.add('hidden');
-        noAccess.classList.remove('hidden');
-        return;
-      }
+      playerBlock.classList.add('hidden');
+      noAccess.classList.remove('hidden');
 
-      const sec = WipecodingState.getSecondsUntilDay2();
+      var sec = WipecodingState.getSecondsUntilDay2();
       if (sec !== null && sec > 0) {
-        noAccess.classList.remove('hidden');
         day2Countdown.classList.remove('hidden');
         timerEl.textContent = formatTime(sec);
-        playerBlock.classList.add('hidden');
+        if (pageSub) pageSub.textContent = 'День 2 откроется через ' + formatTime(sec);
+      } else {
+        day2Countdown.classList.add('hidden');
+        if (pageSub) pageSub.textContent = 'Завершите День 1, чтобы открыть День 2';
       }
     }
 
@@ -84,9 +457,41 @@
 
     markWatched.addEventListener('click', function () {
       WipecodingState.markDay2Watched();
-      markWatched.textContent = 'День 2 отмечен как просмотренный';
-      markWatched.disabled = true;
+      watchedBtnWrap.classList.add('hidden');
+      giftBlock.classList.remove('hidden');
+      if (pageSub) pageSub.textContent = 'День 2 завершён — заберите подарок!';
     });
+
+    // Кнопка «Я посмотрел» — показывается ближе к концу
+    var showBtnSecondsLeft = Math.max(0, parseInt(window.WIPECODING_DAY2_BUTTON_SHOW_WHEN_SECONDS_LEFT, 10) || 0);
+    if (showBtnSecondsLeft > 0) {
+      var btnShown = false;
+      var listenerAttached = false;
+      function tryAttach() {
+        if (listenerAttached) return;
+        var video = document.querySelector('#day2-video-wrap video');
+        if (!video) return;
+        listenerAttached = true;
+        var onTime = function () {
+          if (btnShown) return;
+          var dur = video.duration;
+          if (!dur || isNaN(dur)) return;
+          if (dur - video.currentTime <= showBtnSecondsLeft) {
+            watchedBtnWrap.classList.remove('hidden');
+            btnShown = true;
+            video.removeEventListener('timeupdate', onTime);
+          }
+        };
+        video.addEventListener('timeupdate', onTime);
+      }
+      var attachInterval = setInterval(function () {
+        tryAttach();
+        if (listenerAttached) clearInterval(attachInterval);
+      }, 500);
+      setTimeout(function () { clearInterval(attachInterval); }, 60000);
+    } else {
+      watchedBtnWrap.classList.remove('hidden');
+    }
   </script>
 </body>
 </html>
