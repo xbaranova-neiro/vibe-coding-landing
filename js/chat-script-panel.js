@@ -10,7 +10,7 @@
   var panel = document.createElement('div');
   panel.className = 'chat-widget-panel';
   panel.innerHTML =
-    '<div class="chat-script-header">Чат</div>' +
+    '<div class="chat-script-header">Чат<button type="button" class="chat-close-btn" aria-label="Закрыть чат">✕</button></div>' +
     '<div class="chat-script-messages"><div class="chat-script-loading">Загрузка…</div></div>' +
     '<div class="chat-script-your">' +
       '<p class="chat-script-your-label">Написать в чат</p>' +
@@ -20,9 +20,10 @@
       '</div>' +
     '</div>';
 
-  var messagesEl = panel.querySelector('.chat-script-messages');
-  var notesInput = panel.querySelector('.chat-script-input');
-  var notesBtn   = panel.querySelector('.chat-script-send');
+  var messagesEl  = panel.querySelector('.chat-script-messages');
+  var notesInput  = panel.querySelector('.chat-script-input');
+  var notesBtn    = panel.querySelector('.chat-script-send');
+  var closeBtn    = panel.querySelector('.chat-close-btn');
 
   // ── Заметки пользователя ─────────────────────────────────
   var STORAGE_KEY = 'wipecoding_chat_notes';
@@ -40,14 +41,12 @@
   toggle.setAttribute('type', 'button');
   toggle.setAttribute('aria-label', 'Открыть чат');
   toggle.innerHTML = '💬';
-  toggle.addEventListener('click', function () {
-    panel.classList.toggle('hidden');
-    var open = !panel.classList.contains('hidden');
-    toggle.setAttribute('aria-label', open ? 'Закрыть чат' : 'Открыть чат');
-    if (window.matchMedia('(max-width: 768px)').matches) {
-      document.body.classList.toggle('chat-panel-open', open);
-    }
-  });
+  function openChat()  { panel.classList.remove('hidden'); toggle.setAttribute('aria-label', 'Закрыть чат');  if (window.matchMedia('(max-width: 768px)').matches) document.body.classList.add('chat-panel-open'); }
+  function closeChat() { panel.classList.add('hidden');    toggle.setAttribute('aria-label', 'Открыть чат'); document.body.classList.remove('chat-panel-open'); }
+  function toggleChat() { panel.classList.contains('hidden') ? openChat() : closeChat(); }
+
+  toggle.addEventListener('click', toggleChat);
+  if (closeBtn) closeBtn.addEventListener('click', closeChat);
   document.body.appendChild(toggle);
   document.body.appendChild(panel);
   if (window.matchMedia('(max-width: 768px)').matches) {
