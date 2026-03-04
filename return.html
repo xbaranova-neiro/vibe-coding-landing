@@ -408,7 +408,7 @@
     </div>
 
     <!-- Подарки -->
-    <div id="gift-block" class="hidden gift-block">
+    <div id="gift-block" class="gift-block">
       <h2>Ваши подарки</h2>
 
       <div id="gift-day1">
@@ -417,7 +417,7 @@
         <a id="gift-day1-link" href="https://xbaranova-neiro.github.io/vibe-coder-checklist/vibe-coder-checklist.html" target="_blank" rel="noopener" class="btn btn-gift">Открыть чек-лист</a>
       </div>
 
-      <div id="gift-day2" class="hidden" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(245,158,11,0.2);">
+      <div id="gift-day2" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(245,158,11,0.2);">
         <p class="r-card-label">За День 2</p>
         <p class="subtitle" style="margin-bottom: 12px;">Гайд по вайб-кодингу — создавайте сайты, ботов и приложения с нейросетями без кода.</p>
         <a id="gift-day2-link" href="https://xbaranova-neiro.github.io/vibe-cod/" target="_blank" rel="noopener" class="btn btn-gift">Открыть гайд</a>
@@ -454,35 +454,9 @@
     var giftDay1Link = document.getElementById('gift-day1-link');
     var giftDay2Link = document.getElementById('gift-day2-link');
 
-    var DAY2_GIFT_KEY = 'wipecoding_day2_gift';
-    function isDay2GiftUnlocked() {
-      try { return !!localStorage.getItem(DAY2_GIFT_KEY); } catch(e) { return false; }
-    }
-    function unlockDay2Gift() {
-      try { localStorage.setItem(DAY2_GIFT_KEY, '1'); } catch(e) {}
-    }
-
-    // Редирект после оплаты: ?gift=day2
-    (function () {
-      var params = new URLSearchParams(window.location.search);
-      if (params.get('gift') === 'day2') {
-        unlockDay2Gift();
-        if (window.history && window.history.replaceState) {
-          window.history.replaceState({}, '', window.location.pathname);
-        }
-      }
-    })();
-
-    function updateGifts(state) {
-      var STAGES = WipecodingState.STAGES;
-      var day1GiftStages = [STAGES.DAY1_WATCHED, STAGES.DAY2_AVAILABLE, STAGES.DAY2_WATCHED, STAGES.QUIZ_PASSED];
-      var hasDay1Gift = state && day1GiftStages.includes(state.stage);
-      var hasDay2Gift = isDay2GiftUnlocked() || (state && [STAGES.DAY2_WATCHED, STAGES.QUIZ_PASSED].includes(state.stage));
-      giftBlock.classList.toggle('hidden', !hasDay1Gift && !hasDay2Gift);
-      if (giftDay1El) giftDay1El.classList.toggle('hidden', !hasDay1Gift);
-      if (giftDay2El) giftDay2El.classList.toggle('hidden', !hasDay2Gift);
-      if (hasDay1Gift && window.WIPECODING_DAY1_GIFT_URL && giftDay1Link) giftDay1Link.href = window.WIPECODING_DAY1_GIFT_URL;
-      if (hasDay2Gift && window.WIPECODING_GIFT_URL && giftDay2Link) giftDay2Link.href = window.WIPECODING_GIFT_URL;
+    function updateGifts() {
+      if (window.WIPECODING_DAY1_GIFT_URL && giftDay1Link) giftDay1Link.href = window.WIPECODING_DAY1_GIFT_URL;
+      if (window.WIPECODING_GIFT_URL && giftDay2Link) giftDay2Link.href = window.WIPECODING_GIFT_URL;
     }
 
     function showBlock(block) {
