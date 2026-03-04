@@ -1,3 +1,5 @@
-# Видео не пушим в GitHub (лимит 100 МБ). Для продакшена залейте на хостинг и укажите URL в js/config.js
-video/*.mp4
-video/*.MP4
+node_modules/
+tw-input.css
+tailwind.config.js
+package.json
+package-lock.json
