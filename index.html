@@ -18,7 +18,7 @@
     <meta name="twitter:title" content="Вайб-кодинг: сайты, боты, приложения — с нейросетями, без кода">
     <meta name="twitter:description" content="2-х дневный практический мастер-класс. Доступ сразу после регистрации.">
 
-    <!-- Roistat: локально — js/vb-secrets.local.js (в .gitignore). Timeweb: переменная VB_ROISTAT_WEBHOOK_URL + команда сборки npm run build. Шаблон: js/vb-secrets.example.js -->
+    <!-- Roistat: js/vb-secrets.local.js — VB_ROISTAT_PROXY_URL (Worker) + опционально вебхук. Сборка: npm run build. deploy/cloudflare-worker-roistat-proxy.js -->
     <meta name="vb-roistat-webhook" content="">
 
     <link rel="stylesheet" href="tailwind.min.css">
@@ -501,9 +501,9 @@
             var name = nameEl ? nameEl.value : "";
             var email = emailEl ? emailEl.value : "";
             var phone = phoneEl ? phoneEl.value : "";
-            if (!window.VIBE_VB.getWebhookUrl || !window.VIBE_VB.getWebhookUrl()) {
+            if (!window.VIBE_VB.getRoistatSubmitUrl || !window.VIBE_VB.getRoistatSubmitUrl()) {
               showRegError(
-                "Укажите вебхук Roistat: скопируйте js/vb-secrets.example.js → js/vb-secrets.local.js и вставьте URL (файл .local не в git)."
+                "Задайте VB_ROISTAT_PROXY_URL (Cloudflare Worker) или VB_ROISTAT_WEBHOOK_URL — см. deploy/cloudflare-worker-roistat-proxy.js и vb-secrets.example.js."
               );
               return;
             }

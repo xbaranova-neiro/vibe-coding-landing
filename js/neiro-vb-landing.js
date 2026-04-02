@@ -39,6 +39,12 @@
     return m ? (m.getAttribute('content') || '').trim() : '';
   }
 
+  /** Публичный URL Cloudflare Worker — JSON в Roistat без CSP (см. deploy/cloudflare-worker-roistat-proxy.js). */
+  function getRoistatSubmitUrl() {
+    if (window.VB_ROISTAT_PROXY_URL) return String(window.VB_ROISTAT_PROXY_URL).trim();
+    return getWebhookUrl();
+  }
+
   /** UTM и click id с текущей страницы → объект для fields / дублирования */
   function getMarketingParams() {
     var out = {};
@@ -121,9 +127,13 @@
    * @returns {Promise<void>}
    */
   function submitLeadToRoistat(slot, data) {
-    var hook = getWebhookUrl();
-    if (!hook) {
-      return Promise.reject(new Error('Не задан вебхук Roistat (meta vb-roistat-webhook или VB_ROISTAT_WEBHOOK_URL).'));
+    var url = getRoistatSubmitUrl();
+    if (!url) {
+      return Promise.reject(
+        new Error(
+          'Не задан адрес отправки: VB_ROISTAT_PROXY_URL (Worker) или VB_ROISTAT_WEBHOOK_URL / meta vb-roistat-webhook.'
+        )
+      );
     }
     var email = (data.email || '').trim();
     var phone = (data.phone || '').trim();
@@ -144,79 +154,29 @@
     if (phone) payload.phone = phone;
     if (roistatVisit) payload.roistat_visit = roistatVisit;
     /**
-     * fetch к cloud.roistat.com часто даёт «Failed to fetch»: нет CORS, плюс CSP connect-src на хостинге.
-     * Обычная отправка формы в скрытый iframe — не fetch, Roistat принимает application/x-www-form-urlencoded (проверено).
+     * Roistat принимает только JSON → «Lead was successfully created».
+     * Urlencoded с формы даёт Incorrect request — лида нет.
+     * Прямой fetch на cloud.roistat.com режет CSP. Решение: VB_ROISTAT_PROXY_URL (Cloudflare Worker).
      */
-    return submitLeadViaFormPost(hook, payload);
-  }
-
-  function submitLeadViaFormPost(hook, payload) {
-    return new Promise(function (resolve, reject) {
-      var iframeName = 'vb_rs_' + Date.now();
-      var iframe = document.createElement('iframe');
-      iframe.name = iframeName;
-      iframe.title = 'Roistat';
-      iframe.setAttribute('aria-hidden', 'true');
-      iframe.style.cssText = 'position:absolute;width:0;height:0;border:0;clip:rect(0,0,0,0)';
-      document.body.appendChild(iframe);
-
-      var form = document.createElement('form');
-      form.method = 'POST';
-      form.action = hook;
-      form.target = iframeName;
-      form.enctype = 'application/x-www-form-urlencoded';
-      form.acceptCharset = 'UTF-8';
-      form.style.cssText = 'position:absolute;left:-9999px';
-
-      function addField(n, v) {
-        if (v === undefined || v === null || v === '') return;
-        var inp = document.createElement('input');
-        inp.type = 'hidden';
-        inp.name = n;
-        inp.value = String(v);
-        form.appendChild(inp);
-      }
-
-      addField('title', payload.title);
-      addField('name', payload.name);
-      addField('email', payload.email);
-      addField('phone', payload.phone);
-      addField('comment', payload.comment);
-      addField('roistat_visit', payload.roistat_visit);
-      if (payload.fields && typeof payload.fields === 'object') {
-        var keys = Object.keys(payload.fields);
-        if (keys.length) addField('fields', JSON.stringify(payload.fields));
-      }
-
-      var done = false;
-      function cleanup(ok) {
-        if (done) return;
-        done = true;
-        clearTimeout(fallbackTimer);
+    return fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      mode: 'cors',
+      credentials: 'omit'
+    }).then(function (res) {
+      return res.text().then(function (t) {
+        var j = null;
         try {
-          if (form.parentNode) form.parentNode.removeChild(form);
-        } catch (e1) {}
-        setTimeout(function () {
-          try {
-            if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-          } catch (e2) {}
-        }, 300);
-        if (ok) resolve();
-        else reject(new Error('Не удалось отправить заявку'));
-      }
-
-      // Не вешаем onload: первый load — about:blank, гонка с submit. Достаточно паузы после POST.
-      var fallbackTimer = setTimeout(function () {
-        cleanup(true);
-      }, 1500);
-
-      document.body.appendChild(form);
-      try {
-        form.submit();
-      } catch (e) {
-        cleanup(false);
-        return;
-      }
+          j = JSON.parse(t);
+        } catch (e) {}
+        if (!res.ok) {
+          throw new Error(t || 'Ошибка ' + res.status);
+        }
+        if (j && j.status === 'error') {
+          throw new Error(j.message || 'Roistat отклонил заявку');
+        }
+      });
     });
   }
 
@@ -282,6 +242,7 @@
     thankYouBaseForSlot: thankYouBaseForSlot,
     submitLeadToRoistat: submitLeadToRoistat,
     getWebhookUrl: getWebhookUrl,
+    getRoistatSubmitUrl: getRoistatSubmitUrl,
     refreshScheduleLabels: refreshScheduleLabels,
 
     init: function (opts) {
