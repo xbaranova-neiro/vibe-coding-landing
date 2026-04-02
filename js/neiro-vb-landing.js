@@ -143,18 +143,16 @@
     if (email) payload.email = email;
     if (phone) payload.phone = phone;
     if (roistatVisit) payload.roistat_visit = roistatVisit;
+    // Roistat не отдаёт CORS на вебхук: application/json даёт preflight и «Failed to fetch».
+    // JSON в теле с Content-Type: text/plain сервер принимает (200), для браузера это simple request + no-cors.
     return fetch(hook, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
       body: JSON.stringify(payload),
-      mode: 'cors',
+      mode: 'no-cors',
       credentials: 'omit'
-    }).then(function (res) {
-      if (!res.ok) {
-        return res.text().then(function (t) {
-          throw new Error(t || 'Ошибка ' + res.status);
-        });
-      }
+    }).then(function () {
+      return;
     });
   }
 
