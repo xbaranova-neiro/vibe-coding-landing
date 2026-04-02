@@ -2,7 +2,7 @@
   "name": "vibe-coding-landing",
   "version": "1.0.0",
   "scripts": {
-    "build": "echo 'No build needed'",
+    "build": "node scripts/inject-vb-secrets.js",
     "start": "python3 -m http.server 3333"
   }
 }
