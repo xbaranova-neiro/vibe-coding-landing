@@ -1,0 +1,202 @@
+<!--
+  Статический лендинг (этот репозиторий): та же схема в index.html + js/neiro-vb-landing.js
+  (модалка, JSON POST на вебхук Roistat, редирект на thank_vb_* с UTM + roistat_visit).
+
+  ОДИН блок T123 (или разбейте по частям). Перед использованием замените:
+  - REC_FORM_MORNING — id блока формы «утро» (например rec1234567890)
+  - REC_FORM_EVENING — id блока формы «вечер»
+  - По желанию: селекторы кнопок, если не используете href="#popup:..."
+
+  В КАЖДОЙ форме в редакторе Tilda:
+  1) Добавьте скрытое поле: имя time_web_VB (значение можно пустое).
+  2) Roistat: в настройках формы укажите вебхук Roistat (у вас уже по ключу).
+  3) Страницы «Спасибо» можно оставить пустыми в настройках формы — редирект делает этот скрипт (или продублируйте URL в Tilda для надёжности).
+
+  Vars Tools: в текстах Zero Block можно оставить плейсхолдеры плагина; строки «сегодня/завтра в 11/19»
+  заполняются скриптом в элементах с классами ниже. Если нужны только переменные Vars — не задавайте этим span’ам текст вручную, либо оставьте пустыми.
+-->
+<script>
+(function () {
+  'use strict';
+
+  function withJq(fn) {
+    if (window.jQuery) return fn(window.jQuery);
+    var n = 0;
+    var id = setInterval(function () {
+      n++;
+      if (window.jQuery) {
+        clearInterval(id);
+        fn(window.jQuery);
+      } else if (n > 100) clearInterval(id);
+    }, 100);
+  }
+
+  /** ============ НАСТРОЙКИ (замените на свои rec из Tilda) ============ */
+  var REC_FORM_MORNING = 'recREPLACE_MORNING_FORM';
+  var REC_FORM_EVENING = 'recREPLACE_EVENING_FORM';
+  var URL_THANK_MORNING = 'https://neyroseti.neiroguru.ru/sps/neyroseti/thank_vb_mrn';
+  var URL_THANK_EVENING = 'https://neyroseti.neiroguru.ru/sps/neyroseti/thank_vb_evn';
+
+  /** Ссылки на попапы Tilda (как в Zero Block: ссылка → попап → выбрать блок формы) */
+  var HREF_POPUP_MORNING = '#popup:' + REC_FORM_MORNING;
+  var HREF_POPUP_EVENING = '#popup:' + REC_FORM_EVENING;
+
+  /** Классы на кнопках/обёртках (добавьте в Zero Block → класс) */
+  var CLS_BTN_MORNING = 'vb-reg-morning';
+  var CLS_BTN_EVENING = 'vb-reg-evening';
+  var CLS_LBL_MORNING = 'vb-reg-morning-time';
+  var CLS_LBL_EVENING = 'vb-reg-evening-time';
+
+  /** Опционально: даты отдельной строкой (Vars Tools можно подставить в соседние span вручную) */
+  var CLS_DATE_MORNING = 'vb-date-morning';
+  var CLS_DATE_EVENING = 'vb-date-evening';
+
+  var MONTHS_GEN = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+
+  /** Календарная дата строки «сегодня/завтра …» для подписи под кнопкой */
+  function slotDateForLabel(labelText) {
+    var now = new Date();
+    var base = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (labelText.indexOf('завтра') !== -1) base.setDate(base.getDate() + 1);
+    return base;
+  }
+
+  function formatRuDate(dt) {
+    return dt.getDate() + ' ' + MONTHS_GEN[dt.getMonth()];
+  }
+
+  /** Правила из ТЗ:
+   * до 9:00   → утро «сегодня в 11», вечер «сегодня в 19»
+   * с 9:00 до 16:59 → «завтра в 11», «сегодня в 19»
+   * с 17:00   → «завтра в 11», «завтра в 19»
+   */
+  function getScheduleCopy() {
+    var h = new Date().getHours();
+    var morning, evening;
+    if (h < 9) {
+      morning = 'сегодня в 11';
+      evening = 'сегодня в 19';
+    } else if (h < 17) {
+      morning = 'завтра в 11';
+      evening = 'сегодня в 19';
+    } else {
+      morning = 'завтра в 11';
+      evening = 'завтра в 19';
+    }
+    return { morning: morning, evening: evening };
+  }
+
+  function getCookie(name) {
+    var m = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : '';
+  }
+
+  /** Добавляет UTM, click id и roistat_visit к URL редиректа */
+  function augmentThankYouUrl(base) {
+    var url;
+    try {
+      url = new URL(base);
+    } catch (e) {
+      return base;
+    }
+    var loc = new URLSearchParams(window.location.search);
+    loc.forEach(function(val, key) {
+      var k = key.toLowerCase();
+      if (k.indexOf('utm_') === 0 || k === 'gclid' || k === 'fbclid' || k === 'yclid' || k === 'msclkid') {
+        url.searchParams.set(key, val);
+      }
+    });
+    var rs = getCookie('roistat_visit');
+    if (rs) url.searchParams.set('roistat_visit', rs);
+    return url.toString();
+  }
+
+  function setHiddenTimeVB(recId, value) {
+    var $form = $('#' + recId).find('form').first();
+    var $in = $form.find('input[name="time_web_VB"]');
+    if ($in.length) $in.val(value);
+  }
+
+  function applyScheduleUi() {
+    var copy = getScheduleCopy();
+    $('.' + CLS_LBL_MORNING).text(copy.morning);
+    $('.' + CLS_LBL_EVENING).text(copy.evening);
+
+    var dm = slotDateForLabel(copy.morning);
+    var de = slotDateForLabel(copy.evening);
+    $('.' + CLS_DATE_MORNING).text(formatRuDate(dm));
+    $('.' + CLS_DATE_EVENING).text(formatRuDate(de));
+  }
+
+  function wirePopupTriggers() {
+    $(document).on('click', 'a[href="' + HREF_POPUP_MORNING + '"], .' + CLS_BTN_MORNING + ' a, a.' + CLS_BTN_MORNING, function() {
+      setTimeout(function() { setHiddenTimeVB(REC_FORM_MORNING, '11'); }, 200);
+      setTimeout(function() { setHiddenTimeVB(REC_FORM_MORNING, '11'); }, 800);
+    });
+    $(document).on('click', 'a[href="' + HREF_POPUP_EVENING + '"], .' + CLS_BTN_EVENING + ' a, a.' + CLS_BTN_EVENING, function() {
+      setTimeout(function() { setHiddenTimeVB(REC_FORM_EVENING, '19'); }, 200);
+      setTimeout(function() { setHiddenTimeVB(REC_FORM_EVENING, '19'); }, 800);
+    });
+  }
+
+  function beforeSubmitSetHidden($form) {
+    var $rec = $form.closest('[id^="rec"]');
+    var rid = $rec.attr('id');
+    if (rid === REC_FORM_MORNING) $form.find('input[name="time_web_VB"]').val('11');
+    if (rid === REC_FORM_EVENING) $form.find('input[name="time_web_VB"]').val('19');
+  }
+
+  /** Редирект после успешной отправки (Tilda вызывает window.tildaForm_onSuccess) */
+  function redirectAfterSuccess($form) {
+    var $rec = $form.closest('[id^="rec"]');
+    var rid = $rec.attr('id');
+    var target = null;
+    if (rid === REC_FORM_MORNING) target = URL_THANK_MORNING;
+    if (rid === REC_FORM_EVENING) target = URL_THANK_EVENING;
+    if (!target) return;
+    if (window.__vbThankRedirectLock) return;
+    window.__vbThankRedirectLock = true;
+    window.location.href = augmentThankYouUrl(target);
+  }
+
+  function hookTildaSuccess() {
+    var prev = window.tildaForm_onSuccess;
+    window.tildaForm_onSuccess = function ($form) {
+      if (typeof prev === 'function' && prev !== window.tildaForm_onSuccess) {
+        try { prev($form); } catch (e1) {}
+      }
+      redirectAfterSuccess($form);
+    };
+  }
+
+  withJq(function ($) {
+    $(function () {
+      applyScheduleUi();
+      wirePopupTriggers();
+      hookTildaSuccess();
+
+      $(document).on('submit', '#' + REC_FORM_MORNING + ' form, #' + REC_FORM_EVENING + ' form', function () {
+        beforeSubmitSetHidden($(this));
+      });
+
+      setInterval(applyScheduleUi, 60000);
+    });
+  });
+})();
+</script>
+
+<!--
+  Zero Block — пример разметки (две кнопки на вебинар):
+
+  <div class="vb-reg-morning">
+    <a href="#popup:recREPLACE_MORNING_FORM" class="...">Зарегистрироваться — <span class="vb-reg-morning-time"></span></a>
+    <div class="vb-date-morning" style="font-size:12px;opacity:.8"></div>
+  </div>
+  <div class="vb-reg-evening">
+    <a href="#popup:recREPLACE_EVENING_FORM" class="...">Зарегистрироваться — <span class="vb-reg-evening-time"></span></a>
+    <div class="vb-date-evening" style="font-size:12px;opacity:.8"></div>
+  </div>
+
+  Vars Tools: даты в отдельных текстовых полях можно задать переменными плагина вместо .vb-date-* ,
+  оставив только span.vb-reg-*-time для «сегодня/завтра в 11/19».
+-->

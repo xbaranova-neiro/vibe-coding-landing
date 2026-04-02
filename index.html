@@ -18,6 +18,9 @@
     <meta name="twitter:title" content="Вайб-кодинг: сайты, боты, приложения — с нейросетями, без кода">
     <meta name="twitter:description" content="2-х дневный практический мастер-класс. Доступ сразу после регистрации.">
 
+    <!-- Roistat: URL вебхука не храним в репозитории — см. js/vb-secrets.local.js (шаблон: vb-secrets.example.js). Опционально: meta vb-roistat-webhook или window.VB_ROISTAT_WEBHOOK_URL. -->
+    <meta name="vb-roistat-webhook" content="">
+
     <link rel="stylesheet" href="tailwind.min.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -130,6 +133,56 @@
         transform: scale(1.05);
         box-shadow: 0 6px 24px rgba(168, 85, 247, 0.6);
       }
+      .float-reg-stack {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 9998;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        max-width: min(360px, calc(100vw - 24px));
+      }
+      .float-reg-stack .float-reg-btn {
+        position: static;
+        display: block;
+        text-align: center;
+        font-size: 0.72rem;
+        padding: 0.4rem 1rem;
+        line-height: 1.2;
+        margin: 0;
+        border-radius: 9999px;
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(168, 85, 247, 0.3);
+      }
+      .float-reg-btn-text {
+        display: inline;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .float-reg-btn-text [data-vb-hero-date] {
+        white-space: nowrap;
+      }
+      .hero-reg-row {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        width: 100%;
+      }
+      .hero-reg-btn--vb {
+        margin: 0 !important;
+        font-size: 1rem;
+        padding: 0.85rem 1.35rem;
+      }
+      .hero-vb-sub {
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 500;
+        opacity: 0.88;
+        margin-top: 4px;
+      }
     /* ── Scroll-in анимации ────────────────────────────── */
     .anim-hidden {
       opacity: 0;
@@ -163,118 +216,434 @@
       0%, 100% { box-shadow: 0 4px 20px rgba(99,102,241,0.5); }
       50%       { box-shadow: 0 4px 32px rgba(168,85,247,0.75), 0 0 0 5px rgba(99,102,241,0.1); }
     }
-    .float-reg-btn {
+    .float-reg-stack .float-reg-btn {
       animation: float-pulse 2.4s ease-in-out infinite;
     }
-    .float-reg-btn:hover {
+    .float-reg-stack .float-reg-btn:hover {
       animation: none;
+    }
+
+    /* CTA по времени: низкая «капсула», текст в одну–две строки */
+    .vb-time-reg-replace {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      width: 100%;
+      align-items: stretch;
+    }
+    .vb-time-reg-replace.vb-time-reg-replace--narrow {
+      max-width: min(28rem, 100%);
+    }
+    .vb-time-reg-replace > a.vb-time-cta-link {
+      width: 100% !important;
+      max-width: 100%;
+      box-sizing: border-box;
+      min-height: 0;
+      display: inline-flex !important;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      align-content: center;
+      text-align: center;
+      gap: 0.15em 0.35em;
+      padding: 0.42rem 1.6rem !important;
+      line-height: 1.2 !important;
+      font-size: clamp(0.78rem, 1.9vw, 0.92rem);
+      font-weight: 700;
+      border-radius: 9999px !important;
+      cursor: pointer;
+      -webkit-tap-highlight-color: rgba(168, 85, 247, 0.3);
+    }
+    .vb-time-reg-replace > a.vb-time-cta-link [data-vb-hero-date] {
+      white-space: nowrap;
+      font-weight: 700;
+      opacity: 0.95;
+    }
+    #vb-reg-modal.vb-modal-mobile {
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0;
+    }
+    #vb-reg-modal.vb-modal-mobile #vb-reg-inner {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 16px 16px 0 0;
+      max-height: min(92vh, 720px);
+      margin: 0;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      height: auto;
+      min-height: 0;
+    }
+    @supports (min-height: 1dvh) {
+      #vb-reg-modal.vb-modal-mobile #vb-reg-inner {
+        max-height: min(92dvh, 720px);
+      }
+    }
+    .vb-reg-form label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 6px;
+    }
+    .vb-reg-form input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.35);
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 14px;
+    }
+    .vb-reg-form input:focus {
+      outline: none;
+      border-color: rgba(168,85,247,0.65);
+      box-shadow: 0 0 0 2px rgba(99,102,241,0.25);
+    }
+    .vb-reg-form input::placeholder {
+      color: rgba(255,255,255,0.35);
+    }
+    .vb-reg-submit {
+      width: 100%;
+      margin-top: 8px;
+      padding: 14px 18px;
+      border: none;
+      border-radius: 9999px;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.45);
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .vb-reg-submit:hover:not(:disabled) {
+      transform: scale(1.02);
+    }
+    .vb-reg-submit:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .vb-reg-error {
+      color: #fca5a5;
+      font-size: 0.875rem;
+      margin: 0 0 12px;
+      line-height: 1.4;
+    }
+    @media (max-width: 1023px) {
+      .float-reg-stack {
+        bottom: max(12px, env(safe-area-inset-bottom, 0px));
+        right: max(10px, env(safe-area-inset-right, 0px));
+        max-width: calc(100vw - 20px);
+        gap: 10px;
+      }
+      .float-reg-stack .float-reg-btn {
+        min-height: 48px;
+        padding: 0.65rem 1.2rem;
+        font-size: 0.84rem;
+        line-height: 1.25;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        touch-action: manipulation;
+      }
+      .vb-time-reg-replace {
+        gap: 0.55rem;
+      }
+      .vb-time-reg-replace > a.vb-time-cta-link {
+        min-height: 48px;
+        padding: 0.7rem 1.35rem !important;
+        font-size: max(0.88rem, 3.2vw);
+        line-height: 1.25 !important;
+        touch-action: manipulation;
+      }
+      body.has-float-vb-cta #root {
+        padding-bottom: 11.5rem;
+      }
     }
     </style>
 
-    <script type="module" crossorigin src="./assets/index-CrqkIGJg.js"></script>
+    <!-- Roistat Counter Start -->
+    <script>
+    (function(w, d, s, h, id) {
+        w.roistatProjectId = id; w.roistatHost = h;
+        var p = d.location.protocol == "https:" ? "https://" : "http://";
+        var u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie) ? "/dist/module.js" : "/api/site/1.0/"+id+"/init?referrer="+encodeURIComponent(d.location.href);
+        var js = d.createElement(s); js.charset="UTF-8"; js.async = 1; js.src = p+h+u; var js2 = d.getElementsByTagName(s)[0]; js2.parentNode.insertBefore(js, js2);
+    })(window, document, 'script', 'cloud.roistat.com', 'ed5707206f2a2b24b613b73a5dada6f2');
+    </script>
+    <!-- Roistat Counter End -->
+
+    <script src="js/vb-secrets.local.js"></script>
+    <script src="js/neiro-vb-landing.js"></script>
+    <!-- Без crossorigin: иначе при открытии index.html через file:// браузер блокирует ES-модуль (нет CORS у локального файла). -->
+    <script type="module" src="./assets/index-CrqkIGJg.js"></script>
   </head>
 
   <body class="bg-[#0a0a0c] text-white">
+    <div id="file-open-hint" hidden style="position:fixed;bottom:200px;left:50%;transform:translateX(-50%);z-index:100000;max-width:min(420px,calc(100vw - 24px));padding:14px 18px;background:#1a1030;border:1px solid rgba(168,85,247,0.45);border-radius:14px;font-size:13px;line-height:1.45;color:#f5e6ff;box-shadow:0 12px 40px rgba(0,0,0,0.55);">
+      Контент не загрузился? Откройте сайт через локальный сервер: в папке проекта выполните <code style="background:rgba(0,0,0,0.35);padding:2px 8px;border-radius:6px;white-space:nowrap;">npm start</code> и перейдите на <strong style="white-space:nowrap;">http://localhost:3333</strong>
+    </div>
     <div id="root"></div>
 
-    <!-- Плавающая кнопка в углу -->
-    <a href="#" id="float-reg-btn" class="float-reg-btn" style="display:none;">Записаться бесплатно</a>
+    <!-- Две плавающие кнопки: утро (11) / вечер (19) -->
+    <div id="float-reg-stack" class="float-reg-stack" aria-label="Регистрация на эфир">
+      <a href="#" class="float-reg-btn" data-vb-open="morning">
+        <span class="float-reg-btn-text">Зарегистрироваться на 11:00 <span data-vb-hero-date="morning"></span></span>
+      </a>
+      <a href="#" class="float-reg-btn" data-vb-open="evening">
+        <span class="float-reg-btn-text">Зарегистрироваться на 19:00 <span data-vb-hero-date="evening"></span></span>
+      </a>
+    </div>
 
-    <!-- Модальное окно для виджетов -->
-    <div id="widget-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
-      <div id="widget-inner" style="position:relative; width:90%; max-width:500px; height:80vh; max-height:700px; background:#1a1a2e; border-radius:1rem; overflow:hidden; border:1px solid rgba(168,85,247,0.3); box-shadow:0 0 40px rgba(168,85,247,0.15);">
-        <button id="widget-close" style="position:absolute; top:12px; right:12px; z-index:10; width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1;">&times;</button>
-        <iframe id="widget-iframe" style="width:100%; height:100%; border:none;" src=""></iframe>
+    <!-- Модалка регистрации: как на Тильде — отправка на вебхук Roistat, затем редирект на «Спасибо» GetCourse с метками -->
+    <div id="vb-reg-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
+      <div id="vb-reg-inner" style="position:relative; width:90%; max-width:440px; max-height:90vh; overflow:auto; background:#1a1a2e; border-radius:1rem; border:1px solid rgba(168,85,247,0.3); box-shadow:0 0 40px rgba(168,85,247,0.15); padding:28px 24px 24px;">
+        <button type="button" id="vb-reg-close" style="position:absolute; top:12px; right:12px; z-index:10; width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1;">&times;</button>
+        <h2 id="vb-reg-title" class="font-header text-xl font-extrabold text-white mb-1 pr-10">Регистрация на эфир</h2>
+        <p id="vb-reg-subtitle" class="text-sm text-purple-200/90 mb-5"></p>
+        <p id="vb-reg-error" class="vb-reg-error" style="display:none;" role="alert"></p>
+        <form id="vb-reg-form" class="vb-reg-form" novalidate>
+          <input type="hidden" name="vb_slot" id="vb-reg-slot" value="morning" />
+          <label for="vb-reg-name">Имя</label>
+          <input id="vb-reg-name" name="name" type="text" autocomplete="name" placeholder="Как к вам обращаться" />
+          <label for="vb-reg-email">Email</label>
+          <input id="vb-reg-email" name="email" type="email" autocomplete="email" placeholder="name@example.com" />
+          <label for="vb-reg-phone">Телефон <span style="font-weight:400;opacity:0.7">(если нет email)</span></label>
+          <input id="vb-reg-phone" name="phone" type="tel" autocomplete="tel" placeholder="+7 …" />
+          <button type="submit" class="vb-reg-submit" id="vb-reg-submit">Зарегистрироваться</button>
+        </form>
       </div>
     </div>
 
     <script>
       (function () {
-        var params = new URLSearchParams(window.location.search);
-        var utmSource = params.get("utm_source") || "";
-        var utmMedium = params.get("utm_medium") || "";
+        // --- Модалка регистрации (схема как Тильда: Roistat webhook → «Спасибо» с UTM + roistat_visit) ---
+        var modal = document.getElementById("vb-reg-modal");
+        var inner = document.getElementById("vb-reg-inner");
+        var closeBtn = document.getElementById("vb-reg-close");
+        var regForm = document.getElementById("vb-reg-form");
+        var regSlot = document.getElementById("vb-reg-slot");
+        var regTitle = document.getElementById("vb-reg-title");
+        var regSubtitle = document.getElementById("vb-reg-subtitle");
+        var regError = document.getElementById("vb-reg-error");
+        var regSubmit = document.getElementById("vb-reg-submit");
 
-        // --- Модальное окно ---
-        var modal = document.getElementById("widget-modal");
-        var iframe = document.getElementById("widget-iframe");
-        var closeBtn = document.getElementById("widget-close");
+        function isMobileViewport() {
+          return window.matchMedia && window.matchMedia("(max-width: 1023px)").matches;
+        }
 
-        var inner = document.getElementById("widget-inner");
+        function showRegError(msg) {
+          if (!regError) return;
+          regError.textContent = msg || "";
+          regError.style.display = msg ? "block" : "none";
+        }
 
-        function openWidget(url, maxH) {
-          var h = maxH || 700;
-          inner.style.maxHeight = h + "px";
-          inner.style.height = (h === 700) ? "80vh" : "95vh";
-          iframe.src = url;
+        function openRegModal(slot) {
+          if (!modal || !regForm || !regSlot) return;
+          showRegError("");
+          regSlot.value = slot === "evening" ? "evening" : "morning";
+          if (regTitle) {
+            regTitle.textContent =
+              slot === "evening" ? "Регистрация — эфир в 19:00" : "Регистрация — эфир в 11:00";
+          }
+          if (regSubtitle && window.VIBE_VB) {
+            var copy = slot === "evening" ? "вечерний слот" : "утренний слот";
+            regSubtitle.textContent = "Бесплатный мастер-класс, " + copy + ".";
+          }
+          regForm.reset();
+          regSlot.value = slot === "evening" ? "evening" : "morning";
+
+          var mobile = isMobileViewport();
+          modal.classList.toggle("vb-modal-mobile", mobile);
+
           modal.style.display = "flex";
           document.body.style.overflow = "hidden";
         }
 
-        function closeWidget() {
+        function closeRegModal() {
+          if (!modal) return;
           modal.style.display = "none";
-          iframe.src = "";
+          modal.classList.remove("vb-modal-mobile");
           document.body.style.overflow = "";
+          showRegError("");
+          if (regSubmit) regSubmit.disabled = false;
         }
 
-        closeBtn.addEventListener("click", closeWidget);
-        modal.addEventListener("click", function (e) {
-          if (e.target === modal) closeWidget();
-        });
-        document.addEventListener("keydown", function (e) {
-          if (e.key === "Escape") closeWidget();
+        window.addEventListener("resize", function () {
+          if (modal && modal.style.display === "flex") {
+            var mobile = isMobileViewport();
+            modal.classList.toggle("vb-modal-mobile", mobile);
+          }
         });
 
-        var floatBtn = document.getElementById("float-reg-btn");
-        if (floatBtn) {
-          floatBtn.style.display = "inline-block";
-          floatBtn.addEventListener("click", function (e) {
+        if (closeBtn) closeBtn.addEventListener("click", closeRegModal);
+        if (modal) {
+          modal.addEventListener("click", function (e) {
+            if (e.target === modal) closeRegModal();
+          });
+        }
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") closeRegModal();
+        });
+
+        if (regForm && window.VIBE_VB) {
+          regForm.addEventListener("submit", function (e) {
             e.preventDefault();
-            openWidget(buildWidgetUrl("1558793"));
+            showRegError("");
+            var slot = regSlot.value === "evening" ? "evening" : "morning";
+            var nameEl = document.getElementById("vb-reg-name");
+            var emailEl = document.getElementById("vb-reg-email");
+            var phoneEl = document.getElementById("vb-reg-phone");
+            var name = nameEl ? nameEl.value : "";
+            var email = emailEl ? emailEl.value : "";
+            var phone = phoneEl ? phoneEl.value : "";
+            if (!window.VIBE_VB.getWebhookUrl || !window.VIBE_VB.getWebhookUrl()) {
+              showRegError(
+                "Укажите вебхук Roistat: скопируйте js/vb-secrets.example.js → js/vb-secrets.local.js и вставьте URL (файл .local не в git)."
+              );
+              return;
+            }
+            if (regSubmit) regSubmit.disabled = true;
+            window.VIBE_VB
+              .submitLeadToRoistat(slot, { name: name, email: email, phone: phone })
+              .then(function () {
+                var base = window.VIBE_VB.thankYouBaseForSlot(slot);
+                window.location.href = window.VIBE_VB.augmentThankYouUrl(base);
+              })
+              .catch(function (err) {
+                showRegError((err && err.message) || "Не удалось отправить. Попробуйте ещё раз.");
+                if (regSubmit) regSubmit.disabled = false;
+              });
           });
         }
 
-        // --- Формирование URL виджета ---
-        function buildWidgetUrl(id) {
-          var url = "https://neyroseti.neiroguru.ru/pl/lite/widget/widget?id=" + id;
-          var u = new URL(url);
-          if (utmSource) u.searchParams.set("utm_source", utmSource);
-          if (utmMedium) u.searchParams.set("utm_medium", utmMedium);
-          return u.toString();
+        var floatStack = document.getElementById("float-reg-stack");
+        if (floatStack) {
+          floatStack.style.display = "flex";
+          document.body.classList.add("has-float-vb-cta");
         }
 
-        // Все кнопки ведут на регистрацию (виджет 1558793)
+        if (window.VIBE_VB) {
+          window.VIBE_VB.init({ openRegModal: openRegModal });
+        }
+
+        function isFreeWidgetHref(href) {
+          if (!href) return false;
+          var h = String(href).toLowerCase();
+          return h.indexOf("1558793") !== -1 && h.indexOf("widget") !== -1;
+        }
+
+        function makeTimeRegAnchor(slot, hhmm, className) {
+          var a = document.createElement("a");
+          a.href = "#";
+          a.className = ((className || "").trim() + " vb-time-cta-link").trim();
+          a.setAttribute("data-vb-open", slot);
+          a.appendChild(document.createTextNode("Зарегистрироваться на " + hhmm + " "));
+          var sp = document.createElement("span");
+          sp.setAttribute("data-vb-hero-date", slot);
+          a.appendChild(sp);
+          return a;
+        }
+
+        /** Все CTA на бесплатную регистрацию → две кнопки «11:00 + дата» и «19:00 + дата». */
+        function replaceFreeWidgetLinksWithTimeButtons() {
+          var root = document.getElementById("root");
+          if (!root) return;
+          var links = Array.prototype.slice.call(root.querySelectorAll("a[href]"));
+          for (var i = 0; i < links.length; i++) {
+            var link = links[i];
+            if (link.closest(".vb-time-reg-replace")) continue;
+            if (link.getAttribute("data-vb-open")) continue;
+            if (!isFreeWidgetHref(link.getAttribute("href") || "")) continue;
+            var wrap = document.createElement("div");
+            wrap.className = "vb-time-reg-replace";
+            var cls = link.className || "";
+            wrap.appendChild(makeTimeRegAnchor("morning", "11:00", cls));
+            wrap.appendChild(makeTimeRegAnchor("evening", "19:00", cls));
+            link.parentNode.insertBefore(wrap, link);
+            link.remove();
+          }
+        }
+
+        /** Кнопка «Записаться на мастер-класс» (скролл к тарифам) → две кнопки по времени. */
+        function replaceMasterclassCtaWithTimeButtons() {
+          var root = document.getElementById("root");
+          if (!root) return;
+          var buttons = Array.prototype.slice.call(root.querySelectorAll("button"));
+          for (var i = 0; i < buttons.length; i++) {
+            var btn = buttons[i];
+            if (btn.closest(".vb-time-reg-replace")) continue;
+            var t = (btn.textContent || "").replace(/\s+/g, " ").trim();
+            if (t.indexOf("Записаться на мастер-класс") === -1) continue;
+            var wrap = document.createElement("div");
+            wrap.className = "vb-time-reg-replace vb-time-reg-replace--narrow";
+            var cls =
+              btn.className ||
+              "px-8 py-4 rounded-2xl font-bold bg-gradient-main text-white text-center";
+            wrap.appendChild(makeTimeRegAnchor("morning", "11:00", cls));
+            wrap.appendChild(makeTimeRegAnchor("evening", "19:00", cls));
+            btn.parentNode.insertBefore(wrap, btn);
+            btn.remove();
+          }
+        }
+
+        function runTimeRegUi() {
+          replaceFreeWidgetLinksWithTimeButtons();
+          replaceMasterclassCtaWithTimeButtons();
+          if (window.VIBE_VB) window.VIBE_VB.refreshScheduleLabels();
+        }
+
+        var _vbRegUiDebounce = null;
+        function scheduleFullRegUiRefresh() {
+          clearTimeout(_vbRegUiDebounce);
+          _vbRegUiDebounce = setTimeout(function () {
+            runHide();
+            addStartIn3Min();
+            runTimeRegUi();
+            modifyLinks();
+          }, 200);
+        }
+
+        /** Оставшиеся ссылки на старый домен → модалка регистрации (утро по умолчанию). */
         function modifyLinks() {
           var links = document.querySelectorAll(
             'a[href*="xeniabaranova-school.ru/pl/lite/widget"]'
           );
           var sections = document.querySelectorAll("section");
           var heroSections = [sections[0], sections[1]];
-          var regWidgetUrl = buildWidgetUrl("1558793");
 
           links.forEach(function (link) {
+            if (link.getAttribute("data-vb-modal-bound") === "1") return;
             var section = link.closest("section");
             var isHero = heroSections.indexOf(section) !== -1;
 
             if (isHero) {
+              link.setAttribute("data-vb-modal-bound", "1");
               link.removeAttribute("target");
               link.href = "#";
               link.addEventListener("click", function (e) {
                 e.preventDefault();
-                openWidget(regWidgetUrl);
+                openRegModal("morning");
               });
             } else if (link.href.indexOf("id=1558793") !== -1) {
+              link.setAttribute("data-vb-modal-bound", "1");
               link.removeAttribute("target");
               link.href = "#";
               link.addEventListener("click", function (e) {
                 e.preventDefault();
-                openWidget(regWidgetUrl);
+                openRegModal("morning");
               });
             } else if (link.href.indexOf("id=1558799") !== -1) {
+              link.setAttribute("data-vb-modal-bound", "1");
               link.removeAttribute("target");
               link.href = "#";
               link.addEventListener("click", function (e) {
                 e.preventDefault();
-                openWidget(regWidgetUrl);
+                openRegModal("morning");
               });
             }
           });
@@ -293,11 +662,12 @@
             }
           }
         }
-        // Убираем подписи «VIP — эфир + записи + сертификат» и «Бесплатно — только эфир»
+        // Убираем только подписи (span/p), не родительские div — иначе на десктопе скрывается
+        // вся колонка с «Записаться бесплатно» + «Бесплатно — только эфир» (общий textContent < 80).
         function hideCaptionTexts() {
           var root = document.getElementById("root");
           if (!root) return;
-          var all = root.querySelectorAll("p, span, div");
+          var all = root.querySelectorAll("p, span");
           for (var i = 0; i < all.length; i++) {
             var el = all[i];
             var t = (el.textContent || "").trim();
@@ -341,19 +711,20 @@
             var t = (el.textContent || "").trim();
             if (t.indexOf("22-23 февраля") !== -1 || t.indexOf("22 февраля") !== -1 || t.indexOf("23 февраля") !== -1) {
               el.textContent = "2-х дневный практический мастер-класс";
-            } else if ((t.indexOf("11:00") !== -1 || t.indexOf("19:00") !== -1) && t.indexOf("МСК") !== -1 && t.length < 80) {
-              el.textContent = "Доступ сразу после регистрации";
             }
           }
         }
 
-        // Анимации появления при скролле
+        // Анимации появления при скролле (один раз; 0 и 1 — мобильный и десктопный первый экран)
+        var _vbScrollAnimInited = false;
         function addScrollAnimations() {
+          if (_vbScrollAnimInited) return;
           if (!('IntersectionObserver' in window)) return;
           var root = document.getElementById("root");
           if (!root) return;
           var sections = root.querySelectorAll("section");
           if (!sections.length) return;
+          _vbScrollAnimInited = true;
           var observer = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
               if (entry.isIntersecting) {
@@ -364,112 +735,43 @@
             });
           }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
           sections.forEach(function (section, i) {
-            if (i === 0) return; // первый блок сразу виден
+            if (i === 0 || i === 1) return;
             section.classList.add('anim-hidden');
             observer.observe(section);
           });
         }
 
-        // Добавляем бейдж «Доступ сразу после регистрации» в 1-й и последний блок
-        function addAccessBadge() {
-          var root = document.getElementById("root");
-          if (!root || root.querySelector(".access-badge")) return;
-          var badge = '<span class="access-badge" style="display:inline-block;padding:6px 16px;border-radius:9999px;border:1px solid rgba(168,85,247,0.4);color:#a855f7;font-size:0.9rem;font-weight:500;">Доступ сразу после регистрации</span>';
-          var sections = root.querySelectorAll("section");
-          if (!sections.length) return;
-          // В первый блок — ищем где уже есть бейдж с датой/мастер-классом и ставим рядом
-          var first = sections[0];
-          var existing = first.querySelector(".access-badge");
-          if (!existing) {
-            // Ищем любой span/p с текстом «2-х дневный» или «мастер-класс» и вставляем после
-            var pills = first.querySelectorAll("span, p");
-            var inserted = false;
-            for (var i = 0; i < pills.length; i++) {
-              if (pills[i].textContent.indexOf("2-х дневный") !== -1 || pills[i].textContent.indexOf("мастер-класс") !== -1) {
-                var wrap = document.createElement("div");
-                wrap.style.marginTop = "8px";
-                wrap.innerHTML = badge;
-                pills[i].parentNode.insertBefore(wrap, pills[i].nextSibling);
-                inserted = true;
-                break;
-              }
-            }
-            // Если не нашли — вставляем в начало первой секции
-            if (!inserted) {
-              var wrap2 = document.createElement("div");
-              wrap2.style.cssText = "margin-bottom:16px;";
-              wrap2.innerHTML = badge;
-              first.insertBefore(wrap2, first.firstChild);
-            }
-          }
-          // В последний блок
-          var last = sections[sections.length - 1];
-          if (!last.querySelector(".access-badge")) {
-            var wrap3 = document.createElement("div");
-            wrap3.style.cssText = "text-align:center;margin-bottom:16px;";
-            wrap3.innerHTML = badge;
-            last.insertBefore(wrap3, last.firstChild);
-          }
-        }
-
-        // Кнопка «Записаться бесплатно» сразу после фразы «Простым языком, много практики...»
-        function addHeroButton() {
-          var root = document.getElementById("root");
-          if (!root || root.querySelector(".hero-reg-wrap")) return;
-          var all = root.querySelectorAll("p, div, span");
-          for (var i = 0; i < all.length; i++) {
-            var el = all[i];
-            var t = (el.textContent || "").trim();
-            if (t.indexOf("Простым языком, много практики") !== -1 && t.indexOf("ни строчки кода") !== -1 && t.length < 400) {
-              var wrap = document.createElement("div");
-              wrap.className = "hero-reg-wrap";
-              wrap.style.cssText = "display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:1rem;margin-bottom:1.5rem;";
-              var btn = document.createElement("a");
-              btn.href = "#";
-              btn.className = "hero-reg-btn";
-              btn.style.cssText = "margin:0;";
-              btn.textContent = "Записаться бесплатно";
-              btn.addEventListener("click", function (e) {
-                e.preventDefault();
-                openWidget(buildWidgetUrl("1558793"));
-              });
-              wrap.appendChild(btn);
-              var badge = document.createElement("span");
-              badge.style.cssText = "display:inline-block;padding:6px 16px;border-radius:9999px;border:1px solid rgba(168,85,247,0.4);color:#a855f7;font-size:0.9rem;font-weight:500;white-space:nowrap;";
-              badge.textContent = "Доступ сразу после регистрации";
-              wrap.appendChild(badge);
-              if (el.nextSibling) {
-                el.parentNode.insertBefore(wrap, el.nextSibling);
-              } else {
-                el.parentNode.appendChild(wrap);
-              }
-              return;
-            }
-          }
-        }
-
-        // Ждём, пока React отрендерит приложение
-        var observer = new MutationObserver(function (mutations, obs) {
+        // React + мобильный/десктопный дубль секций: повторно подхватываем ссылки, пока DOM стабилизируется
+        var rootObserved = document.getElementById("root");
+        var vbMoDisconnected = false;
+        var vbMo = new MutationObserver(function () {
+          if (vbMoDisconnected) return;
           var root = document.getElementById("root");
           if (root && root.children.length > 0) {
-            obs.disconnect();
-            setTimeout(function () {
-              modifyLinks();
-              runHide();
-              addStartIn3Min();
-              addHeroButton();
-            }, 100);
+            scheduleFullRegUiRefresh();
           }
         });
+        vbMo.observe(rootObserved, { childList: true, subtree: true });
+        setTimeout(function () {
+          vbMo.disconnect();
+          vbMoDisconnected = true;
+        }, 14000);
+        setTimeout(function () { runHide(); addStartIn3Min(); runTimeRegUi(); modifyLinks(); addScrollAnimations(); }, 300);
+        setTimeout(function () { runHide(); addStartIn3Min(); runTimeRegUi(); modifyLinks(); addScrollAnimations(); }, 800);
+        setTimeout(function () { runHide(); addStartIn3Min(); runTimeRegUi(); modifyLinks(); }, 1500);
+        setTimeout(function () { addStartIn3Min(); hideCaptionTexts(); runTimeRegUi(); modifyLinks(); }, 2500);
 
-        observer.observe(document.getElementById("root"), {
-          childList: true,
-          subtree: true,
-        });
-        setTimeout(function () { runHide(); addStartIn3Min(); addHeroButton(); addAccessBadge(); addScrollAnimations(); }, 300);
-        setTimeout(function () { runHide(); addStartIn3Min(); addHeroButton(); addAccessBadge(); addScrollAnimations(); }, 800);
-        setTimeout(function () { runHide(); addStartIn3Min(); addAccessBadge(); }, 1500);
-        setTimeout(function () { addStartIn3Min(); hideCaptionTexts(); addAccessBadge(); }, 2500);
+        function showFileOpenHint() {
+          var el = document.getElementById("file-open-hint");
+          if (el) el.hidden = false;
+        }
+        window.addEventListener("error", function (e) {
+          if (e.filename && String(e.filename).indexOf("index-CrqkIGJg") !== -1) showFileOpenHint();
+        }, true);
+        setTimeout(function () {
+          var r = document.getElementById("root");
+          if (r && r.children.length === 0) showFileOpenHint();
+        }, 3500);
       })();
     </script>
   </body>
