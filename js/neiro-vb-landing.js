@@ -39,9 +39,17 @@
     return m ? (m.getAttribute('content') || '').trim() : '';
   }
 
-  /** Публичный URL Cloudflare Worker — JSON в Roistat без CSP (см. deploy/cloudflare-worker-roistat-proxy.js). */
+  /**
+   * Прокси Roistat. Лучше относительный путь «/api/roistat» на том же домене (Worker в Cloudflare на маршруте
+   * neiroguru.ru/api/roistat* — тогда CSP хостинга не режет запрос). URL *.workers.dev часто блокируется connect-src.
+   */
   function getRoistatSubmitUrl() {
-    if (window.VB_ROISTAT_PROXY_URL) return String(window.VB_ROISTAT_PROXY_URL).trim();
+    var p = (window.VB_ROISTAT_PROXY_URL || '').trim();
+    if (p) {
+      if (/^https?:\/\//i.test(p)) return p;
+      if (p.charAt(0) === '/') return window.location.origin + p;
+      return p;
+    }
     return getWebhookUrl();
   }
 
@@ -164,20 +172,29 @@
       body: JSON.stringify(payload),
       mode: 'cors',
       credentials: 'omit'
-    }).then(function (res) {
-      return res.text().then(function (t) {
-        var j = null;
-        try {
-          j = JSON.parse(t);
-        } catch (e) {}
-        if (!res.ok) {
-          throw new Error(t || 'Ошибка ' + res.status);
+    })
+      .then(function (res) {
+        return res.text().then(function (t) {
+          var j = null;
+          try {
+            j = JSON.parse(t);
+          } catch (e) {}
+          if (!res.ok) {
+            throw new Error(t || 'Ошибка ' + res.status);
+          }
+          if (j && j.status === 'error') {
+            throw new Error(j.message || 'Roistat отклонил заявку');
+          }
+        });
+      })
+      .catch(function (e) {
+        if (e && e.name === 'TypeError' && /fetch|Load failed|NetworkError/i.test(String(e.message))) {
+          throw new Error(
+            'Запрос заблокирован (часто CSP на хостинге). Сделайте прокси на этом же домене: в Cloudflare добавьте маршрут Worker на /api/roistat и в Timeweb задайте VB_ROISTAT_PROXY_URL=/api/roistat (см. deploy/cloudflare-worker-roistat-proxy.js).'
+          );
         }
-        if (j && j.status === 'error') {
-          throw new Error(j.message || 'Roistat отклонил заявку');
-        }
+        throw e;
       });
-    });
   }
 
   function fixEmailValue(el) {

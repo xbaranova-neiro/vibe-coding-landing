@@ -1,10 +1,10 @@
 /**
  * Локально: скопируйте в vb-secrets.local.js (файл в .gitignore).
  *
- * На проде Timeweb: переменные VB_ROISTAT_PROXY_URL и/или VB_ROISTAT_WEBHOOK_URL
- * → npm run build → inject в vb-secrets.local.js.
- *
- * Рекомендация: только прокси (ключ вебхука хранится в секрете Worker, не в браузере).
+ * Прод: VB_ROISTAT_PROXY_URL через inject (Timeweb переменные + npm run build).
+ * Лучше относительный путь (Worker на маршруте этого домена в Cloudflare):
  */
-window.VB_ROISTAT_PROXY_URL = 'https://ВАШ_ВОРКЕР.workers.dev';
-// window.VB_ROISTAT_WEBHOOK_URL = 'https://cloud.roistat.com/integration/webhook?key=...'; // опционально для локальных тестов
+window.VB_ROISTAT_PROXY_URL = '/api/roistat';
+// Либо полный URL воркера (на Timeweb часто даёт Failed to fetch из‑за CSP):
+// window.VB_ROISTAT_PROXY_URL = 'https://vb-roistat.XXX.workers.dev';
+// window.VB_ROISTAT_WEBHOOK_URL = 'https://...'; // только локальные тесты без прокси

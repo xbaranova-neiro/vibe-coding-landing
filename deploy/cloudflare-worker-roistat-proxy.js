@@ -1,15 +1,18 @@
 /**
- * Прокси Roistat: браузер шлёт JSON сюда (CORS *), воркер — на cloud.roistat.com/webhook.
+ * Прокси Roistat: браузер шлёт JSON (CORS *), воркер — на cloud.roistat.com/webhook.
  *
- * Установка (Cloudflare Workers):
- * 1. Workers & Pages → Create → Worker, вставить этот код.
- * 2. Settings → Variables → Secrets → ROISTAT_WEBHOOK_URL = полный URL вебхука с ?key=...
- * 3. Save and Deploy, скопировать URL вида https://vb-roistat.ИМЯ.workers.dev
- * 4. В Timeweb переменная VB_ROISTAT_PROXY_URL = этот URL (не секрет).
- * 5. VB_ROISTAT_WEBHOOK_URL в клиенте можно убрать — ключ только в секрете воркера.
+ * === Рекомендуется: тот же домен, путь /api/roistat (обходит CSP Timeweb на *.workers.dev) ===
+ * 1. Домен neiroguru.ru должен идти через Cloudflare (DNS с оранжевым облаком).
+ * 2. Workers & Pages → ваш воркер → Triggers → Custom Domains / Routes:
+ *    добавить Route: neiroguru.ru/api/roistat* (и при необходимости www.neiroguru.ru/api/roistat*).
+ * 3. Secret ROISTAT_WEBHOOK_URL = полный URL вебхука с ?key=...
+ * 4. В Timeweb переменная VB_ROISTAT_PROXY_URL = /api/roistat  (относительный путь, без https).
  *
- * Безопасность: ниже стоит Access-Control-Allow-Origin: * (удобно для превью-доменов).
- * Потом можно заменить на свой домен, чтобы чужие сайты не слали лиды в ваш вебхук.
+ * === Запасной вариант: только workers.dev ===
+ * URL вида https://vb-roistat.ИМЯ.workers.dev — на Timeweb часто блокируется connect-src;
+ * тогда в поддержке хостинга попросите разрешить этот URL в CSP или используйте маршрут выше.
+ *
+ * Безопасность: CORS *. Позже можно сузить до своего домена.
  */
 export default {
   async fetch(request, env) {
