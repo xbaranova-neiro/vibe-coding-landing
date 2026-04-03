@@ -18,9 +18,6 @@
     <meta name="twitter:title" content="Вайб-кодинг: сайты, боты, приложения — с нейросетями, без кода">
     <meta name="twitter:description" content="2-х дневный практический мастер-класс. Доступ сразу после регистрации.">
 
-    <!-- Roistat: js/vb-secrets.local.js — VB_ROISTAT_PROXY_URL (Worker) + опционально вебхук. Сборка: npm run build. deploy/cloudflare-worker-roistat-proxy.js -->
-    <meta name="vb-roistat-webhook" content="">
-
     <link rel="stylesheet" href="tailwind.min.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -260,78 +257,102 @@
       font-weight: 700;
       opacity: 0.95;
     }
-    #vb-reg-modal.vb-modal-mobile {
-      align-items: flex-end;
+    /* Тарифы Free/VIP из React-бандла: не показывать и не анимировать (убирает «вспышки» кнопок VIP) */
+    #root section#pricing {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      pointer-events: none !important;
+    }
+    #root section#pricing,
+    #root section#pricing * {
+      animation: none !important;
+      transition: none !important;
+    }
+    /* Все ссылки на платный виджет VIP (id=1558799) — в хиро, в карточках и внизу страницы */
+    #root a[href*="1558799"],
+    #root a[href*="1558799"] * {
+      animation: none !important;
+    }
+    #root a[href*="1558799"] {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+    /*
+      Подписи под тарифами и дисклеймер VIP из бандла (className фиксированы в React).
+      Только CSS: React при ре-рендере снимает display:none из inline-стилей JS — из‑за этого «мелькали» строки.
+    */
+    #root span.text-sm.text-gray-500.mt-3,
+    #root p.text-center.text-xs.text-gray-500.mt-4 {
+      display: none !important;
+      visibility: hidden !important;
+      height: 0 !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      pointer-events: none !important;
+    }
+
+    /* GetCourse: виджеты регистрации (утро / вечер) во всплывающей панели */
+    #vb-gc-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10050;
+      align-items: center;
       justify-content: center;
-      padding: 0;
-    }
-    #vb-reg-modal.vb-modal-mobile #vb-reg-inner {
-      width: 100%;
-      max-width: 100%;
-      border-radius: 16px 16px 0 0;
-      max-height: min(92vh, 720px);
-      margin: 0;
-      padding-bottom: env(safe-area-inset-bottom, 0px);
-      height: auto;
-      min-height: 0;
-    }
-    @supports (min-height: 1dvh) {
-      #vb-reg-modal.vb-modal-mobile #vb-reg-inner {
-        max-height: min(92dvh, 720px);
-      }
-    }
-    .vb-reg-form label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.75);
-      margin-bottom: 6px;
-    }
-    .vb-reg-form input {
-      width: 100%;
+      padding: 12px;
       box-sizing: border-box;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(0,0,0,0.35);
-      color: #fff;
-      font-size: 1rem;
-      margin-bottom: 14px;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(5px);
     }
-    .vb-reg-form input:focus {
-      outline: none;
-      border-color: rgba(168,85,247,0.65);
-      box-shadow: 0 0 0 2px rgba(99,102,241,0.25);
+    #vb-gc-overlay.vb-gc-overlay--open {
+      display: flex;
     }
-    .vb-reg-form input::placeholder {
-      color: rgba(255,255,255,0.35);
-    }
-    .vb-reg-submit {
+    #vb-gc-overlay-inner {
+      position: relative;
       width: 100%;
-      margin-top: 8px;
-      padding: 14px 18px;
-      border: none;
-      border-radius: 9999px;
-      font-weight: 800;
-      font-size: 1rem;
+      max-width: 580px;
+      max-height: min(96vh, 980px);
+      overflow: auto;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+      -webkit-overflow-scrolling: touch;
+    }
+    #vb-gc-overlay-close {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      float: right;
+      margin: 8px 8px 0 0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: rgba(255, 255, 255, 0.95);
+      color: #1a1a2e;
+      font-size: 22px;
+      line-height: 1;
       cursor: pointer;
-      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-      color: #fff;
-      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.45);
-      transition: opacity 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     }
-    .vb-reg-submit:hover:not(:disabled) {
-      transform: scale(1.02);
+    .vb-gc-slot {
+      width: 100%;
+      overflow: hidden;
+      clear: both;
     }
-    .vb-reg-submit:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-    .vb-reg-error {
-      color: #fca5a5;
-      font-size: 0.875rem;
-      margin: 0 0 12px;
-      line-height: 1.4;
+    #vb-gc-slot-evening {
+      display: none;
     }
     @media (max-width: 1023px) {
       .float-reg-stack {
@@ -363,21 +384,19 @@
       body.has-float-vb-cta #root {
         padding-bottom: 11.5rem;
       }
+      #vb-gc-overlay-inner {
+        max-height: min(96dvh, 1000px);
+        border-radius: 16px 16px 0 0;
+        align-self: flex-end;
+        margin-bottom: 0;
+      }
+      #vb-gc-overlay.vb-gc-overlay--open {
+        align-items: flex-end;
+        padding: 0;
+      }
     }
     </style>
 
-    <!-- Roistat Counter Start -->
-    <script>
-    (function(w, d, s, h, id) {
-        w.roistatProjectId = id; w.roistatHost = h;
-        var p = d.location.protocol == "https:" ? "https://" : "http://";
-        var u = /^.*roistat_visit=[^;]+(.*)?$/.test(d.cookie) ? "/dist/module.js" : "/api/site/1.0/"+id+"/init?referrer="+encodeURIComponent(d.location.href);
-        var js = d.createElement(s); js.charset="UTF-8"; js.async = 1; js.src = p+h+u; var js2 = d.getElementsByTagName(s)[0]; js2.parentNode.insertBefore(js, js2);
-    })(window, document, 'script', 'cloud.roistat.com', 'ed5707206f2a2b24b613b73a5dada6f2');
-    </script>
-    <!-- Roistat Counter End -->
-
-    <script src="js/vb-secrets.local.js"></script>
     <script src="js/neiro-vb-landing.js"></script>
     <!-- Без crossorigin: иначе при открытии index.html через file:// браузер блокирует ES-модуль (нет CORS у локального файла). -->
     <script type="module" src="./assets/index-CrqkIGJg.js"></script>
@@ -399,127 +418,59 @@
       </a>
     </div>
 
-    <!-- Модалка регистрации: как на Тильде — отправка на вебхук Roistat, затем редирект на «Спасибо» GetCourse с метками -->
-    <div id="vb-reg-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px); align-items:center; justify-content:center;">
-      <div id="vb-reg-inner" style="position:relative; width:90%; max-width:440px; max-height:90vh; overflow:auto; background:#1a1a2e; border-radius:1rem; border:1px solid rgba(168,85,247,0.3); box-shadow:0 0 40px rgba(168,85,247,0.15); padding:28px 24px 24px;">
-        <button type="button" id="vb-reg-close" style="position:absolute; top:12px; right:12px; z-index:10; width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; line-height:1;">&times;</button>
-        <h2 id="vb-reg-title" class="font-header text-xl font-extrabold text-white mb-1 pr-10">Регистрация на эфир</h2>
-        <p id="vb-reg-subtitle" class="text-sm text-purple-200/90 mb-5"></p>
-        <p id="vb-reg-error" class="vb-reg-error" style="display:none;" role="alert"></p>
-        <form id="vb-reg-form" class="vb-reg-form" novalidate>
-          <input type="hidden" name="vb_slot" id="vb-reg-slot" value="morning" />
-          <label for="vb-reg-name">Имя</label>
-          <input id="vb-reg-name" name="name" type="text" autocomplete="name" placeholder="Как к вам обращаться" />
-          <label for="vb-reg-email">Email</label>
-          <input id="vb-reg-email" name="email" type="email" autocomplete="email" placeholder="name@example.com" />
-          <label for="vb-reg-phone">Телефон <span style="font-weight:400;opacity:0.7">(если нет email)</span></label>
-          <input id="vb-reg-phone" name="phone" type="tel" autocomplete="tel" placeholder="+7 …" />
-          <button type="submit" class="vb-reg-submit" id="vb-reg-submit">Зарегистрироваться</button>
-        </form>
+    <!-- GetCourse: id=1558793 утро, id=1585653 вечер (iframe подставляет скрипт виджета) -->
+    <div id="vb-gc-overlay" aria-hidden="true" role="dialog" aria-label="Регистрация на эфир">
+      <div id="vb-gc-overlay-inner">
+        <button type="button" id="vb-gc-overlay-close" aria-label="Закрыть">&times;</button>
+        <div id="vb-gc-slot-morning" class="vb-gc-slot">
+          <script
+            id="ca8bf706ed9a7d6587307c621d89305977bcb7d4"
+            src="https://neyroseti.neiroguru.ru/pl/lite/widget/script?id=1558793"
+          ></script>
+        </div>
+        <div id="vb-gc-slot-evening" class="vb-gc-slot">
+          <script
+            id="417bd3a0b82b9fb6b22d746241f4d3e2fcb0ed52"
+            src="https://neyroseti.neiroguru.ru/pl/lite/widget/script?id=1585653"
+          ></script>
+        </div>
       </div>
     </div>
 
     <script>
       (function () {
-        // --- Модалка регистрации (схема как Тильда: Roistat webhook → «Спасибо» с UTM + roistat_visit) ---
-        var modal = document.getElementById("vb-reg-modal");
-        var inner = document.getElementById("vb-reg-inner");
-        var closeBtn = document.getElementById("vb-reg-close");
-        var regForm = document.getElementById("vb-reg-form");
-        var regSlot = document.getElementById("vb-reg-slot");
-        var regTitle = document.getElementById("vb-reg-title");
-        var regSubtitle = document.getElementById("vb-reg-subtitle");
-        var regError = document.getElementById("vb-reg-error");
-        var regSubmit = document.getElementById("vb-reg-submit");
+        var gcOverlay = document.getElementById("vb-gc-overlay");
+        var gcSlotMorning = document.getElementById("vb-gc-slot-morning");
+        var gcSlotEvening = document.getElementById("vb-gc-slot-evening");
+        var gcClose = document.getElementById("vb-gc-overlay-close");
 
-        function isMobileViewport() {
-          return window.matchMedia && window.matchMedia("(max-width: 1023px)").matches;
+        function closeGcOverlay() {
+          if (!gcOverlay) return;
+          gcOverlay.classList.remove("vb-gc-overlay--open");
+          gcOverlay.setAttribute("aria-hidden", "true");
+          document.body.style.overflow = "";
         }
 
-        function showRegError(msg) {
-          if (!regError) return;
-          regError.textContent = msg || "";
-          regError.style.display = msg ? "block" : "none";
-        }
-
-        function openRegModal(slot) {
-          if (!modal || !regForm || !regSlot) return;
-          showRegError("");
-          regSlot.value = slot === "evening" ? "evening" : "morning";
-          if (regTitle) {
-            regTitle.textContent =
-              slot === "evening" ? "Регистрация — эфир в 19:00" : "Регистрация — эфир в 11:00";
-          }
-          if (regSubtitle && window.VIBE_VB) {
-            var copy = slot === "evening" ? "вечерний слот" : "утренний слот";
-            regSubtitle.textContent = "Бесплатный мастер-класс, " + copy + ".";
-          }
-          regForm.reset();
-          regSlot.value = slot === "evening" ? "evening" : "morning";
-
-          var mobile = isMobileViewport();
-          modal.classList.toggle("vb-modal-mobile", mobile);
-
-          modal.style.display = "flex";
+        function openRegForm(slot) {
+          if (!gcOverlay || !gcSlotMorning || !gcSlotEvening) return;
+          var evening = slot === "evening";
+          gcSlotMorning.style.display = evening ? "none" : "block";
+          gcSlotEvening.style.display = evening ? "block" : "none";
+          gcOverlay.classList.add("vb-gc-overlay--open");
+          gcOverlay.setAttribute("aria-hidden", "false");
           document.body.style.overflow = "hidden";
         }
 
-        function closeRegModal() {
-          if (!modal) return;
-          modal.style.display = "none";
-          modal.classList.remove("vb-modal-mobile");
-          document.body.style.overflow = "";
-          showRegError("");
-          if (regSubmit) regSubmit.disabled = false;
-        }
-
-        window.addEventListener("resize", function () {
-          if (modal && modal.style.display === "flex") {
-            var mobile = isMobileViewport();
-            modal.classList.toggle("vb-modal-mobile", mobile);
-          }
-        });
-
-        if (closeBtn) closeBtn.addEventListener("click", closeRegModal);
-        if (modal) {
-          modal.addEventListener("click", function (e) {
-            if (e.target === modal) closeRegModal();
+        if (gcClose) gcClose.addEventListener("click", closeGcOverlay);
+        if (gcOverlay) {
+          gcOverlay.addEventListener("click", function (e) {
+            if (e.target === gcOverlay) closeGcOverlay();
           });
         }
         document.addEventListener("keydown", function (e) {
-          if (e.key === "Escape") closeRegModal();
+          if (e.key !== "Escape") return;
+          if (gcOverlay && gcOverlay.classList.contains("vb-gc-overlay--open")) closeGcOverlay();
         });
-
-        if (regForm && window.VIBE_VB) {
-          regForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-            showRegError("");
-            var slot = regSlot.value === "evening" ? "evening" : "morning";
-            var nameEl = document.getElementById("vb-reg-name");
-            var emailEl = document.getElementById("vb-reg-email");
-            var phoneEl = document.getElementById("vb-reg-phone");
-            var name = nameEl ? nameEl.value : "";
-            var email = emailEl ? emailEl.value : "";
-            var phone = phoneEl ? phoneEl.value : "";
-            if (!window.VIBE_VB.getRoistatSubmitUrl || !window.VIBE_VB.getRoistatSubmitUrl()) {
-              showRegError(
-                "Задайте VB_ROISTAT_PROXY_URL (Cloudflare Worker) или VB_ROISTAT_WEBHOOK_URL — см. deploy/cloudflare-worker-roistat-proxy.js и vb-secrets.example.js."
-              );
-              return;
-            }
-            if (regSubmit) regSubmit.disabled = true;
-            window.VIBE_VB
-              .submitLeadToRoistat(slot, { name: name, email: email, phone: phone })
-              .then(function () {
-                var base = window.VIBE_VB.thankYouBaseForSlot(slot);
-                window.location.href = window.VIBE_VB.augmentThankYouUrl(base);
-              })
-              .catch(function (err) {
-                showRegError((err && err.message) || "Не удалось отправить. Попробуйте ещё раз.");
-                if (regSubmit) regSubmit.disabled = false;
-              });
-          });
-        }
 
         var floatStack = document.getElementById("float-reg-stack");
         if (floatStack) {
@@ -528,13 +479,14 @@
         }
 
         if (window.VIBE_VB) {
-          window.VIBE_VB.init({ openRegModal: openRegModal });
+          window.VIBE_VB.init({ openRegModal: openRegForm });
         }
 
         function isFreeWidgetHref(href) {
           if (!href) return false;
           var h = String(href).toLowerCase();
-          return h.indexOf("1558793") !== -1 && h.indexOf("widget") !== -1;
+          if (h.indexOf("widget") === -1) return false;
+          return h.indexOf("1558793") !== -1 || h.indexOf("1585653") !== -1;
         }
 
         function makeTimeRegAnchor(slot, hhmm, className) {
@@ -608,10 +560,10 @@
           }, 200);
         }
 
-        /** Оставшиеся ссылки на старый домен → модалка регистрации (утро по умолчанию). */
+        /** Оставшиеся ссылки на старый домен → форма регистрации (утро по умолчанию). */
         function modifyLinks() {
           var links = document.querySelectorAll(
-            'a[href*="xeniabaranova-school.ru/pl/lite/widget"]'
+            'a[href*="xeniabaranova-school.ru/pl/lite/widget"], a[href*="neyroseti.neiroguru.ru/pl/lite/widget"]'
           );
           var sections = document.querySelectorAll("section");
           var heroSections = [sections[0], sections[1]];
@@ -620,36 +572,31 @@
             if (link.getAttribute("data-vb-modal-bound") === "1") return;
             var section = link.closest("section");
             var isHero = heroSections.indexOf(section) !== -1;
+            var href = link.href || "";
+
+            function bind(slot) {
+              link.setAttribute("data-vb-modal-bound", "1");
+              link.removeAttribute("target");
+              link.href = "#";
+              link.addEventListener("click", function (e) {
+                e.preventDefault();
+                openRegForm(slot);
+              });
+            }
 
             if (isHero) {
-              link.setAttribute("data-vb-modal-bound", "1");
-              link.removeAttribute("target");
-              link.href = "#";
-              link.addEventListener("click", function (e) {
-                e.preventDefault();
-                openRegModal("morning");
-              });
-            } else if (link.href.indexOf("id=1558793") !== -1) {
-              link.setAttribute("data-vb-modal-bound", "1");
-              link.removeAttribute("target");
-              link.href = "#";
-              link.addEventListener("click", function (e) {
-                e.preventDefault();
-                openRegModal("morning");
-              });
-            } else if (link.href.indexOf("id=1558799") !== -1) {
-              link.setAttribute("data-vb-modal-bound", "1");
-              link.removeAttribute("target");
-              link.href = "#";
-              link.addEventListener("click", function (e) {
-                e.preventDefault();
-                openRegModal("morning");
-              });
+              bind("morning");
+            } else if (href.indexOf("id=1585653") !== -1 || href.indexOf("id%3d1585653") !== -1) {
+              bind("evening");
+            } else if (href.indexOf("id=1558793") !== -1 || href.indexOf("id%3d1558793") !== -1) {
+              bind("morning");
+            } else if (href.indexOf("id=1558799") !== -1 || href.indexOf("id%3d1558799") !== -1) {
+              bind("morning");
             }
           });
         }
 
-        // Убираем только кнопку «Хочу VIP за 570 ₽» (сам элемент a/button, не родители)
+        // VIP: дублируем CSS — на случай смены вёрстки (по тексту и по виджету id=1558799)
         function hideVipButtonOnly() {
           var root = document.getElementById("root");
           if (!root) return;
@@ -657,24 +604,33 @@
           for (var i = 0; i < links.length; i++) {
             var el = links[i];
             var t = (el.textContent || "").trim();
-            if (t.indexOf("Хочу VIP за 570") !== -1 || (t === "Хочу VIP за 570 ₽")) {
+            var href = (el.getAttribute("href") || "") + "";
+            if (
+              href.indexOf("1558799") !== -1 ||
+              t.indexOf("Хочу VIP за 570") !== -1 ||
+              t === "Хочу VIP за 570 ₽" ||
+              t.indexOf("Оплатить VIP 570") !== -1
+            ) {
               el.style.setProperty("display", "none", "important");
             }
           }
         }
-        // Убираем только подписи (span/p), не родительские div — иначе на десктопе скрывается
-        // вся колонка с «Записаться бесплатно» + «Бесплатно — только эфир» (общий textContent < 80).
+        // Дублируем CSS (на случай смены классов в бандле): подписи тарифов и VIP-тексты
         function hideCaptionTexts() {
           var root = document.getElementById("root");
           if (!root) return;
-          var all = root.querySelectorAll("p, span");
+          var all = root.querySelectorAll("p, span, div, li");
           for (var i = 0; i < all.length; i++) {
             var el = all[i];
+            if (el.children.length > 0) continue;
             var t = (el.textContent || "").trim();
-            if (t.indexOf("VIP — эфир + записи + сертификат") !== -1 && t.length < 80) {
-              el.style.setProperty("display", "none", "important");
-            }
-            if (t.indexOf("Бесплатно — только эфир") !== -1 && t.length < 80) {
+            if (t.length > 120) continue;
+            if (
+              t.indexOf("VIP — эфир + записи + сертификат") !== -1 ||
+              t.indexOf("Бесплатно — только эфир") !== -1 ||
+              t.indexOf("Запись и сертификат доступны только в VIP-формате") !== -1 ||
+              t.indexOf("Оплатить VIP 570") !== -1
+            ) {
               el.style.setProperty("display", "none", "important");
             }
           }
@@ -736,6 +692,7 @@
           }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
           sections.forEach(function (section, i) {
             if (i === 0 || i === 1) return;
+            if (section.id === "pricing") return;
             section.classList.add('anim-hidden');
             observer.observe(section);
           });

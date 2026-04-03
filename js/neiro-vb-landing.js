@@ -1,15 +1,9 @@
 /**
- * Регистрация на веб: два слота (11 / 19), как на Тильде — форма → вебхук Roistat → редирект на «Спасибо» GetCourse
- * с UTM, click id и roistat_visit в query (см. augmentThankYouUrl).
- *
- * URL вебхука: Roistat → Интеграции → Webhook → адрес из инструкции. Укажите в <meta name="vb-roistat-webhook" content="...">
- * или window.VB_ROISTAT_WEBHOOK_URL до подключения этого файла.
+ * Лендинг VB: слоты 11 / 19, подписи дат, сборка URL формы регистрации.
+ * В query добавляются UTM, gclid/fbclid… и time_web_VB (11 / 19).
  */
 (function () {
   'use strict';
-
-  var THANK_MORNING = 'https://neyroseti.neiroguru.ru/sps/neyroseti/thank_vb_mrn';
-  var THANK_EVENING = 'https://neyroseti.neiroguru.ru/sps/neyroseti/thank_vb_evn';
 
   var MONTHS_GEN = [
     'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
@@ -26,59 +20,10 @@
     'gmeil.com': 'gmail.com'
   };
 
-  function getCookie(name) {
-    var m = document.cookie.match(
-      new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)')
-    );
-    return m ? decodeURIComponent(m[1]) : '';
-  }
-
-  function getWebhookUrl() {
-    if (window.VB_ROISTAT_WEBHOOK_URL) return String(window.VB_ROISTAT_WEBHOOK_URL).trim();
-    var m = document.querySelector('meta[name="vb-roistat-webhook"]');
-    return m ? (m.getAttribute('content') || '').trim() : '';
-  }
-
-  /**
-   * Прокси Roistat. Лучше относительный путь «/api/roistat» на том же домене (Worker в Cloudflare на маршруте
-   * neiroguru.ru/api/roistat* — тогда CSP хостинга не режет запрос). URL *.workers.dev часто блокируется connect-src.
-   */
-  function getRoistatSubmitUrl() {
-    var p = (window.VB_ROISTAT_PROXY_URL || '').trim();
-    if (p) {
-      if (/^https?:\/\//i.test(p)) return p;
-      if (p.charAt(0) === '/') return window.location.origin + p;
-      return p;
-    }
-    return getWebhookUrl();
-  }
-
-  /** UTM и click id с текущей страницы → объект для fields / дублирования */
-  function getMarketingParams() {
-    var out = {};
-    try {
-      var loc = new URLSearchParams(window.location.search);
-      loc.forEach(function (val, key) {
-        var k = key.toLowerCase();
-        if (
-          k.indexOf('utm_') === 0 ||
-          k === 'gclid' ||
-          k === 'fbclid' ||
-          k === 'yclid' ||
-          k === 'msclkid'
-        ) {
-          out[key] = val;
-        }
-      });
-    } catch (e) {}
-    return out;
-  }
-
-  /** Как в tilda-neiro-vb/03: дописать метки к URL страницы «Спасибо». */
-  function augmentThankYouUrl(base) {
+  function buildRegFormUrl(base, slot) {
     var url;
     try {
-      url = new URL(base);
+      url = new URL(base, window.location.href);
     } catch (e) {
       return base;
     }
@@ -89,8 +34,7 @@
         url.searchParams.set(key, val);
       }
     });
-    var rs = getCookie('roistat_visit');
-    if (rs) url.searchParams.set('roistat_visit', rs);
+    url.searchParams.set('time_web_VB', slot === 'evening' ? '19' : '11');
     return url.toString();
   }
 
@@ -120,81 +64,6 @@
 
   function formatRuDate(dt) {
     return dt.getDate() + ' ' + MONTHS_GEN[dt.getMonth()];
-  }
-
-  function thankYouBaseForSlot(slot) {
-    if (slot === 'morning') return THANK_MORNING;
-    if (slot === 'evening') return THANK_EVENING;
-    return THANK_MORNING;
-  }
-
-  /**
-   * Отправка заявки в Roistat (формат help.roistat.com Webhook).
-   * @param {string} slot 'morning' | 'evening'
-   * @param {{ name: string, email: string, phone: string }} data
-   * @returns {Promise<void>}
-   */
-  function submitLeadToRoistat(slot, data) {
-    var url = getRoistatSubmitUrl();
-    if (!url) {
-      return Promise.reject(
-        new Error(
-          'Не задан адрес отправки: VB_ROISTAT_PROXY_URL (Worker) или VB_ROISTAT_WEBHOOK_URL / meta vb-roistat-webhook.'
-        )
-      );
-    }
-    var email = (data.email || '').trim();
-    var phone = (data.phone || '').trim();
-    if (!email && !phone) {
-      return Promise.reject(new Error('Укажите email или телефон.'));
-    }
-    var timeVb = slot === 'evening' ? '19' : '11';
-    var marketing = getMarketingParams();
-    var fields = Object.assign({}, marketing, { time_web_VB: timeVb });
-    var roistatVisit = getCookie('roistat_visit');
-    var payload = {
-      title: slot === 'evening' ? 'Вайб-кодинг веб — регистрация 19:00' : 'Вайб-кодинг веб — регистрация 11:00',
-      fields: fields
-    };
-    var nm = (data.name || '').trim();
-    if (nm) payload.name = nm;
-    if (email) payload.email = email;
-    if (phone) payload.phone = phone;
-    if (roistatVisit) payload.roistat_visit = roistatVisit;
-    /**
-     * Roistat принимает только JSON → «Lead was successfully created».
-     * Urlencoded с формы даёт Incorrect request — лида нет.
-     * Прямой fetch на cloud.roistat.com режет CSP. Решение: VB_ROISTAT_PROXY_URL (Cloudflare Worker).
-     */
-    return fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      mode: 'cors',
-      credentials: 'omit'
-    })
-      .then(function (res) {
-        return res.text().then(function (t) {
-          var j = null;
-          try {
-            j = JSON.parse(t);
-          } catch (e) {}
-          if (!res.ok) {
-            throw new Error(t || 'Ошибка ' + res.status);
-          }
-          if (j && j.status === 'error') {
-            throw new Error(j.message || 'Roistat отклонил заявку');
-          }
-        });
-      })
-      .catch(function (e) {
-        if (e && e.name === 'TypeError' && /fetch|Load failed|NetworkError/i.test(String(e.message))) {
-          throw new Error(
-            'Запрос заблокирован (часто CSP на хостинге). Сделайте прокси на этом же домене: в Cloudflare добавьте маршрут Worker на /api/roistat и в Timeweb задайте VB_ROISTAT_PROXY_URL=/api/roistat (см. deploy/cloudflare-worker-roistat-proxy.js).'
-          );
-        }
-        throw e;
-      });
   }
 
   function fixEmailValue(el) {
@@ -253,13 +122,7 @@
   var _vbInited = false;
 
   window.VIBE_VB = {
-    THANK_MORNING: THANK_MORNING,
-    THANK_EVENING: THANK_EVENING,
-    augmentThankYouUrl: augmentThankYouUrl,
-    thankYouBaseForSlot: thankYouBaseForSlot,
-    submitLeadToRoistat: submitLeadToRoistat,
-    getWebhookUrl: getWebhookUrl,
-    getRoistatSubmitUrl: getRoistatSubmitUrl,
+    buildRegFormUrl: buildRegFormUrl,
     refreshScheduleLabels: refreshScheduleLabels,
 
     init: function (opts) {
@@ -267,7 +130,6 @@
       _vbInited = true;
       opts = opts || {};
       _openRegModal = typeof opts.openRegModal === 'function' ? opts.openRegModal : null;
-      var self = this;
       document.addEventListener('click', function (e) {
         var a = e.target.closest('[data-vb-open]');
         if (!a) return;

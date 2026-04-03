@@ -1,6 +1,3 @@
-# Секреты Roistat (вебхук) — не коммитить
-js/vb-secrets.local.js
-
 node_modules/
 tw-input.css
 tailwind.config.js
