@@ -91,22 +91,20 @@
     return ms < 800 ? 800 : ms;
   }
 
-  /** Календарная дата в Москве: { y, mo, d } (mo — 0..11). */
+  /** Календарная дата в Москве: { y, mo, d } (mo — 0..11). Через sv-SE → стабильная строка YYYY-MM-DD. */
   function getMoscowYmd() {
-    var parts = new Intl.DateTimeFormat('en-CA', {
+    var s = new Intl.DateTimeFormat('sv-SE', {
       timeZone: 'Europe/Moscow',
       year: 'numeric',
       month: '2-digit',
       day: '2-digit'
-    })
-      .formatToParts(new Date())
-      .reduce(function (acc, p) {
-        if (p.type === 'year') acc.y = parseInt(p.value, 10);
-        if (p.type === 'month') acc.mo = parseInt(p.value, 10) - 1;
-        if (p.type === 'day') acc.d = parseInt(p.value, 10);
-        return acc;
-      }, {});
-    return { y: parts.y, mo: parts.mo, d: parts.d };
+    }).format(new Date());
+    var a = s.split('-');
+    return {
+      y: parseInt(a[0], 10),
+      mo: parseInt(a[1], 10) - 1,
+      d: parseInt(a[2], 10)
+    };
   }
 
   function addCalendarDays(ymd, deltaDays) {
@@ -115,27 +113,43 @@
     return { y: x.getUTCFullYear(), mo: x.getUTCMonth(), d: x.getUTCDate() };
   }
 
+  /**
+   * Текст «сегодня/завтра» + смещение календарного дня МСК для числа под кнопкой (0 = сегодня, 1 = завтра).
+   * Смещения задаются явно — не через поиск подстроки «завтра» в тексте (надёжнее для разных символов/копипаста).
+   */
   function getScheduleCopy() {
     var mins = getMoscowMinutesSinceMidnight();
     var morning;
     var evening;
+    var morningDayOffset = 0;
+    var eveningDayOffset = 0;
     if (mins < 9 * 60) {
       morning = 'сегодня в 11';
       evening = 'сегодня в 19';
+      morningDayOffset = 0;
+      eveningDayOffset = 0;
     } else if (mins < 17 * 60) {
       morning = 'завтра в 11';
       evening = 'сегодня в 19';
+      morningDayOffset = 1;
+      eveningDayOffset = 0;
     } else {
       morning = 'завтра в 11';
       evening = 'завтра в 19';
+      morningDayOffset = 1;
+      eveningDayOffset = 1;
     }
-    return { morning: morning, evening: evening };
+    return {
+      morning: morning,
+      evening: evening,
+      morningDayOffset: morningDayOffset,
+      eveningDayOffset: eveningDayOffset
+    };
   }
 
-  /** Дата для числа под кнопкой: «сегодня»/«завтра» относительно календаря Москвы. */
-  function slotDateForLabel(labelText) {
+  function moscowYmdWithDayOffset(dayOffset) {
     var msk = getMoscowYmd();
-    if (labelText.indexOf('завтра') !== -1) msk = addCalendarDays(msk, 1);
+    if (dayOffset) msk = addCalendarDays(msk, dayOffset);
     return msk;
   }
 
@@ -173,8 +187,8 @@
 
   function refreshScheduleLabels() {
     var copy = getScheduleCopy();
-    var dm = formatRuDate(slotDateForLabel(copy.morning));
-    var de = formatRuDate(slotDateForLabel(copy.evening));
+    var dm = formatRuDate(moscowYmdWithDayOffset(copy.morningDayOffset));
+    var de = formatRuDate(moscowYmdWithDayOffset(copy.eveningDayOffset));
     document.querySelectorAll('[data-vb-hero-date="morning"]').forEach(function (el) {
       el.textContent = dm;
     });
