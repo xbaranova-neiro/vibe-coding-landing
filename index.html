@@ -411,10 +411,10 @@
     <!-- Две плавающие кнопки: утро (11) / вечер (19) -->
     <div id="float-reg-stack" class="float-reg-stack" aria-label="Регистрация на эфир">
       <a href="#" class="float-reg-btn" data-vb-open="morning">
-        <span class="float-reg-btn-text">Зарегистрироваться на 11:00 <span data-vb-hero-date="morning"></span></span>
+        <span class="float-reg-btn-text">Зарегистрироваться на 11:00 по МСК <span data-vb-hero-date="morning"></span></span>
       </a>
       <a href="#" class="float-reg-btn" data-vb-open="evening">
-        <span class="float-reg-btn-text">Зарегистрироваться на 19:00 <span data-vb-hero-date="evening"></span></span>
+        <span class="float-reg-btn-text">Зарегистрироваться на 19:00 по МСК <span data-vb-hero-date="evening"></span></span>
       </a>
     </div>
 
@@ -501,7 +501,7 @@
           return a;
         }
 
-        /** Все CTA на бесплатную регистрацию → две кнопки «11:00 + дата» и «19:00 + дата». */
+        /** CTA: 11:00 / 19:00 по МСК + дата; смена режимов по МСК в 9:00 и 17:00 — см. VIBE_VB.refreshScheduleLabels. */
         function replaceFreeWidgetLinksWithTimeButtons() {
           var root = document.getElementById("root");
           if (!root) return;
@@ -514,8 +514,8 @@
             var wrap = document.createElement("div");
             wrap.className = "vb-time-reg-replace";
             var cls = link.className || "";
-            wrap.appendChild(makeTimeRegAnchor("morning", "11:00", cls));
-            wrap.appendChild(makeTimeRegAnchor("evening", "19:00", cls));
+            wrap.appendChild(makeTimeRegAnchor("morning", "11:00 по МСК", cls));
+            wrap.appendChild(makeTimeRegAnchor("evening", "19:00 по МСК", cls));
             link.parentNode.insertBefore(wrap, link);
             link.remove();
           }
@@ -536,8 +536,8 @@
             var cls =
               btn.className ||
               "px-8 py-4 rounded-2xl font-bold bg-gradient-main text-white text-center";
-            wrap.appendChild(makeTimeRegAnchor("morning", "11:00", cls));
-            wrap.appendChild(makeTimeRegAnchor("evening", "19:00", cls));
+            wrap.appendChild(makeTimeRegAnchor("morning", "11:00 по МСК", cls));
+            wrap.appendChild(makeTimeRegAnchor("evening", "19:00 по МСК", cls));
             btn.parentNode.insertBefore(wrap, btn);
             btn.remove();
           }
@@ -731,6 +731,39 @@
         }, 3500);
       })();
     </script>
+
+    <!-- Top.Mail.Ru counter (из VK_pixel_base_code.txt) -->
+    <script type="text/javascript">
+      var _tmr = window._tmr || (window._tmr = []);
+      _tmr.push({ id: "3546921", type: "pageView", start: new Date().getTime() });
+      (function (d, w, id) {
+        if (d.getElementById(id)) return;
+        var ts = d.createElement("script");
+        ts.type = "text/javascript";
+        ts.async = true;
+        ts.id = id;
+        ts.src = "https://top-fwz1.mail.ru/js/code.js";
+        var f = function () {
+          var s = d.getElementsByTagName("script")[0];
+          s.parentNode.insertBefore(ts, s);
+        };
+        if (w.opera == "[object Opera]") {
+          d.addEventListener("DOMContentLoaded", f, false);
+        } else {
+          f();
+        }
+      })(document, window, "tmr-code");
+    </script>
+    <noscript>
+      <div>
+        <img
+          src="https://top-fwz1.mail.ru/counter?id=3546921;js=na"
+          style="position: absolute; left: -9999px"
+          alt="Top.Mail.Ru"
+        />
+      </div>
+    </noscript>
+    <!-- /Top.Mail.Ru counter -->
 
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
