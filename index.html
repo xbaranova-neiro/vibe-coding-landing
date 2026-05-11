@@ -397,7 +397,7 @@
     }
     </style>
 
-    <script src="js/neiro-vb-landing.js"></script>
+    <script src="js/neiro-vb-landing.js?v=20260211-2"></script>
     <!-- Без crossorigin: иначе при открытии index.html через file:// браузер блокирует ES-модуль (нет CORS у локального файла). -->
     <script type="module" src="./assets/index-CrqkIGJg.js"></script>
   </head>
@@ -501,7 +501,7 @@
           return a;
         }
 
-        /** CTA: 11:00 / 19:00 по МСК + дата; смена режимов по МСК в 9:00 и 17:00 — см. VIBE_VB.refreshScheduleLabels. */
+        /** CTA: 11:00 / 19:00 по МСК + дата; смена режимов по МСК в 9:00 и 19:00 — см. VIBE_VB.refreshScheduleLabels. */
         function replaceFreeWidgetLinksWithTimeButtons() {
           var root = document.getElementById("root");
           if (!root) return;

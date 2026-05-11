@@ -8,17 +8,18 @@
  * Сверка с макетом (стикеры), всё по Europe/Moscow:
  *
  * 1) «До 9 утра рега»     → оба слота сегодня: «сегодня в 11», «сегодня в 19»  → ветка mins < 9*60
- * 2) «После 9:00 рега»   → «завтра в 11» (утро), «сегодня в 19» (вечер)        → 9*60 ≤ mins < 17*60
- *    (на стикере сначала написан вечер, потом утро; на ленде 1-я кнопка — утро 11:00, 2-я — вечер 19:00)
- * 3) «После 17:00 рега»  → оба завтра: «завтра в 11», «завтра в 19»            → mins ≥ 17*60
+ * 2) «После 9:00 рега»   → «завтра в 11» (утро), «сегодня в 19» (вечер)        → 9*60 ≤ mins < 19*60
+ *    (на стикере сначала вечер, потом утро; на ленде 1-я кнопка — утро 11:00, 2-я — вечер 19:00)
+ * 3) «После 19:00 рега»  → оба завтра: «завтра в 11», «завтра в 19»            → mins ≥ 19*60
+ *    (граница 19:00, а не 17:00: до начала вечернего эфира дата вечера — ещё «сегодня» по календарю МСК.)
  *
  * | Интервал МСК  | Утро (кнопка 11:00) | Вечер (кнопка 19:00) |
  * |---------------|---------------------|----------------------|
  * | 00:00 … 08:59 | сегодня в 11        | сегодня в 19         |
- * | 09:00 … 16:59 | завтра в 11         | сегодня в 19         |
- * | 17:00 … 23:59 | завтра в 11         | завтра в 19          |
+ * | 09:00 … 18:59 | завтра в 11         | сегодня в 19         |
+ * | 19:00 … 23:59 | завтра в 11         | завтра в 19          |
  *
- * Границы: с 9:00:00 и с 17:00:00 МСК уже следующий режим. После полуночи — снова режим «до 9».
+ * Границы: с 9:00:00 и с 19:00:00 МСК — следующий режим. Дата/время берутся одним снимком Intl (см. getMoscowWallClock).
  * Обновление подписей: при загрузке и далее каждую новую минуту по московскому времени (чтобы не «залипать»
  * на старой дате до часа после смены режима).
  *
@@ -60,24 +61,36 @@
     return url.toString();
   }
 
-  /** Минуты от полуночи 0…1439 в Europe/Moscow (границы режимов: 9:00 и 17:00). */
-  function getMoscowMinutesSinceMidnight() {
+  /**
+   * Один снимок календаря и времени по Москве (один вызов Intl — без рассинхрона даты и минут у полуночи).
+   * @returns {{ y: number, mo: number, d: number, mins: number }} mo — 0..11, mins — минуты от полуночи 0..1439
+   */
+  function getMoscowWallClock() {
     var parts = new Intl.DateTimeFormat('en-GB', {
       timeZone: 'Europe/Moscow',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
       hour: 'numeric',
       minute: 'numeric',
       hour12: false
     }).formatToParts(new Date());
-    var h = 0;
-    var m = 0;
+    var map = {};
     parts.forEach(function (p) {
-      if (p.type === 'hour') h = parseInt(p.value, 10);
-      if (p.type === 'minute') m = parseInt(p.value, 10);
+      if (p.type !== 'literal') map[p.type] = p.value;
     });
-    return h * 60 + m;
+    var h = parseInt(map.hour, 10) || 0;
+    if (h === 24) h = 0;
+    var m = parseInt(map.minute, 10) || 0;
+    return {
+      y: parseInt(map.year, 10),
+      mo: parseInt(map.month, 10) - 1,
+      d: parseInt(map.day, 10),
+      mins: h * 60 + m
+    };
   }
 
-  /** Пауза до начала следующей минуты по Москве (мс), чтобы обновить даты ровно после смены 8:59→9:00, 16:59→17:00 и т.д. */
+  /** Пауза до начала следующей минуты по Москве (мс), чтобы обновить даты после смены 8:59→9:00, 18:59→19:00 и т.д. */
   function msUntilNextMoscowMinute() {
     var parts = new Intl.DateTimeFormat('en-GB', {
       timeZone: 'Europe/Moscow',
@@ -91,22 +104,6 @@
     return ms < 800 ? 800 : ms;
   }
 
-  /** Календарная дата в Москве: { y, mo, d } (mo — 0..11). Через sv-SE → стабильная строка YYYY-MM-DD. */
-  function getMoscowYmd() {
-    var s = new Intl.DateTimeFormat('sv-SE', {
-      timeZone: 'Europe/Moscow',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    }).format(new Date());
-    var a = s.split('-');
-    return {
-      y: parseInt(a[0], 10),
-      mo: parseInt(a[1], 10) - 1,
-      d: parseInt(a[2], 10)
-    };
-  }
-
   function addCalendarDays(ymd, deltaDays) {
     var t = Date.UTC(ymd.y, ymd.mo, ymd.d + deltaDays);
     var x = new Date(t);
@@ -118,7 +115,8 @@
    * Смещения задаются явно — не через поиск подстроки «завтра» в тексте (надёжнее для разных символов/копипаста).
    */
   function getScheduleCopy() {
-    var mins = getMoscowMinutesSinceMidnight();
+    var mc = getMoscowWallClock();
+    var mins = mc.mins;
     var morning;
     var evening;
     var morningDayOffset = 0;
@@ -128,7 +126,7 @@
       evening = 'сегодня в 19';
       morningDayOffset = 0;
       eveningDayOffset = 0;
-    } else if (mins < 17 * 60) {
+    } else if (mins < 19 * 60) {
       morning = 'завтра в 11';
       evening = 'сегодня в 19';
       morningDayOffset = 1;
@@ -143,12 +141,13 @@
       morning: morning,
       evening: evening,
       morningDayOffset: morningDayOffset,
-      eveningDayOffset: eveningDayOffset
+      eveningDayOffset: eveningDayOffset,
+      mskYmd: { y: mc.y, mo: mc.mo, d: mc.d }
     };
   }
 
-  function moscowYmdWithDayOffset(dayOffset) {
-    var msk = getMoscowYmd();
+  function moscowYmdWithDayOffset(baseYmd, dayOffset) {
+    var msk = { y: baseYmd.y, mo: baseYmd.mo, d: baseYmd.d };
     if (dayOffset) msk = addCalendarDays(msk, dayOffset);
     return msk;
   }
@@ -187,8 +186,9 @@
 
   function refreshScheduleLabels() {
     var copy = getScheduleCopy();
-    var dm = formatRuDate(moscowYmdWithDayOffset(copy.morningDayOffset));
-    var de = formatRuDate(moscowYmdWithDayOffset(copy.eveningDayOffset));
+    var base = copy.mskYmd;
+    var dm = formatRuDate(moscowYmdWithDayOffset(base, copy.morningDayOffset));
+    var de = formatRuDate(moscowYmdWithDayOffset(base, copy.eveningDayOffset));
     document.querySelectorAll('[data-vb-hero-date="morning"]').forEach(function (el) {
       el.textContent = dm;
     });
