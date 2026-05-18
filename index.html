@@ -257,6 +257,13 @@
       font-weight: 700;
       opacity: 0.95;
     }
+    .vb-section-cta {
+      margin-top: 2.5rem;
+      width: 100%;
+      max-width: min(36rem, 100%);
+      margin-left: auto;
+      margin-right: auto;
+    }
     /* Тарифы Free/VIP из React-бандла: не показывать и не анимировать (убирает «вспышки» кнопок VIP) */
     #root section#pricing {
       display: none !important;
@@ -393,6 +400,30 @@
       #vb-gc-overlay.vb-gc-overlay--open {
         align-items: flex-end;
         padding: 0;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .float-reg-stack {
+        align-items: flex-end;
+        max-width: min(540px, calc(100vw - 48px));
+      }
+      .float-reg-stack .float-reg-btn {
+        width: max-content;
+        max-width: 100%;
+        font-size: 0.875rem;
+        padding: 0.55rem 1.6rem;
+      }
+      .float-reg-btn-text {
+        white-space: nowrap;
+      }
+      .vb-time-reg-replace > a.vb-time-cta-link {
+        flex-wrap: nowrap;
+        white-space: nowrap;
+        padding: 0.5rem 2rem !important;
+      }
+      .vb-time-reg-replace.vb-time-reg-replace--narrow {
+        max-width: min(36rem, 100%);
       }
     }
 
@@ -614,20 +645,20 @@
       </a>
     </div>
 
-    <!-- GetCourse: id=1558793 утро, id=1585653 вечер (iframe подставляет скрипт виджета) -->
+    <!-- GetCourse: id=1603538 утро, id=1603540 вечер -->
     <div id="vb-gc-overlay" aria-hidden="true" role="dialog" aria-label="Регистрация на эфир">
       <div id="vb-gc-overlay-inner">
         <button type="button" id="vb-gc-overlay-close" aria-label="Закрыть">&times;</button>
         <div id="vb-gc-slot-morning" class="vb-gc-slot">
           <script
-            id="ca8bf706ed9a7d6587307c621d89305977bcb7d4"
-            src="https://neyroseti.neiroguru.ru/pl/lite/widget/script?id=1558793"
+            id="e04c03445c8ba4aec27ab796b60f0f071be8d545"
+            src="https://neyroseti.neiroguru.ru/pl/lite/widget/script?id=1603538"
           ></script>
         </div>
         <div id="vb-gc-slot-evening" class="vb-gc-slot">
           <script
-            id="417bd3a0b82b9fb6b22d746241f4d3e2fcb0ed52"
-            src="https://neyroseti.neiroguru.ru/pl/lite/widget/script?id=1585653"
+            id="a8f9560ed2afaa8af661741fad2cba9bd600204e"
+            src="https://neyroseti.neiroguru.ru/pl/lite/widget/script?id=1603540"
           ></script>
         </div>
       </div>
@@ -682,8 +713,16 @@
           if (!href) return false;
           var h = String(href).toLowerCase();
           if (h.indexOf("widget") === -1) return false;
-          return h.indexOf("1558793") !== -1 || h.indexOf("1585653") !== -1;
+          return (
+            h.indexOf("1603538") !== -1 ||
+            h.indexOf("1603540") !== -1 ||
+            h.indexOf("1558793") !== -1 ||
+            h.indexOf("1585653") !== -1
+          );
         }
+
+        var VB_REG_BTN_CLASS =
+          "px-8 py-4 rounded-2xl font-bold bg-gradient-main text-white text-center shadow-lg shadow-purple-500/30";
 
         function makeTimeRegAnchor(slot, hhmm, className) {
           var a = document.createElement("a");
@@ -695,6 +734,41 @@
           sp.setAttribute("data-vb-hero-date", slot);
           a.appendChild(sp);
           return a;
+        }
+
+        function makeTimeRegBlock(extraClass) {
+          var wrap = document.createElement("div");
+          wrap.className =
+            "vb-time-reg-replace vb-section-cta " + (extraClass || "").trim();
+          wrap.appendChild(
+            makeTimeRegAnchor("morning", "11:00 по МСК", VB_REG_BTN_CLASS)
+          );
+          wrap.appendChild(
+            makeTimeRegAnchor("evening", "19:00 по МСК", VB_REG_BTN_CLASS)
+          );
+          return wrap;
+        }
+
+        /** Пара CTA в конце секции, где ещё нет кнопок регистрации. */
+        function ensureRegButtonsInSections() {
+          var root = document.getElementById("root");
+          if (!root) return;
+          var sections = root.querySelectorAll("section");
+          for (var i = 0; i < sections.length; i++) {
+            var section = sections[i];
+            if (section.id === "pricing") continue;
+            var cs = window.getComputedStyle(section);
+            if (cs.display === "none" || cs.visibility === "hidden") continue;
+            if (section.querySelector(".vb-time-reg-replace")) continue;
+
+            var container =
+              section.querySelector(".vb-outcomes-inner") ||
+              section.querySelector(".vb-gifts-inner") ||
+              section.querySelector(".container") ||
+              section;
+            if (container.querySelector(".vb-section-cta")) continue;
+            container.appendChild(makeTimeRegBlock(""));
+          }
         }
 
         /** CTA: 11:00 / 19:00 по МСК + дата; смена режимов по МСК в 9:00 и 19:00 — см. VIBE_VB.refreshScheduleLabels. */
@@ -742,6 +816,7 @@
         function runTimeRegUi() {
           replaceFreeWidgetLinksWithTimeButtons();
           replaceMasterclassCtaWithTimeButtons();
+          ensureRegButtonsInSections();
           if (window.VIBE_VB) window.VIBE_VB.refreshScheduleLabels();
         }
 
@@ -785,9 +860,19 @@
 
             if (isHero) {
               bind("morning");
-            } else if (href.indexOf("id=1585653") !== -1 || href.indexOf("id%3d1585653") !== -1) {
+            } else if (
+              href.indexOf("id=1603540") !== -1 ||
+              href.indexOf("id%3d1603540") !== -1 ||
+              href.indexOf("id=1585653") !== -1 ||
+              href.indexOf("id%3d1585653") !== -1
+            ) {
               bind("evening");
-            } else if (href.indexOf("id=1558793") !== -1 || href.indexOf("id%3d1558793") !== -1) {
+            } else if (
+              href.indexOf("id=1603538") !== -1 ||
+              href.indexOf("id%3d1603538") !== -1 ||
+              href.indexOf("id=1558793") !== -1 ||
+              href.indexOf("id%3d1558793") !== -1
+            ) {
               bind("morning");
             } else if (href.indexOf("id=1558799") !== -1 || href.indexOf("id%3d1558799") !== -1) {
               bind("morning");
