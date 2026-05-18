@@ -3,20 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Вайб-кодинг: сайты, боты, приложения — с нейросетями, без кода</title>
-    <meta name="description" content="2-х дневный практический мастер-класс. Простым языком, много практики. Подходит новичкам. Доступ сразу после регистрации.">
+    <title>Как за 3 часа создать сайт, бот и мини-сервис без технических знаний</title>
+    <meta name="description" content="1-дневный практический мастер-класс. За 3 часа соберёте сайт, бота и мини-сервис с нейросетями — без кода. Подходит новичкам. Доступ сразу после регистрации.">
 
     <!-- Open Graph / Telegram / VK -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://neiroguru.ru/">
-    <meta property="og:title" content="Вайб-кодинг: сайты, боты, приложения — с нейросетями, без кода">
-    <meta property="og:description" content="2-х дневный практический мастер-класс. Разберёмся, как создавать ботов и сервисы, не написав ни строчки кода. Доступ сразу после регистрации.">
+    <meta property="og:title" content="Как за 3 часа создать сайт, бот и мини-сервис без технических знаний">
+    <meta property="og:description" content="1-дневный практический мастер-класс. Сайт, бот и мини-сервис с нейросетями — без кода и технических знаний. Доступ сразу после регистрации.">
     <meta property="og:locale" content="ru_RU">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Вайб-кодинг: сайты, боты, приложения — с нейросетями, без кода">
-    <meta name="twitter:description" content="2-х дневный практический мастер-класс. Доступ сразу после регистрации.">
+    <meta name="twitter:title" content="Как за 3 часа создать сайт, бот и мини-сервис без технических знаний">
+    <meta name="twitter:description" content="1-дневный мастер-класс · 3 часа практики. Без кода. Доступ сразу после регистрации.">
 
     <link rel="stylesheet" href="tailwind.min.css">
 
@@ -395,11 +395,207 @@
         padding: 0;
       }
     }
+
+    /* Подарки за эфир (вставляется после «Что получите за 3 часа») */
+    .vb-gifts-section {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(165deg, #0a0614 0%, #12081f 45%, #0a0a0c 100%);
+    }
+    .vb-gifts-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 85% 20%, rgba(139, 92, 246, 0.18), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 10% 80%, rgba(99, 102, 241, 0.12), transparent 50%);
+      pointer-events: none;
+    }
+    .vb-gifts-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    .vb-gifts-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+    @media (min-width: 1024px) {
+      .vb-gifts-grid {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+        gap: 3.5rem;
+      }
+    }
+    .vb-gifts-title {
+      font-family: "Montserrat", sans-serif;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      font-size: clamp(1.75rem, 4.5vw, 3.25rem);
+      margin: 0;
+    }
+    .vb-gifts-title .vb-gifts-title-accent {
+      display: block;
+      background: linear-gradient(135deg, #c4b5fd 0%, #a855f7 45%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .vb-gifts-title .vb-gifts-title-white {
+      display: block;
+      color: #fff;
+      margin-top: 0.15em;
+    }
+    .vb-gifts-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+    }
+    .vb-gifts-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      font-size: clamp(0.95rem, 2.2vw, 1.125rem);
+      line-height: 1.45;
+      color: #f3f4f6;
+    }
+    .vb-gifts-check {
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      margin-top: 0.1rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45);
+    }
+    .vb-gifts-check svg {
+      width: 1rem;
+      height: 1rem;
+      stroke: #fff;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    /* «Что получите за 3 часа» — нумерованный список (как на макете) */
+    .vb-outcomes-section {
+      position: relative;
+      overflow: hidden;
+    }
+    .vb-outcomes-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 70% 50% at 20% 30%, rgba(139, 92, 246, 0.12), transparent 60%),
+        radial-gradient(ellipse 60% 40% at 90% 70%, rgba(99, 102, 241, 0.1), transparent 55%);
+      pointer-events: none;
+    }
+    .vb-outcomes-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 56rem;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    .vb-outcomes-head {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .vb-outcomes-head h2 {
+      font-family: "Montserrat", sans-serif;
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: clamp(1.5rem, 4vw, 2.75rem);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin: 0 0 0.75rem;
+      color: #fff;
+    }
+    .vb-outcomes-head .vb-outcomes-tagline {
+      font-family: "Montserrat", sans-serif;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: clamp(1.1rem, 2.8vw, 1.65rem);
+      line-height: 1.15;
+      margin: 0;
+      background: linear-gradient(135deg, #e9d5ff 0%, #a855f7 50%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .vb-outcomes-list {
+      list-style: none;
+      margin: 0 auto;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      max-width: 48rem;
+      width: 100%;
+      text-align: left;
+    }
+    .vb-outcomes-list li {
+      display: grid;
+      grid-template-columns: 2.75rem minmax(0, 1fr);
+      column-gap: 1rem;
+      row-gap: 0.35rem;
+      align-items: start;
+      text-align: left;
+    }
+    .vb-outcomes-num {
+      grid-row: 1 / span 2;
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+      color: #fff;
+      font-family: "Montserrat", sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.45);
+    }
+    .vb-outcomes-body {
+      min-width: 0;
+      text-align: left !important;
+    }
+    .vb-outcomes-line {
+      display: block;
+      font-size: clamp(0.95rem, 2.2vw, 1.125rem);
+      line-height: 1.45;
+      margin: 0;
+      text-align: left !important;
+    }
+    .vb-outcomes-line strong {
+      color: #fff;
+      font-weight: 700;
+    }
+    .vb-outcomes-line.vb-outcomes-desc {
+      color: #d1d5db;
+      font-weight: 400;
+    }
+    .vb-outcomes-list li.vb-outcomes-item--single .vb-outcomes-num {
+      grid-row: auto;
+    }
     </style>
 
-    <script src="js/neiro-vb-landing.js?v=20260211-2"></script>
+    <script src="js/neiro-vb-landing.js?v=20260511-1d"></script>
     <!-- Без crossorigin: иначе при открытии index.html через file:// браузер блокирует ES-модуль (нет CORS у локального файла). -->
-    <script type="module" src="./assets/index-CrqkIGJg.js"></script>
+    <script type="module" src="./assets/index-CrqkIGJg.js?v=20260511-10k"></script>
   </head>
 
   <body class="bg-[#0a0a0c] text-white">
@@ -554,6 +750,9 @@
           clearTimeout(_vbRegUiDebounce);
           _vbRegUiDebounce = setTimeout(function () {
             runHide();
+            hideDay2Program();
+            replaceResultsSection();
+            insertGiftsSection();
             addStartIn3Min();
             runTimeRegUi();
             modifyLinks();
@@ -656,7 +855,197 @@
           hideCaptionTexts();
         }
 
-        // Заменяем дату эфира на актуальный текст везде на странице
+        var _vbOutcomesReplaced = false;
+        var _vbGiftsInserted = false;
+
+        /** «Что получите за 3 часа» — нумерованный список заголовок → описание (как на макете). */
+        function replaceResultsSection() {
+          if (_vbOutcomesReplaced) return;
+          var root = document.getElementById("root");
+          if (!root) return;
+          var headings = root.querySelectorAll("h2");
+          var section = null;
+          for (var i = 0; i < headings.length; i++) {
+            if ((headings[i].textContent || "").indexOf("Что получите за 3 часа") !== -1) {
+              section = headings[i].closest("section");
+              break;
+            }
+          }
+          if (!section || section.getAttribute("data-vb-outcomes-done") === "1") return;
+
+          var items = [
+            {
+              title: "Соберёте первого бота в ВК на практике",
+              desc: "получите готовый ВК-бот, который можно сразу использовать или доработать под свой проект",
+            },
+            {
+              title: "Создадите бота в MAX",
+              desc: "научитесь создавать бота в MAX, который выполняет заданные сценарии",
+            },
+            {
+              title: "Подключите GigaChat к сайту",
+              desc: "научитесь делать сайт с встроенным ИИ, который отвечает пользователям",
+            },
+            {
+              title: "Соберёте свой первый веб-сервис",
+              desc: "поймёте, как из простой идеи собрать полноценный цифровой продукт",
+            },
+            {
+              title: "Научитесь собирать сайты за 3 секунды",
+              desc: "без сложной вёрстки и разработчиков",
+            },
+            {
+              title:
+                "Получите «Набор выживания: как запускать сайты, боты и мини-продукты из России в 2026»",
+              desc: "система и 7 бонусных материалов для запуска сайтов, ботов и мини-продуктов из России в новых реалиях",
+            },
+            {
+              title: "Поймёте, как применять это в жизни, работе и для заработка",
+              desc: "",
+            },
+          ];
+
+          var listHtml = items
+            .map(function (item, idx) {
+              var single = !item.desc;
+              var liClass = single ? ' class="vb-outcomes-item--single"' : "";
+              var descLine = item.desc
+                ? '<span class="vb-outcomes-line vb-outcomes-desc">→ ' + item.desc + "</span>"
+                : "";
+              return (
+                "<li" +
+                liClass +
+                '><span class="vb-outcomes-num" aria-hidden="true">' +
+                (idx + 1) +
+                '</span><div class="vb-outcomes-body"><span class="vb-outcomes-line"><strong>' +
+                item.title +
+                "</strong></span>" +
+                descLine +
+                "</div></li>"
+              );
+            })
+            .join("");
+
+          var hadAnim = section.classList.contains("anim-hidden");
+          section.className =
+            "vb-outcomes-section py-24 bg-gradient-to-b from-[#0a0a0c] to-purple-950/20" +
+            (hadAnim ? " anim-hidden" : "");
+          section.setAttribute("data-vb-outcomes-done", "1");
+          section.setAttribute("aria-label", "Что получите за 3 часа");
+                    section.innerHTML =
+            '<div class="vb-outcomes-inner"><div class="vb-outcomes-head"><h2>Что получите за 3 часа</h2><p class="vb-outcomes-tagline">И больше не будете работать по-старому</p></div><ol class="vb-outcomes-list">' +
+            listHtml +
+            "</ol></div>";
+
+          _vbOutcomesReplaced = true;
+
+          if ("IntersectionObserver" in window && section.classList.contains("anim-hidden")) {
+            var obs = new IntersectionObserver(
+              function (entries) {
+                entries.forEach(function (entry) {
+                  if (entry.isIntersecting) {
+                    entry.target.classList.add("anim-visible");
+                    entry.target.classList.remove("anim-hidden");
+                    obs.unobserve(entry.target);
+                  }
+                });
+              },
+              { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+            );
+            obs.observe(section);
+          }
+        }
+
+        /** Блок подарков за эфир (после секции результатов). */
+        function insertGiftsSection() {
+          if (_vbGiftsInserted || document.getElementById("vb-gifts")) return;
+          var root = document.getElementById("root");
+          if (!root) return;
+          var headings = root.querySelectorAll("h2");
+          var anchorSection = null;
+          for (var i = 0; i < headings.length; i++) {
+            if ((headings[i].textContent || "").indexOf("Что получите за 3 часа") !== -1) {
+              anchorSection = headings[i].closest("section");
+              break;
+            }
+          }
+          if (!anchorSection || !anchorSection.parentNode) return;
+
+          var gifts = [
+            "Гайд: «Как заменить зарубежные сервисы и не зависеть от блокировок»",
+            "Список 20 услуг, которые можно продавать через вайбкодинг",
+            "10 идей автоматизации для малого бизнеса в России",
+            "Чек-лист: «Как проверить сайт перед запуском (чтобы не попасть под блокировку)»",
+            "Как запустить продукт без сайта, только через бот в ВК",
+            "Гайд: «Ошибки при создании ИИ-продуктов без кода»",
+          ];
+
+          var checkSvg =
+            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>';
+          var listHtml = gifts
+            .map(function (text) {
+              return (
+                '<li><span class="vb-gifts-check" aria-hidden="true">' +
+                checkSvg +
+                "</span><span>" +
+                text +
+                "</span></li>"
+              );
+            })
+            .join("");
+
+          var section = document.createElement("section");
+          section.id = "vb-gifts";
+          section.className = "vb-gifts-section py-24 anim-hidden";
+          section.setAttribute("aria-label", "Подарки за эфир");
+          section.innerHTML =
+            '<motionless class="vb-gifts-inner"><motionless class="vb-gifts-grid"><motionless><h2 class="vb-gifts-title"><span class="vb-gifts-title-accent">Оставайтесь со мной<br>до конца эфира</span><span class="vb-gifts-title-white">и получите все подарки</span></h2></motionless><ul class="vb-gifts-list">' +
+            listHtml +
+            "</ul></motionless></motionless>";
+          section.innerHTML = section.innerHTML.replace(/motionless/g, "div");
+
+          anchorSection.parentNode.insertBefore(section, anchorSection.nextSibling);
+          _vbGiftsInserted = true;
+
+          if ("IntersectionObserver" in window) {
+            var obs = new IntersectionObserver(
+              function (entries) {
+                entries.forEach(function (entry) {
+                  if (entry.isIntersecting) {
+                    entry.target.classList.add("anim-visible");
+                    entry.target.classList.remove("anim-hidden");
+                    obs.unobserve(entry.target);
+                  }
+                });
+              },
+              { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+            );
+            obs.observe(section);
+          } else {
+            section.classList.add("anim-visible");
+            section.classList.remove("anim-hidden");
+          }
+        }
+
+        /** Скрыть блок программы «ДЕНЬ 2» — мастер-класс однодневный (3 часа). */
+        function hideDay2Program() {
+          var root = document.getElementById("root");
+          if (!root) return;
+          var labels = root.querySelectorAll("div, span");
+          for (var i = 0; i < labels.length; i++) {
+            var el = labels[i];
+            if ((el.textContent || "").trim() !== "ДЕНЬ 2") continue;
+            var grid = el.closest(".grid");
+            if (!grid) continue;
+            var sep = grid.previousElementSibling;
+            if (sep && sep.classList && sep.classList.contains("h-px")) {
+              sep.style.setProperty("display", "none", "important");
+            }
+            grid.style.setProperty("display", "none", "important");
+          }
+        }
+
+        // Устаревшие даты в бандле → однодневный формат
         function addStartIn3Min() {
           var root = document.getElementById("root");
           if (!root) return;
@@ -665,8 +1054,14 @@
             var el = all[i];
             if (el.children.length > 0) continue;
             var t = (el.textContent || "").trim();
-            if (t.indexOf("22-23 февраля") !== -1 || t.indexOf("22 февраля") !== -1 || t.indexOf("23 февраля") !== -1) {
-              el.textContent = "2-х дневный практический мастер-класс";
+            if (
+              t.indexOf("22-23 февраля") !== -1 ||
+              t.indexOf("22 февраля") !== -1 ||
+              t.indexOf("23 февраля") !== -1 ||
+              t.indexOf("2-х дневный") !== -1 ||
+              t.indexOf("2-дневный") !== -1
+            ) {
+              el.textContent = "1-дневный мастер-класс · 3 часа · 11:00 и 19:00 по МСК";
             }
           }
         }
@@ -713,10 +1108,10 @@
           vbMo.disconnect();
           vbMoDisconnected = true;
         }, 14000);
-        setTimeout(function () { runHide(); addStartIn3Min(); runTimeRegUi(); modifyLinks(); addScrollAnimations(); }, 300);
-        setTimeout(function () { runHide(); addStartIn3Min(); runTimeRegUi(); modifyLinks(); addScrollAnimations(); }, 800);
-        setTimeout(function () { runHide(); addStartIn3Min(); runTimeRegUi(); modifyLinks(); }, 1500);
-        setTimeout(function () { addStartIn3Min(); hideCaptionTexts(); runTimeRegUi(); modifyLinks(); }, 2500);
+        setTimeout(function () { runHide(); hideDay2Program(); replaceResultsSection(); insertGiftsSection(); addStartIn3Min(); runTimeRegUi(); modifyLinks(); addScrollAnimations(); }, 300);
+        setTimeout(function () { runHide(); hideDay2Program(); replaceResultsSection(); insertGiftsSection(); addStartIn3Min(); runTimeRegUi(); modifyLinks(); addScrollAnimations(); }, 800);
+        setTimeout(function () { runHide(); hideDay2Program(); replaceResultsSection(); insertGiftsSection(); addStartIn3Min(); runTimeRegUi(); modifyLinks(); }, 1500);
+        setTimeout(function () { hideDay2Program(); replaceResultsSection(); insertGiftsSection(); addStartIn3Min(); hideCaptionTexts(); runTimeRegUi(); modifyLinks(); }, 2500);
 
         function showFileOpenHint() {
           var el = document.getElementById("file-open-hint");
