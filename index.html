@@ -4,19 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Как за 3 часа создать сайт, бот и мини-сервис без технических знаний</title>
-    <meta name="description" content="1-дневный практический мастер-класс. За 3 часа соберёте сайт, бота и мини-сервис с нейросетями — без кода. Подходит новичкам. Доступ сразу после регистрации.">
+    <meta name="description" content="Практический мастер-класс · 3 часа · 11:00 и 19:00 по МСК. За 3 часа соберёте сайт, бота и мини-сервис с нейросетями — без кода. Подходит новичкам. Доступ сразу после регистрации.">
 
     <!-- Open Graph / Telegram / VK -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://neiroguru.ru/">
     <meta property="og:title" content="Как за 3 часа создать сайт, бот и мини-сервис без технических знаний">
-    <meta property="og:description" content="1-дневный практический мастер-класс. Сайт, бот и мини-сервис с нейросетями — без кода и технических знаний. Доступ сразу после регистрации.">
+    <meta property="og:description" content="Практический мастер-класс · 3 часа · 11:00 и 19:00 по МСК. Сайт, бот и мини-сервис с нейросетями — без кода и технических знаний. Доступ сразу после регистрации.">
     <meta property="og:locale" content="ru_RU">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Как за 3 часа создать сайт, бот и мини-сервис без технических знаний">
-    <meta name="twitter:description" content="1-дневный мастер-класс · 3 часа практики. Без кода. Доступ сразу после регистрации.">
+    <meta name="twitter:description" content="Практический мастер-класс · 3 часа · 11:00 и 19:00 по МСК. Без кода. Доступ сразу после регистрации.">
 
     <link rel="stylesheet" href="tailwind.min.css">
 
@@ -595,7 +595,7 @@
 
     <script src="js/neiro-vb-landing.js?v=20260511-1d"></script>
     <!-- Без crossorigin: иначе при открытии index.html через file:// браузер блокирует ES-модуль (нет CORS у локального файла). -->
-    <script type="module" src="./assets/index-CrqkIGJg.js?v=20260511-10k"></script>
+    <script type="module" src="./assets/index-CrqkIGJg.js?v=20260511-mk"></script>
   </head>
 
   <body class="bg-[#0a0a0c] text-white">
@@ -1059,9 +1059,13 @@
               t.indexOf("22 февраля") !== -1 ||
               t.indexOf("23 февраля") !== -1 ||
               t.indexOf("2-х дневный") !== -1 ||
-              t.indexOf("2-дневный") !== -1
+              t.indexOf("2-дневный") !== -1 ||
+              t.indexOf("1-дневный") !== -1
             ) {
-              el.textContent = "1-дневный мастер-класс · 3 часа · 11:00 и 19:00 по МСК";
+              var nextMk =
+                "практический мастер-класс · 3 часа · 11:00 и 19:00 по МСК";
+              el.textContent =
+                t.indexOf("⚡") !== -1 ? "⚡ " + nextMk : nextMk;
             }
           }
         }
