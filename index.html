@@ -4,644 +4,817 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Как за 3 часа создать сайт, бот и мини-сервис без технических знаний</title>
-    <meta name="description" content="Практический мастер-класс · 3 часа · 11:00 и 19:00 по МСК. За 3 часа соберёте сайт, бота и мини-сервис с нейросетями — без кода. Подходит новичкам. Доступ сразу после регистрации.">
+    <meta name="description" content="Практический мастер-класс · 3 часа · 11:00 и 19:00 по МСК. За 3 часа соберёте сайт, бота и мини-сервис с нейросетями — без кода. Подходит новичкам. Участие бесплатное.">
 
     <!-- Open Graph / Telegram / VK -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://neiroguru.ru/">
     <meta property="og:title" content="Как за 3 часа создать сайт, бот и мини-сервис без технических знаний">
-    <meta property="og:description" content="Практический мастер-класс · 3 часа · 11:00 и 19:00 по МСК. Сайт, бот и мини-сервис с нейросетями — без кода и технических знаний. Доступ сразу после регистрации.">
+    <meta property="og:description" content="Практический мастер-класс · 3 часа · 11:00 и 19:00 по МСК. Сайт, бот и мини-сервис с нейросетями — без кода и технических знаний. Участие бесплатное.">
     <meta property="og:locale" content="ru_RU">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Как за 3 часа создать сайт, бот и мини-сервис без технических знаний">
-    <meta name="twitter:description" content="Практический мастер-класс · 3 часа · 11:00 и 19:00 по МСК. Без кода. Доступ сразу после регистрации.">
-
-    <link rel="stylesheet" href="tailwind.min.css">
+    <meta name="twitter:description" content="Практический мастер-класс · 3 часа · 11:00 и 19:00 по МСК. Без кода. Участие бесплатное.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
       rel="stylesheet"
     />
-        
-    <style>
-      html, body {        
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        height: auto !important;
-      }
 
-       body {
-        font-family: "Inter", sans-serif;
+    <style>
+      :root {
+        --bg: #fff5fa;
+        --surface: #fffbfe;
+        --card: #fff0f7;
+        --ink: #2a1f35;
+        --ink2: #5c4a6b;
+        --ink3: #9a7fa8;
+        --accent: #14b8a6;
+        --accent-h: #0f766e;
+        --pink: #fbcfe8;
+        --pink-d: #f9a8d4;
+        --line: rgba(20, 184, 166, 0.22);
+        --line-d: rgba(20, 184, 166, 0.32);
+
+        /* радиусы — единая шкала */
+        --r-sm: 14px;
+        --r-md: 18px;
+        --r-lg: 24px;
+        --r-xl: 32px;
+        --r-pill: 100px;
+
+        /* тени — единая шкала */
+        --shadow-sm: 0 4px 14px rgba(42, 31, 53, 0.06);
+        --shadow-md: 0 10px 30px rgba(42, 31, 53, 0.08);
+        --shadow-lg: 0 16px 44px rgba(42, 31, 53, 0.12);
+        --shadow-teal: 0 8px 28px rgba(20, 184, 166, 0.4);
+        --shadow: var(--shadow-md);
+      }
+      * { box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
         scroll-behavior: smooth;
       }
-      .font-header {
-        font-family: "Montserrat", sans-serif;
+      body {
+        font-family: "Raleway", system-ui, -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        -webkit-font-smoothing: antialiased;
       }
-      .text-gradient {
-        background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-      .bg-gradient-main {
-        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-      }
-      .glass-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-      }
-      .perspective-1000 {
-        perspective: 1000px;
-      }
-      @keyframes float {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-20px);
-        }
-      }
-      @keyframes float-delayed {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-15px);
-        }
-      }
-      .animate-float {
-        animation: float 6s ease-in-out infinite;
-      }
-      .animate-float-delayed {
-        animation: float-delayed 7s ease-in-out infinite;
-        animation-delay: 1s;
-      }
-      .hero-reg-btn {
-        display: inline-block;
-        padding: 1rem 2rem;
-        border-radius: 9999px;
-        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-        color: #fff !important;
-        font-weight: 700;
-        font-size: 1.125rem;
-        text-align: center;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
-        transition: transform 0.15s, box-shadow 0.2s;
-        margin-top: 1rem;
-        margin-bottom: 1.5rem;
-      }
-      .hero-reg-btn:hover {
-        transform: scale(1.02);
-        box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
-      }
-      .hero-reg-wrap {
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-      }
-      .float-reg-btn {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        z-index: 9998;
-        display: inline-block;
-        padding: 0.875rem 1.5rem;
-        border-radius: 9999px;
-        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-        color: #fff !important;
-        font-weight: 700;
-        font-size: 0.95rem;
-        text-align: center;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.5);
-        transition: transform 0.15s, box-shadow 0.2s;
-      }
-      .float-reg-btn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 6px 24px rgba(168, 85, 247, 0.6);
-      }
-      .float-reg-stack {
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        z-index: 9998;
-        display: none;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-        max-width: min(360px, calc(100vw - 24px));
-      }
-      .float-reg-stack .float-reg-btn {
-        position: static;
-        display: block;
-        text-align: center;
-        font-size: 0.72rem;
-        padding: 0.4rem 1rem;
-        line-height: 1.2;
-        margin: 0;
-        border-radius: 9999px;
-        cursor: pointer;
-        -webkit-tap-highlight-color: rgba(168, 85, 247, 0.3);
-      }
-      .float-reg-btn-text {
-        display: inline;
-        font-weight: 700;
-        line-height: 1.2;
-      }
-      .float-reg-btn-text [data-vb-hero-date] {
-        white-space: nowrap;
-      }
-      .hero-reg-row {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-        width: 100%;
-      }
-      .hero-reg-btn--vb {
-        margin: 0 !important;
-        font-size: 1rem;
-        padding: 0.85rem 1.35rem;
-      }
-      .hero-vb-sub {
-        display: block;
-        font-size: 0.72rem;
-        font-weight: 500;
-        opacity: 0.88;
-        margin-top: 4px;
-      }
-    /* ── Scroll-in анимации ────────────────────────────── */
-    .anim-hidden {
-      opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .anim-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .anim-hidden:nth-child(2) { transition-delay: 0.1s; }
-    .anim-hidden:nth-child(3) { transition-delay: 0.18s; }
-    .anim-hidden:nth-child(4) { transition-delay: 0.26s; }
+      .u { font-family: "Unbounded", sans-serif; }
+      a { -webkit-tap-highlight-color: rgba(20, 184, 166, 0.2); }
 
-    /* ── Кнопка: пульсация ─────────────────────────────── */
-    @keyframes btn-pulse {
-      0%, 100% { box-shadow: 0 4px 14px rgba(99,102,241,0.4); }
-      50%       { box-shadow: 0 4px 28px rgba(168,85,247,0.7), 0 0 0 6px rgba(99,102,241,0.12); }
-    }
-    .hero-reg-btn {
-      animation: btn-pulse 2.4s ease-in-out infinite;
-    }
-    .hero-reg-btn:hover {
-      animation: none;
-      transform: scale(1.04) !important;
-      box-shadow: 0 6px 32px rgba(168,85,247,0.65) !important;
-    }
-
-    /* ── Плавающая кнопка: пульсация ───────────────────── */
-    @keyframes float-pulse {
-      0%, 100% { box-shadow: 0 4px 20px rgba(99,102,241,0.5); }
-      50%       { box-shadow: 0 4px 32px rgba(168,85,247,0.75), 0 0 0 5px rgba(99,102,241,0.1); }
-    }
-    .float-reg-stack .float-reg-btn {
-      animation: float-pulse 2.4s ease-in-out infinite;
-    }
-    .float-reg-stack .float-reg-btn:hover {
-      animation: none;
-    }
-
-    /* CTA по времени: низкая «капсула», текст в одну–две строки */
-    .vb-time-reg-replace {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      width: 100%;
-      align-items: stretch;
-    }
-    .vb-time-reg-replace.vb-time-reg-replace--narrow {
-      max-width: min(28rem, 100%);
-    }
-    .vb-time-reg-replace > a.vb-time-cta-link {
-      width: 100% !important;
-      max-width: 100%;
-      box-sizing: border-box;
-      min-height: 0;
-      display: inline-flex !important;
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      align-content: center;
-      text-align: center;
-      gap: 0.15em 0.35em;
-      padding: 0.42rem 1.6rem !important;
-      line-height: 1.2 !important;
-      font-size: clamp(0.78rem, 1.9vw, 0.92rem);
-      font-weight: 700;
-      border-radius: 9999px !important;
-      cursor: pointer;
-      -webkit-tap-highlight-color: rgba(168, 85, 247, 0.3);
-    }
-    .vb-time-reg-replace > a.vb-time-cta-link [data-vb-hero-date] {
-      white-space: nowrap;
-      font-weight: 700;
-      opacity: 0.95;
-    }
-    .vb-section-cta {
-      margin-top: 2.5rem;
-      width: 100%;
-      max-width: min(36rem, 100%);
-      margin-left: auto;
-      margin-right: auto;
-    }
-    /* Тарифы Free/VIP из React-бандла: не показывать и не анимировать (убирает «вспышки» кнопок VIP) */
-    #root section#pricing {
-      display: none !important;
-      visibility: hidden !important;
-      height: 0 !important;
-      min-height: 0 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      overflow: hidden !important;
-      pointer-events: none !important;
-    }
-    #root section#pricing,
-    #root section#pricing * {
-      animation: none !important;
-      transition: none !important;
-    }
-    /* Все ссылки на платный виджет VIP (id=1558799) — в хиро, в карточках и внизу страницы */
-    #root a[href*="1558799"],
-    #root a[href*="1558799"] * {
-      animation: none !important;
-    }
-    #root a[href*="1558799"] {
-      display: none !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
-    }
-    /*
-      Подписи под тарифами и дисклеймер VIP из бандла (className фиксированы в React).
-      Только CSS: React при ре-рендере снимает display:none из inline-стилей JS — из‑за этого «мелькали» строки.
-    */
-    #root span.text-sm.text-gray-500.mt-3,
-    #root p.text-center.text-xs.text-gray-500.mt-4 {
-      display: none !important;
-      visibility: hidden !important;
-      height: 0 !important;
-      min-height: 0 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      overflow: hidden !important;
-      pointer-events: none !important;
-    }
-
-    /* GetCourse: виджеты регистрации (утро / вечер) во всплывающей панели */
-    #vb-gc-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 10050;
-      align-items: center;
-      justify-content: center;
-      padding: 12px;
-      box-sizing: border-box;
-      background: rgba(0, 0, 0, 0.72);
-      backdrop-filter: blur(5px);
-    }
-    #vb-gc-overlay.vb-gc-overlay--open {
-      display: flex;
-    }
-    #vb-gc-overlay-inner {
-      position: relative;
-      width: 100%;
-      max-width: 580px;
-      max-height: min(96vh, 980px);
-      overflow: auto;
-      border-radius: 14px;
-      background: #fff;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
-      -webkit-overflow-scrolling: touch;
-    }
-    #vb-gc-overlay-close {
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      float: right;
-      margin: 8px 8px 0 0;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid rgba(0, 0, 0, 0.12);
-      background: rgba(255, 255, 255, 0.95);
-      color: #1a1a2e;
-      font-size: 22px;
-      line-height: 1;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    }
-    .vb-gc-slot {
-      width: 100%;
-      overflow: hidden;
-      clear: both;
-    }
-    #vb-gc-slot-evening {
-      display: none;
-    }
-    @media (max-width: 1023px) {
-      .float-reg-stack {
-        bottom: max(12px, env(safe-area-inset-bottom, 0px));
-        right: max(10px, env(safe-area-inset-right, 0px));
-        max-width: calc(100vw - 20px);
-        gap: 10px;
+      @keyframes nrpulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.28); opacity: 0.6; } }
+      @keyframes nrfloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+      @keyframes float-pulse {
+        0%, 100% { box-shadow: 0 8px 24px rgba(20,184,166,0.45); }
+        50% { box-shadow: 0 8px 36px rgba(20,184,166,0.7), 0 0 0 5px rgba(20,184,166,0.12); }
       }
-      .float-reg-stack .float-reg-btn {
-        min-height: 48px;
-        padding: 0.65rem 1.2rem;
-        font-size: 0.84rem;
-        line-height: 1.25;
-        display: flex;
+
+      /* ── Layout ─────────────────────────────── */
+      .nr-container {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding-left: clamp(20px, 5vw, 56px);
+        padding-right: clamp(20px, 5vw, 56px);
+      }
+      .nr-section { padding-top: clamp(44px, 6vw, 72px); padding-bottom: clamp(44px, 6vw, 72px); }
+      .nr-divider { max-width: 1120px; margin: 0 auto; border-top: 2px dashed var(--line-d); }
+
+      /* ── Buttons ────────────────────────────── */
+      .btn {
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        touch-action: manipulation;
+        gap: 6px;
+        text-decoration: none;
+        font-family: "Unbounded", sans-serif;
+        font-weight: 700;
+        border-radius: var(--r-pill);
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.2s ease;
+        text-align: center;
+        white-space: nowrap;
+        border: none;
       }
-      .vb-time-reg-replace {
-        gap: 0.55rem;
-      }
-      .vb-time-reg-replace > a.vb-time-cta-link {
-        min-height: 48px;
-        padding: 0.7rem 1.35rem !important;
-        font-size: max(0.88rem, 3.2vw);
-        line-height: 1.25 !important;
-        touch-action: manipulation;
-      }
-      body.has-float-vb-cta #root {
-        padding-bottom: 11.5rem;
-      }
-      #vb-gc-overlay-inner {
-        max-height: min(96dvh, 1000px);
-        border-radius: 16px 16px 0 0;
-        align-self: flex-end;
-        margin-bottom: 0;
-      }
-      #vb-gc-overlay.vb-gc-overlay--open {
-        align-items: flex-end;
-        padding: 0;
-      }
-    }
+      .btn--teal { background: var(--accent); color: #fff; box-shadow: var(--shadow-teal); }
+      .btn--teal:hover { transform: scale(1.03); box-shadow: 0 12px 34px rgba(20,184,166,0.5); }
+      .btn--outline { background: #fff; color: var(--ink); border: 2px solid var(--ink); }
+      .btn--outline:hover { transform: scale(1.02); }
+      .btn--ghost { background: rgba(255,255,255,0.07); color: #fff; border: 2px solid rgba(255,255,255,0.25); }
+      .btn--lg { padding: 17px 30px; font-size: 15px; }
+      .btn--md { padding: 14px 26px; font-size: 14px; }
+      .btn--sm { padding: 10px 18px; font-size: 12px; }
+      .btn [data-vb-hero-date] { font-weight: 400; opacity: 0.85; }
 
-    @media (min-width: 1024px) {
+      /* ── Nav ────────────────────────────────── */
+      .nr-nav {
+        position: relative;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px clamp(20px, 5vw, 56px);
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .nr-logo { font-family: "Unbounded"; font-weight: 700; font-size: 19px; letter-spacing: -0.03em; }
+      .nr-nav-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+
+      /* ── Top navigation (sticky + burger) ───── */
+      .nr-topnav {
+        position: sticky; top: 0; z-index: 60;
+        background: rgba(255, 245, 250, 0.82);
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(20, 184, 166, 0.12);
+      }
+      .nr-topnav-inner {
+        display: flex; align-items: center; justify-content: space-between; gap: 18px;
+        padding-top: 12px; padding-bottom: 12px;
+      }
+      .nr-brand {
+        font-family: "Unbounded"; font-weight: 700; font-size: 16px; letter-spacing: -0.02em;
+        color: var(--ink); text-decoration: none; white-space: nowrap; flex-shrink: 0;
+      }
+      .nr-menu { display: flex; align-items: center; gap: 26px; }
+      .nr-menu-link {
+        font-family: "Raleway"; font-weight: 600; font-size: 14px; color: var(--ink2);
+        text-decoration: none; white-space: nowrap; transition: color 0.15s ease;
+      }
+      .nr-menu-link:hover { color: var(--accent-h); }
+      .nr-menu-cta { display: flex; gap: 10px; }
+      .nr-burger {
+        display: none; width: 44px; height: 44px; border: none; background: transparent;
+        cursor: pointer; flex-direction: column; justify-content: center; gap: 5px; padding: 0; flex-shrink: 0;
+      }
+      .nr-burger span { display: block; height: 2.5px; width: 24px; margin: 0 auto; background: var(--ink); border-radius: 2px; transition: transform 0.25s ease, opacity 0.2s ease; }
+      .nr-burger.is-open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+      .nr-burger.is-open span:nth-child(2) { opacity: 0; }
+      .nr-burger.is-open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+      section[id], div[id="top"] { scroll-margin-top: 84px; }
+
+      /* ── Награда / плашка ───────────────────── */
+      .nr-award {
+        display: flex; align-items: center; gap: 14px; margin: 0 0 20px;
+        padding: 14px 18px; border-radius: var(--r-md);
+        background: linear-gradient(135deg, #fff7e6 0%, #fffdf7 55%, rgba(20,184,166,0.06) 100%);
+        border: 1.5px solid #f3d488;
+        box-shadow: 0 10px 30px rgba(180, 140, 40, 0.14);
+      }
+      .nr-award-ico {
+        flex-shrink: 0; width: 46px; height: 46px; border-radius: var(--r-sm);
+        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
+      }
+      .nr-award-ico svg { width: 24px; height: 24px; stroke: #fff; stroke-width: 2; fill: none; }
+      .nr-award-text strong { display: block; font-family: "Unbounded"; font-weight: 700; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #b45309; margin-bottom: 3px; }
+      .nr-award-text span { font-family: "Raleway"; font-weight: 600; font-size: 14px; line-height: 1.4; color: var(--ink); }
+
+      /* ── Hero ───────────────────────────────── */
+      .nr-hero { position: relative; overflow: hidden; }
+      .nr-hero-bg, .nr-hero-blob { position: absolute; pointer-events: none; }
+      .nr-hero-bg {
+        inset: 0;
+        background: radial-gradient(ellipse 95% 58% at 50% -8%, rgba(251,207,232,0.62) 0%, rgba(251,207,232,0.12) 42%, transparent 72%),
+                    radial-gradient(ellipse 48% 42% at 88% 12%, rgba(20,184,166,0.14) 0%, transparent 58%),
+                    radial-gradient(ellipse 55% 50% at 6% 42%, rgba(251,207,232,0.2) 0%, transparent 55%);
+      }
+      .nr-blob-1 { top:-60px; right:-40px; width:280px; height:280px; border-radius:50%; background:rgba(251,207,232,0.35); filter:blur(52px); }
+      .nr-blob-2 { bottom:-80px; left:-40px; width:260px; height:260px; border-radius:50%; background:rgba(20,184,166,0.22); filter:blur(52px); }
+      .nr-hero-grid {
+        position: relative;
+        z-index: 2;
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: clamp(24px,4vw,48px) clamp(20px,5vw,56px) clamp(40px,6vw,72px);
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: clamp(28px,4vw,48px);
+        align-items: center;
+      }
+      .nr-badge {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-family: "Unbounded"; font-weight: 700; font-size: 11px;
+        letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent);
+        margin-bottom: 18px;
+      }
+      .nr-dot { width: 9px; height: 9px; border-radius: 50%; background: #4ade80; animation: nrpulse 2s infinite; }
+      .nr-h1 {
+        font-family: "Unbounded"; font-weight: 900;
+        font-size: clamp(28px, 4.4vw, 46px); line-height: 1.12;
+        letter-spacing: -0.03em; margin: 0; color: var(--ink);
+      }
+      .nr-h1 .mark { position: relative; white-space: nowrap; }
+      .nr-h1 .mark::after { content:""; position:absolute; left:0; right:0; bottom:-4px; height:6px; border-radius:3px; background:var(--pink); }
+      .nr-lead {
+        font-family: "Raleway"; font-weight: 600;
+        font-size: clamp(16px, 2.2vw, 19px); line-height: 1.55;
+        color: var(--ink2); margin: 20px 0 0; max-width: 520px;
+      }
+      .nr-cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+      .nr-note {
+        display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
+        padding: 9px 16px; border-radius: var(--r-pill); background: var(--card);
+        border: 1.5px solid var(--line);
+        font-family: "Raleway"; font-weight: 600; font-size: 13px; color: var(--ink2);
+      }
+      .nr-gift-badge {
+        display: inline-flex; align-items: center; gap: 12px; margin-top: 18px;
+        padding: 12px 18px; border-radius: var(--r-md);
+        background: linear-gradient(135deg, var(--pink) 0%, #fff0f7 58%, rgba(20,184,166,0.12) 100%);
+        border: 1.5px solid var(--line);
+      }
+      .nr-gift-ico { flex-shrink: 0; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
+      .nr-gift-ico svg { width: 26px; height: 26px; stroke: var(--accent-h); stroke-width: 2; fill: none; }
+      .nr-gift-text { display: flex; flex-direction: column; }
+      .nr-gift-text strong { font-family: "Unbounded"; font-weight: 700; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-h); margin-bottom: 3px; }
+      .nr-gift-text span { font-family: "Raleway"; font-weight: 600; font-size: 14px; line-height: 1.35; color: var(--ink); }
+      .nr-hero-media {
+        aspect-ratio: 4/5; border-radius: var(--r-lg); overflow: hidden;
+        border: 1.5px solid var(--line); box-shadow: var(--shadow-lg);
+        background: linear-gradient(160deg, #fbcfe8 0%, #fff0f7 55%, rgba(20,184,166,0.18) 100%);
+      }
+      .nr-hero-media img, .nr-author-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .nr-hero-media img { object-position: center 16%; }
+
+      /* ── Pulse strip ────────────────────────── */
+      .nr-pulse {
+        position: relative; z-index: 2; max-width: 1120px; margin: 0 auto;
+        padding: 0 clamp(20px,5vw,56px) clamp(28px,4vw,40px);
+        display: flex; align-items: center; justify-content: center;
+        gap: clamp(14px,3vw,34px); flex-wrap: wrap;
+      }
+      .nr-pulse-num { font-family:"Unbounded"; font-weight:900; font-size:clamp(30px,5vw,52px); color:var(--pink-d); -webkit-text-stroke:1.5px var(--accent); line-height:1; }
+      .nr-pulse-cap { font-family:"Unbounded"; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink3); margin-top:6px; }
+      .nr-pulse-sep { width:46px; height:3px; border-radius:2px; background:linear-gradient(90deg,var(--accent),var(--pink)); }
+
+      /* ── Section heads ──────────────────────── */
+      .nr-eyebrow { font-family:"Unbounded"; font-weight:700; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+      .nr-h2 { font-family:"Unbounded"; font-weight:900; font-size:clamp(24px,3.6vw,36px); letter-spacing:-0.025em; margin:0; color:var(--ink); }
+      .nr-sub { font-family:"Raleway"; font-weight:600; font-size:16px; color:var(--ink2); margin:12px 0 0; }
+
+      /* ── Tools ──────────────────────────────── */
+      .nr-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+      .nr-card {
+        background: var(--surface); border: 1.5px solid var(--line);
+        border-radius: var(--r-lg); padding: 28px; box-shadow: var(--shadow);
+      }
+      .nr-ico { width:54px; height:54px; border-radius:var(--r-sm); background:var(--card); display:flex; align-items:center; justify-content:center; margin-bottom:18px; }
+      .nr-ico svg { width:28px; height:28px; stroke:var(--accent); stroke-width:2; fill:none; }
+      .nr-ico svg, .nr-aud .emo svg, .nr-award-ico svg, .nr-gift-ico svg { stroke-linecap:round; stroke-linejoin:round; }
+      .nr-card h3 { font-family:"Unbounded"; font-weight:900; font-size:20px; letter-spacing:-0.02em; margin:0 0 10px; }
+      .nr-card p { font-family:"Raleway"; font-size:15px; line-height:1.6; color:var(--ink2); margin:0; }
+
+      /* ── Program ────────────────────────────── */
+      .nr-prog-grid { display:grid; grid-template-columns:0.9fr 1.1fr; gap:clamp(28px,4vw,48px); align-items:start; }
+      .nr-prog-big { font-family:"Unbounded"; font-weight:900; font-size:clamp(40px,6.5vw,68px); line-height:0.95; letter-spacing:-0.03em; color:var(--pink); -webkit-text-stroke:1px var(--pink-d); }
+      .nr-prog-h3 { font-family:"Unbounded"; font-weight:900; font-size:clamp(20px,2.8vw,26px); letter-spacing:-0.025em; margin:14px 0 0; color:var(--ink); }
+      .nr-quote { font-family:"Raleway"; font-style:italic; font-size:16px; line-height:1.6; color:var(--ink2); margin:20px 0 0; padding-left:18px; border-left:3px solid var(--accent); }
+      .nr-result { margin-top:24px; background:var(--card); border:1.5px solid var(--line); border-radius:var(--r-md); padding:20px 22px; }
+      .nr-result-lbl { font-family:"Unbounded"; font-weight:700; font-size:12px; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+      .nr-result p { font-family:"Raleway"; font-size:15px; line-height:1.6; color:var(--ink2); margin:0; }
+      .nr-prog-list { display:flex; flex-direction:column; gap:12px; }
+      .nr-prog-item { display:flex; align-items:center; gap:14px; background:var(--surface); border:1.5px solid var(--line); border-radius:var(--r-md); padding:16px 18px; box-shadow:var(--shadow-sm); }
+      .nr-tick { flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; }
+      .nr-prog-item span:last-child { font-family:"Raleway"; font-weight:600; font-size:15px; line-height:1.4; color:var(--ink); }
+
+      /* ── Audience ───────────────────────────── */
+      .nr-grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+      .nr-aud { background:var(--card); border-radius:var(--r-lg); padding:22px; }
+      .nr-aud .emo { width:48px; height:48px; border-radius:var(--r-sm); background:#fff; display:flex; align-items:center; justify-content:center; margin-bottom:14px; }
+      .nr-aud .emo svg { width:26px; height:26px; stroke:var(--accent); stroke-width:2; fill:none; }
+      .nr-aud h3 { font-family:"Unbounded"; font-weight:700; font-size:16px; margin:0 0 6px; }
+      .nr-aud p { font-family:"Raleway"; font-size:13px; line-height:1.5; color:var(--ink2); margin:0; }
+
+      /* ── Author ─────────────────────────────── */
+      .nr-author { display:grid; grid-template-columns:0.8fr 1.2fr; gap:clamp(28px,4vw,48px); align-items:center; }
+      .nr-author-media { aspect-ratio:4/5; border-radius:var(--r-lg); overflow:hidden; border:1.5px solid var(--line); box-shadow:var(--shadow-lg); background:linear-gradient(160deg, rgba(20,184,166,0.18), #fff0f7 60%, var(--pink)); }
+      .nr-author-media img { object-position: center 16%; }
+      .nr-chip { padding:8px 16px; border-radius:var(--r-pill); background:#fff; border:1.5px solid var(--line); font-family:"Unbounded"; font-weight:700; font-size:12px; }
+      .nr-bio-list { list-style:none; margin:0 0 16px; padding:0; display:flex; flex-direction:column; gap:11px; }
+      .nr-bio-list li { display:flex; align-items:flex-start; gap:12px; font-family:"Raleway"; font-weight:600; font-size:15px; line-height:1.45; color:var(--ink2); }
+      .nr-bio-check { flex-shrink:0; width:24px; height:24px; margin-top:1px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent-h)); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(20,184,166,0.32); }
+      .nr-bio-check svg { width:12px; height:12px; stroke:#fff; stroke-width:3; fill:none; }
+
+      /* ── Outcomes (нумерованный список) ─────── */
+      .nr-outcomes-head { text-align:center; margin-bottom:40px; }
+      .nr-tagline {
+        font-family:"Unbounded"; font-weight:700; font-size:clamp(15px,2.4vw,20px);
+        margin:14px 0 0; line-height:1.2;
+        background:linear-gradient(135deg,#f9a8d4 0%, #14b8a6 100%);
+        -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+      }
+      .nr-outcomes { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px; max-width:820px; margin:0 auto; }
+      .nr-outcomes li {
+        display:grid; grid-template-columns:48px minmax(0,1fr); column-gap:16px; row-gap:4px; align-items:start;
+        background:var(--surface); border:1.5px solid var(--line); border-radius:var(--r-md); padding:18px 20px; box-shadow:var(--shadow);
+      }
+      .nr-onum {
+        grid-row:1 / span 2; width:48px; height:48px; border-radius:50%;
+        background:linear-gradient(135deg,var(--accent),var(--accent-h)); color:#fff;
+        font-family:"Unbounded"; font-weight:700; font-size:18px;
+        display:flex; align-items:center; justify-content:center; box-shadow:0 6px 16px rgba(20,184,166,0.4);
+      }
+      .nr-otitle { font-family:"Raleway"; font-weight:700; font-size:clamp(15px,2vw,17px); line-height:1.4; color:var(--ink); }
+      .nr-odesc { font-family:"Raleway"; font-weight:400; font-size:14px; line-height:1.5; color:var(--ink2); }
+      .nr-outcomes li.is-single .nr-onum { grid-row:auto; }
+
+      /* ── Gifts ──────────────────────────────── */
+      .nr-gifts-card {
+        background:linear-gradient(160deg, var(--card), #fffbfe 60%, rgba(20,184,166,0.08));
+        border:1.5px solid var(--line); border-radius:var(--r-xl); padding:clamp(28px,4vw,48px); box-shadow:var(--shadow);
+      }
+      .nr-gifts-grid { display:grid; grid-template-columns:1.05fr 1fr; gap:clamp(28px,4vw,48px); align-items:center; }
+      .nr-gifts-title { font-family:"Unbounded"; font-weight:900; font-size:clamp(22px,3.4vw,34px); letter-spacing:-0.02em; line-height:1.1; margin:0; color:var(--ink); }
+      .nr-gifts-title .accent { color:var(--accent); }
+      .nr-gifts-list { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px; }
+      .nr-gifts-list li { display:flex; align-items:flex-start; gap:14px; font-family:"Raleway"; font-weight:600; font-size:15px; line-height:1.45; color:var(--ink); }
+      .nr-gcheck { flex-shrink:0; width:28px; height:28px; margin-top:1px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent-h)); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(20,184,166,0.35); }
+      .nr-gcheck svg { width:14px; height:14px; stroke:#fff; stroke-width:3; fill:none; }
+
+      /* ── Final CTA ──────────────────────────── */
+      .nr-final { background:var(--ink); color:#fff; }
+      .nr-final-inner { max-width:1120px; margin:0 auto; padding:clamp(48px,6vw,80px) clamp(20px,5vw,56px); text-align:center; position:relative; overflow:hidden; }
+      .nr-final-glow { position:absolute; top:-40px; left:50%; transform:translateX(-50%); width:340px; height:200px; background:radial-gradient(ellipse at center, rgba(20,184,166,0.3), transparent 70%); pointer-events:none; }
+      .nr-final-badge { display:inline-flex; align-items:center; gap:8px; font-family:"Unbounded"; font-weight:700; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--pink); margin-bottom:18px; }
+      .nr-final h2 { font-family:"Unbounded"; font-weight:900; font-size:clamp(26px,4vw,40px); letter-spacing:-0.03em; line-height:1.12; margin:0 auto; max-width:600px; }
+      .nr-final-note { font-family:"Raleway"; font-weight:600; font-size:13px; color:var(--ink3); margin:18px 0 0; }
+
+      /* ── Footer / подвал ────────────────────── */
+      .nr-footer { background:#1c1426; color:var(--ink3); }
+      .nr-footer-top {
+        display:grid; grid-template-columns:1.3fr 1fr; gap:clamp(28px,4vw,56px);
+        padding:clamp(40px,5vw,60px) 0 clamp(28px,4vw,40px);
+        border-top:1px solid rgba(255,255,255,0.08);
+      }
+      .nr-footer-brand { font-family:"Unbounded"; font-weight:700; font-size:20px; letter-spacing:-0.03em; color:#fff; margin:0 0 6px; }
+      .nr-footer-tag { font-family:"Unbounded"; font-weight:700; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); margin:0 0 14px; }
+      .nr-footer-desc { font-family:"Raleway"; font-size:14px; line-height:1.6; color:var(--ink3); margin:0; max-width:380px; }
+      .nr-footer-col-title { font-family:"Unbounded"; font-weight:700; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:#fff; margin:0 0 14px; }
+      .nr-footer-cta { display:flex; flex-direction:column; gap:10px; margin-bottom:18px; }
+      .nr-footer-cta .btn { white-space:normal; line-height:1.3; }
+      .nr-footer-links { display:flex; flex-direction:column; gap:10px; }
+      .nr-footer-links a { font-family:"Raleway"; font-weight:600; font-size:14px; color:var(--pink); text-decoration:none; }
+      .nr-footer-links a:hover { color:#fff; }
+      .nr-footer-bottom {
+        border-top:1px solid rgba(255,255,255,0.08);
+        padding:22px 0 calc(40px + env(safe-area-inset-bottom, 0px));
+        display:flex; flex-wrap:wrap; gap:10px 24px; align-items:center; justify-content:space-between;
+      }
+      .nr-footer-copy { font-family:"Raleway"; font-size:13px; color:var(--ink3); margin:0; }
+      .nr-footer-legal { font-family:"Raleway"; font-size:12px; line-height:1.6; color:var(--ink3); opacity:0.75; margin:0; }
+      @media (max-width: 760px) {
+        .nr-footer-top { grid-template-columns:1fr; }
+        .nr-footer-bottom { padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px)); }
+      }
+
+      /* ── Scroll-in анимации ─────────────────── */
+      .nr-anim { opacity:0; transform:translateY(28px); transition:opacity .6s ease, transform .6s ease; }
+      .nr-anim.is-visible { opacity:1; transform:translateY(0); }
+      /* секции с каскадом детей сами только проявляются (без сдвига), сдвиг — на детях */
+      .nr-anim--fade { transform:none; }
+
+      /* каскадное появление карточек/пунктов внутри секции */
+      .nr-stagger > * { opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
+      .nr-anim.is-visible .nr-stagger > * { opacity:1; transform:none; }
+      .nr-anim.is-visible .nr-stagger > *:nth-child(1) { transition-delay:.05s; }
+      .nr-anim.is-visible .nr-stagger > *:nth-child(2) { transition-delay:.11s; }
+      .nr-anim.is-visible .nr-stagger > *:nth-child(3) { transition-delay:.17s; }
+      .nr-anim.is-visible .nr-stagger > *:nth-child(4) { transition-delay:.23s; }
+      .nr-anim.is-visible .nr-stagger > *:nth-child(5) { transition-delay:.29s; }
+      .nr-anim.is-visible .nr-stagger > *:nth-child(6) { transition-delay:.35s; }
+      .nr-anim.is-visible .nr-stagger > *:nth-child(7) { transition-delay:.41s; }
+      .nr-anim.is-visible .nr-stagger > *:nth-child(n+8) { transition-delay:.47s; }
+
+      /* hover-микровзаимодействия */
+      .nr-card, .nr-aud, .nr-outcomes li, .nr-award { transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+      .nr-card:hover, .nr-outcomes li:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); border-color:var(--line-d); }
+      .nr-aud:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); }
+      .nr-award:hover { transform:translateY(-3px); box-shadow:0 14px 32px rgba(180,140,40,0.2); }
+      .nr-prog-item { transition:transform .22s ease, border-color .22s ease, box-shadow .22s ease; }
+      .nr-prog-item:hover { transform:translateX(4px); border-color:var(--line-d); }
+
+      /* лёгкий зум фото при наведении */
+      .nr-hero-media img, .nr-author-media img { transition:transform .5s ease; }
+      .nr-hero-media:hover img, .nr-author-media:hover img { transform:scale(1.04); }
+
+      /* медленное «дыхание» фоновых пятен в hero */
+      .nr-blob-1 { animation:nrfloat 9s ease-in-out infinite; }
+      .nr-blob-2 { animation:nrfloat 11s ease-in-out infinite reverse; }
+
+      /* уважаем системную настройку «меньше движения» */
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration:.001ms !important; animation-iteration-count:1 !important;
+          transition-duration:.001ms !important; scroll-behavior:auto !important;
+        }
+        .nr-anim, .nr-stagger > * { opacity:1 !important; transform:none !important; }
+      }
+
+      /* ── Плавающие кнопки регистрации ───────── */
       .float-reg-stack {
-        align-items: flex-end;
-        max-width: min(540px, calc(100vw - 48px));
+        position: fixed; bottom: 24px; right: 24px; z-index: 9998;
+        display: none; flex-direction: column; align-items: stretch; gap: 8px;
+        max-width: min(360px, calc(100vw - 24px));
       }
-      .float-reg-stack .float-reg-btn {
-        width: max-content;
-        max-width: 100%;
-        font-size: 0.875rem;
-        padding: 0.55rem 1.6rem;
+      .float-reg-btn {
+        display: block; text-align: center; text-decoration: none;
+        font-family: "Unbounded", sans-serif; font-weight: 700;
+        font-size: 0.72rem; line-height: 1.2; padding: 0.5rem 1rem;
+        border-radius: var(--r-pill); cursor: pointer;
+        background: linear-gradient(135deg, #14b8a6 0%, #0f766e 100%);
+        color: #fff !important; border: none;
+        box-shadow: 0 8px 24px rgba(20,184,166,0.45);
+        animation: float-pulse 2.4s ease-in-out infinite;
+        -webkit-tap-highlight-color: rgba(20,184,166,0.3);
       }
-      .float-reg-btn-text {
-        white-space: nowrap;
-      }
-      .vb-time-reg-replace > a.vb-time-cta-link {
-        flex-wrap: nowrap;
-        white-space: nowrap;
-        padding: 0.5rem 2rem !important;
-      }
-      .vb-time-reg-replace.vb-time-reg-replace--narrow {
-        max-width: min(36rem, 100%);
-      }
-    }
+      .float-reg-btn:hover { animation: none; transform: scale(1.04); }
+      .float-reg-btn-text { display: inline; font-weight: 700; line-height: 1.2; }
+      .float-reg-btn-text [data-vb-hero-date] { white-space: nowrap; font-weight: 400; opacity: 0.9; }
 
-    /* Подарки за эфир (вставляется после «Что получите за 3 часа») */
-    .vb-gifts-section {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(165deg, #0a0614 0%, #12081f 45%, #0a0a0c 100%);
-    }
-    .vb-gifts-section::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image:
-        radial-gradient(ellipse 80% 60% at 85% 20%, rgba(139, 92, 246, 0.18), transparent 55%),
-        radial-gradient(ellipse 50% 40% at 10% 80%, rgba(99, 102, 241, 0.12), transparent 50%);
-      pointer-events: none;
-    }
-    .vb-gifts-inner {
-      position: relative;
-      z-index: 1;
-      max-width: 72rem;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
-    .vb-gifts-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2.5rem;
-      align-items: center;
-    }
-    @media (min-width: 1024px) {
-      .vb-gifts-grid {
-        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-        gap: 3.5rem;
+      /* ── GetCourse overlay (формы) ──────────── */
+      #vb-gc-overlay {
+        display: none; position: fixed; inset: 0; z-index: 10050;
+        align-items: center; justify-content: center; padding: 12px;
+        box-sizing: border-box; background: rgba(0,0,0,0.72); backdrop-filter: blur(5px);
       }
-    }
-    .vb-gifts-title {
-      font-family: "Montserrat", sans-serif;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: -0.02em;
-      line-height: 1.05;
-      font-size: clamp(1.75rem, 4.5vw, 3.25rem);
-      margin: 0;
-    }
-    .vb-gifts-title .vb-gifts-title-accent {
-      display: block;
-      background: linear-gradient(135deg, #c4b5fd 0%, #a855f7 45%, #818cf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .vb-gifts-title .vb-gifts-title-white {
-      display: block;
-      color: #fff;
-      margin-top: 0.15em;
-    }
-    .vb-gifts-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 1.15rem;
-    }
-    .vb-gifts-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      font-size: clamp(0.95rem, 2.2vw, 1.125rem);
-      line-height: 1.45;
-      color: #f3f4f6;
-    }
-    .vb-gifts-check {
-      flex-shrink: 0;
-      width: 2rem;
-      height: 2rem;
-      margin-top: 0.1rem;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45);
-    }
-    .vb-gifts-check svg {
-      width: 1rem;
-      height: 1rem;
-      stroke: #fff;
-      stroke-width: 3;
-      fill: none;
-    }
+      #vb-gc-overlay.vb-gc-overlay--open { display: flex; }
+      #vb-gc-overlay-inner {
+        position: relative; width: 100%; max-width: 580px; max-height: min(96vh, 980px);
+        overflow: auto; border-radius: 14px; background: #fff;
+        box-shadow: 0 16px 48px rgba(0,0,0,0.45); -webkit-overflow-scrolling: touch;
+      }
+      #vb-gc-overlay-close {
+        position: sticky; top: 0; z-index: 2; float: right; margin: 8px 8px 0 0;
+        width: 40px; height: 40px; border-radius: 50%;
+        border: 1px solid rgba(0,0,0,0.12); background: rgba(255,255,255,0.95);
+        color: #1a1a2e; font-size: 22px; line-height: 1; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      }
+      .vb-gc-slot { width: 100%; overflow: hidden; clear: both; }
+      #vb-gc-slot-evening { display: none; }
 
-    /* «Что получите за 3 часа» — нумерованный список (как на макете) */
-    .vb-outcomes-section {
-      position: relative;
-      overflow: hidden;
-    }
-    .vb-outcomes-section::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image:
-        radial-gradient(ellipse 70% 50% at 20% 30%, rgba(139, 92, 246, 0.12), transparent 60%),
-        radial-gradient(ellipse 60% 40% at 90% 70%, rgba(99, 102, 241, 0.1), transparent 55%);
-      pointer-events: none;
-    }
-    .vb-outcomes-inner {
-      position: relative;
-      z-index: 1;
-      max-width: 56rem;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
-    .vb-outcomes-head {
-      text-align: center;
-      margin-bottom: 2.5rem;
-    }
-    .vb-outcomes-head h2 {
-      font-family: "Montserrat", sans-serif;
-      font-weight: 900;
-      text-transform: uppercase;
-      font-size: clamp(1.5rem, 4vw, 2.75rem);
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-      margin: 0 0 0.75rem;
-      color: #fff;
-    }
-    .vb-outcomes-head .vb-outcomes-tagline {
-      font-family: "Montserrat", sans-serif;
-      font-weight: 800;
-      text-transform: uppercase;
-      font-size: clamp(1.1rem, 2.8vw, 1.65rem);
-      line-height: 1.15;
-      margin: 0;
-      background: linear-gradient(135deg, #e9d5ff 0%, #a855f7 50%, #818cf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .vb-outcomes-list {
-      list-style: none;
-      margin: 0 auto;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-      max-width: 48rem;
-      width: 100%;
-      text-align: left;
-    }
-    .vb-outcomes-list li {
-      display: grid;
-      grid-template-columns: 2.75rem minmax(0, 1fr);
-      column-gap: 1rem;
-      row-gap: 0.35rem;
-      align-items: start;
-      text-align: left;
-    }
-    .vb-outcomes-num {
-      grid-row: 1 / span 2;
-      width: 2.75rem;
-      height: 2.75rem;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
-      color: #fff;
-      font-family: "Montserrat", sans-serif;
-      font-weight: 800;
-      font-size: 1.1rem;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.45);
-    }
-    .vb-outcomes-body {
-      min-width: 0;
-      text-align: left !important;
-    }
-    .vb-outcomes-line {
-      display: block;
-      font-size: clamp(0.95rem, 2.2vw, 1.125rem);
-      line-height: 1.45;
-      margin: 0;
-      text-align: left !important;
-    }
-    .vb-outcomes-line strong {
-      color: #fff;
-      font-weight: 700;
-    }
-    .vb-outcomes-line.vb-outcomes-desc {
-      color: #d1d5db;
-      font-weight: 400;
-    }
-    .vb-outcomes-list li.vb-outcomes-item--single .vb-outcomes-num {
-      grid-row: auto;
-    }
+      /* ── Адаптив ────────────────────────────── */
+      @media (max-width: 900px) {
+        .nr-hero-grid { grid-template-columns: 1fr; }
+        .nr-hero-media { max-width: 420px; margin: 0 auto; width: 100%; }
+        .nr-prog-grid { grid-template-columns: 1fr; }
+        .nr-author { grid-template-columns: 1fr; }
+        .nr-author-media { max-width: 320px; }
+        .nr-gifts-grid { grid-template-columns: 1fr; }
+      }
+
+      /* nav: мобильное бургер-меню */
+      @media (max-width: 880px) {
+        .nr-burger { display: flex; }
+        .nr-menu {
+          position: absolute; top: 100%; left: 0; right: 0;
+          flex-direction: column; align-items: stretch; gap: 2px;
+          background: var(--surface);
+          border-bottom: 1px solid var(--line);
+          padding: 12px clamp(20px, 5vw, 56px) 20px;
+          box-shadow: 0 20px 44px rgba(42, 31, 53, 0.14);
+          transform: translateY(-12px); opacity: 0; pointer-events: none;
+          transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .nr-menu.is-open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .nr-menu-link { padding: 14px 4px; font-size: 16px; border-bottom: 1px solid var(--line); }
+        .nr-menu-cta { margin-top: 14px; flex-direction: column; gap: 10px; }
+        .nr-menu-cta .btn { width: 100%; padding: 13px 20px; font-size: 13px; }
+      }
+      @media (max-width: 720px) {
+        .nr-grid-3 { grid-template-columns: 1fr; }
+        .nr-grid-4 { grid-template-columns: repeat(2, 1fr); }
+        .nr-cta-row { flex-direction: column; align-items: stretch; }
+        .nr-cta-row .btn { width: 100%; white-space: normal; line-height: 1.3; }
+      }
+      @media (max-width: 480px) {
+        .nr-grid-4 { grid-template-columns: 1fr; }
+        .nr-pulse-sep { display: none; }
+        .nr-h1 .mark { white-space: normal; }
+      }
+      @media (max-width: 1023px) {
+        .float-reg-stack {
+          bottom: max(12px, env(safe-area-inset-bottom, 0px));
+          right: max(10px, env(safe-area-inset-right, 0px));
+          left: max(10px, env(safe-area-inset-left, 0px));
+          max-width: calc(100vw - 20px); gap: 10px;
+        }
+        .float-reg-btn { min-height: 48px; padding: 0.65rem 1.2rem; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
+        body.has-float-vb-cta { padding-bottom: 7rem; }
+        #vb-gc-overlay-inner { max-height: min(96dvh, 1000px); border-radius: 16px 16px 0 0; align-self: flex-end; }
+        #vb-gc-overlay.vb-gc-overlay--open { align-items: flex-end; padding: 0; }
+      }
+      @media (min-width: 1024px) {
+        .float-reg-stack { align-items: flex-end; }
+        .float-reg-btn { width: max-content; max-width: 100%; font-size: 0.8rem; padding: 0.55rem 1.5rem; }
+        .float-reg-btn-text { white-space: nowrap; }
+      }
     </style>
+    <noscript>
+      <style>
+        .nr-anim, .nr-stagger > * { opacity: 1 !important; transform: none !important; }
+      </style>
+    </noscript>
 
-    <script src="js/neiro-vb-landing.js?v=20260511-1d"></script>
-    <!-- Без crossorigin: иначе при открытии index.html через file:// браузер блокирует ES-модуль (нет CORS у локального файла). -->
-    <script type="module" src="./assets/index-CrqkIGJg.js?v=20260511-mk"></script>
+    <script src="js/neiro-vb-landing.js?v=20260612-1"></script>
   </head>
 
-  <body class="bg-[#0a0a0c] text-white">
-    <div id="file-open-hint" hidden style="position:fixed;bottom:200px;left:50%;transform:translateX(-50%);z-index:100000;max-width:min(420px,calc(100vw - 24px));padding:14px 18px;background:#1a1030;border:1px solid rgba(168,85,247,0.45);border-radius:14px;font-size:13px;line-height:1.45;color:#f5e6ff;box-shadow:0 12px 40px rgba(0,0,0,0.55);">
-      Контент не загрузился? Откройте сайт через локальный сервер: в папке проекта выполните <code style="background:rgba(0,0,0,0.35);padding:2px 8px;border-radius:6px;white-space:nowrap;">npm start</code> и перейдите на <strong style="white-space:nowrap;">http://localhost:3333</strong>
-    </div>
-    <div id="root"></div>
+  <body>
+    <main class="nr-wrap">
+
+      <!-- nav -->
+      <header class="nr-topnav">
+        <div class="nr-topnav-inner nr-container">
+          <a href="#top" class="nr-brand">Ксения&nbsp;Баранова</a>
+          <nav class="nr-menu" id="nr-menu">
+            <a href="#program" class="nr-menu-link">Программа</a>
+            <a href="#audience" class="nr-menu-link">Для кого</a>
+            <a href="#speaker" class="nr-menu-link">Спикер</a>
+            <a href="#bonuses" class="nr-menu-link">Бонусы</a>
+            <div class="nr-menu-cta">
+              <a href="#" class="btn btn--outline btn--sm" data-vb-open="morning">11:00 МСК</a>
+              <a href="#" class="btn btn--teal btn--sm" data-vb-open="evening">19:00 МСК</a>
+            </div>
+          </nav>
+          <button class="nr-burger" id="nr-burger" type="button" aria-label="Открыть меню" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </header>
+
+      <!-- hero -->
+      <section class="nr-hero" id="top">
+        <div class="nr-hero-bg"></div>
+        <div class="nr-hero-blob nr-blob-1"></div>
+        <div class="nr-hero-blob nr-blob-2"></div>
+
+        <div class="nr-hero-grid">
+          <div>
+            <div class="nr-badge"><span class="nr-dot"></span>Практический мастер-класс · 3 часа</div>
+            <h1 class="nr-h1">Как за 3 часа создать <span class="mark">сайт, бот</span> и мини-сервис без технических знаний</h1>
+            <p class="nr-lead">За 3 часа соберёте сайт, бота и мини-сервис с нейросетями — без кода. Подходит новичкам. Участие бесплатное.</p>
+            <div class="nr-cta-row">
+              <a href="#" class="btn btn--teal btn--lg" data-vb-open="morning">Зарегистрироваться на 11:00 <span data-vb-hero-date="morning"></span> →</a>
+              <a href="#" class="btn btn--outline btn--lg" data-vb-open="evening">Зарегистрироваться на 19:00 <span data-vb-hero-date="evening"></span> →</a>
+            </div>
+            <div class="nr-gift-badge">
+              <span class="nr-gift-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12.5h18M12 8v13"/><path d="M12 8S10.5 3.5 8 4.7 12 8 12 8zM12 8s1.5-4.5 4-3.3S12 8 12 8z"/></svg></span>
+              <span class="nr-gift-text">
+                <strong>Подарок после регистрации</strong>
+                <span>Гид «Как зарабатывать в условиях 🍑»</span>
+              </span>
+            </div>
+            <div class="nr-note" style="margin-left:12px;">🔒 Участие бесплатное · ссылку на эфир пришлём на почту и в бота</div>
+          </div>
+          <div>
+            <div class="nr-hero-media">
+              <img src="expert.png" alt="Ксения Баранова — спикер мастер-класса" loading="eager" />
+            </div>
+          </div>
+        </div>
+
+        <!-- pulse strip -->
+        <div class="nr-pulse">
+          <div style="text-align:center;"><div class="nr-pulse-num">3</div><div class="nr-pulse-cap">часа</div></div>
+          <div class="nr-pulse-sep"></div>
+          <div style="text-align:center;"><div class="nr-pulse-num">3</div><div class="nr-pulse-cap">инструмента</div></div>
+          <div class="nr-pulse-sep"></div>
+          <div style="text-align:center;"><div class="nr-pulse-num">0</div><div class="nr-pulse-cap">кода</div></div>
+          <div class="nr-pulse-sep"></div>
+          <div style="text-align:center;"><div class="nr-pulse-num">100%</div><div class="nr-pulse-cap">практики</div></div>
+        </div>
+      </section>
+
+      <div class="nr-divider"></div>
+
+      <!-- что соберёшь -->
+      <section class="nr-container nr-section nr-anim nr-anim--fade">
+        <div style="text-align:center; margin-bottom:36px;">
+          <div class="nr-eyebrow">Что соберёшь</div>
+          <h2 class="nr-h2">Три рабочих инструмента за один эфир</h2>
+        </div>
+        <div class="nr-grid-3 nr-stagger">
+          <div class="nr-card">
+            <div class="nr-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V4.5"/><circle cx="12" cy="3.5" r="1"/><path d="M9.5 13v.5M14.5 13v.5"/><path d="M2 12.5v2.5M22 12.5v2.5"/></svg></div>
+            <h3>Боты в ВК и MAX</h3>
+            <p>Соберёте бота в ВК и бота в MAX без кода — они отвечают и работают по вашим сценариям.</p>
+          </div>
+          <div class="nr-card">
+            <div class="nr-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg></div>
+            <h3>Сайт с GigaChat</h3>
+            <p>Подключите GigaChat к сайту — встроенный ИИ сам отвечает пользователям.</p>
+          </div>
+          <div class="nr-card">
+            <div class="nr-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><path d="M17 14.5v5M14.5 17h5"/></svg></div>
+            <h3>Мини-сервис</h3>
+            <p>Соберёте свой первый веб-сервис: из простой идеи — готовый цифровой продукт.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="nr-divider"></div>
+
+      <!-- программа -->
+      <section class="nr-container nr-section nr-anim nr-anim--fade" id="program">
+        <div style="text-align:center; margin-bottom:40px;">
+          <h2 class="nr-h2">Программа мастер-класса</h2>
+          <p class="nr-sub">За один эфир — сайт, бот и мини-сервис. Без кода и технических знаний</p>
+          <div style="width:64px; height:5px; border-radius:3px; background:var(--pink); margin:18px auto 0;"></div>
+        </div>
+        <div class="nr-prog-grid">
+          <div>
+            <div class="nr-prog-big">3 ЧАСА</div>
+            <h3 class="nr-prog-h3">Сайт, бот и мини-сервис за один эфир</h3>
+            <p class="nr-quote">«За 3 часа пройдёте путь от идеи до трёх готовых инструментов: сайта, бота и мини-сервиса — без технических знаний.»</p>
+            <div class="nr-result">
+              <div class="nr-result-lbl">Итог дня:</div>
+              <p>У вас на руках сайт, бот и мини-сервис — и понимание, как повторять это для себя, работы или клиентов.</p>
+            </div>
+          </div>
+          <div class="nr-prog-list nr-stagger">
+            <div class="nr-prog-item"><span class="nr-tick">✓</span><span>Зачем предпринимателю и фрилансеру сайт, бот и мини-сервис</span></div>
+            <div class="nr-prog-item"><span class="nr-tick">✓</span><span>Как за 3 часа собрать всё это с нейросетями, без кода</span></div>
+            <div class="nr-prog-item"><span class="nr-tick">✓</span><span>Практика: собираем сайт / лендинг под вашу задачу</span></div>
+            <div class="nr-prog-item"><span class="nr-tick">✓</span><span>Практика: создаём бота в ВК без кода</span></div>
+            <div class="nr-prog-item"><span class="nr-tick">✓</span><span>Практика: бот в MAX под ваши сценарии</span></div>
+            <div class="nr-prog-item"><span class="nr-tick">✓</span><span>Практика: подключаем GigaChat к сайту</span></div>
+            <div class="nr-prog-item"><span class="nr-tick">✓</span><span>Практика: мини-сервис и итоги эфира</span></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="nr-divider"></div>
+
+      <!-- для кого -->
+      <section class="nr-container nr-section nr-anim nr-anim--fade" id="audience">
+        <h2 class="nr-h2" style="margin-bottom:36px;">Для кого этот эфир</h2>
+        <div class="nr-grid-4 nr-stagger">
+          <div class="nr-aud"><div class="emo"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><h3>Эксперты</h3><p>Психологи, коучи, преподаватели</p></div>
+          <div class="nr-aud"><div class="emo"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 12.5h18"/></svg></div><h3>Предприниматели</h3><p>Владельцы малого бизнеса</p></div>
+          <div class="nr-aud"><div class="emo"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="11" rx="2"/><path d="M2 20h20"/></svg></div><h3>Фрилансеры</h3><p>Маркетологи, SMM, копирайтеры</p></div>
+          <div class="nr-aud"><div class="emo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.2 3 3 6 3s6-1.8 6-3v-5"/><path d="M22 9v5"/></svg></div><h3>Новички</h3><p>Кто хочет доп. источник дохода</p></div>
+        </div>
+      </section>
+
+      <div class="nr-divider"></div>
+
+      <!-- об авторе -->
+      <section class="nr-container nr-section nr-author nr-anim" id="speaker">
+        <div class="nr-author-media">
+          <img src="expert.png" alt="Ксения Баранова — спикер мастер-класса" loading="lazy" />
+        </div>
+        <div>
+          <div class="nr-eyebrow">Спикер мастер-класса</div>
+          <h2 class="nr-h2" style="font-size:clamp(22px,3.2vw,30px); margin-bottom:16px;">Ксения Баранова</h2>
+          <div class="nr-award">
+            <span class="nr-award-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6.5H4.5v1.5a3 3 0 0 0 3 3M17 6.5h2.5v1.5a3 3 0 0 1-3 3"/><path d="M12 14v3M9 20h6M10.2 20l.4-3h2.8l.4 3"/></svg></span>
+            <span class="nr-award-text">
+              <strong>Премия GetAward · 2026</strong>
+              <span>Победитель в номинации «Обучение года»</span>
+            </span>
+          </div>
+          <ul class="nr-bio-list">
+            <li><span class="nr-bio-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>Основатель одной из крупнейших школ по нейросетям в СНГ</span></li>
+            <li><span class="nr-bio-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>Более 400 000 учеников прошли обучающие программы по ИИ</span></li>
+            <li><span class="nr-bio-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>Приглашённый эксперт по ИИ на заседании в Госдуме РФ</span></li>
+            <li><span class="nr-bio-check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>Член жюри самых престижных премий на рынке онлайн-образования</span></li>
+          </ul>
+          <p style="font-family:'Raleway'; font-size:15px; line-height:1.6; color:var(--ink); margin:0 0 18px; font-weight:600;">Эксперт по нейросетям, которая научит вас использовать ИИ в полную силу.</p>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <span class="nr-chip">400 000+ учеников</span>
+            <span class="nr-chip">Эксперт в Госдуме РФ</span>
+            <span class="nr-chip">Школа №1 в СНГ</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="nr-divider"></div>
+
+      <!-- что получите за 3 часа -->
+      <section class="nr-container nr-section nr-anim nr-anim--fade">
+        <div class="nr-outcomes-head">
+          <h2 class="nr-h2">Что получите за 3 часа</h2>
+          <p class="nr-tagline">И больше не будете работать по-старому</p>
+        </div>
+        <ol class="nr-outcomes nr-stagger">
+          <li>
+            <span class="nr-onum">1</span>
+            <span class="nr-otitle">Соберёте первого бота в ВК на практике</span>
+            <span class="nr-odesc">→ получите готовый ВК-бот, который можно сразу использовать или доработать под свой проект</span>
+          </li>
+          <li>
+            <span class="nr-onum">2</span>
+            <span class="nr-otitle">Создадите бота в MAX</span>
+            <span class="nr-odesc">→ научитесь создавать бота в MAX, который выполняет заданные сценарии</span>
+          </li>
+          <li>
+            <span class="nr-onum">3</span>
+            <span class="nr-otitle">Подключите GigaChat к сайту</span>
+            <span class="nr-odesc">→ научитесь делать сайт с встроенным ИИ, который отвечает пользователям</span>
+          </li>
+          <li>
+            <span class="nr-onum">4</span>
+            <span class="nr-otitle">Соберёте свой первый веб-сервис</span>
+            <span class="nr-odesc">→ поймёте, как из простой идеи собрать полноценный цифровой продукт</span>
+          </li>
+          <li>
+            <span class="nr-onum">5</span>
+            <span class="nr-otitle">Научитесь собирать сайты за 3 секунды</span>
+            <span class="nr-odesc">→ без сложной вёрстки и разработчиков</span>
+          </li>
+          <li>
+            <span class="nr-onum">6</span>
+            <span class="nr-otitle">Получите «Набор выживания: как запускать сайты, боты и мини-продукты из России в 2026»</span>
+            <span class="nr-odesc">→ система и 7 бонусных материалов для запуска сайтов, ботов и мини-продуктов из России в новых реалиях</span>
+          </li>
+          <li class="is-single">
+            <span class="nr-onum">7</span>
+            <span class="nr-otitle">Поймёте, как применять это в жизни, работе и для заработка</span>
+          </li>
+        </ol>
+      </section>
+
+      <!-- подарки за эфир -->
+      <section class="nr-container nr-section nr-anim nr-anim--fade" id="bonuses">
+        <div class="nr-gifts-card">
+          <div class="nr-gifts-grid">
+            <div>
+              <h2 class="nr-gifts-title"><span class="accent">Оставайтесь со мной до конца эфира</span><br>и получите все подарки</h2>
+            </div>
+            <ul class="nr-gifts-list nr-stagger">
+              <li><span class="nr-gcheck"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>Гайд: «Как заменить зарубежные сервисы и не зависеть от блокировок»</span></li>
+              <li><span class="nr-gcheck"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>Список 20 услуг, которые можно продавать через вайбкодинг</span></li>
+              <li><span class="nr-gcheck"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>10 идей автоматизации для малого бизнеса в России</span></li>
+              <li><span class="nr-gcheck"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>Чек-лист: «Как проверить сайт перед запуском (чтобы не попасть под блокировку)»</span></li>
+              <li><span class="nr-gcheck"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>Как запустить продукт без сайта, только через бот в ВК</span></li>
+              <li><span class="nr-gcheck"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span><span>Гайд: «Ошибки при создании ИИ-продуктов без кода»</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- финальный CTA -->
+      <section class="nr-final">
+        <div class="nr-final-inner">
+          <div class="nr-final-glow"></div>
+          <div style="position:relative; z-index:2;">
+            <div class="nr-final-badge"><span class="nr-dot"></span>11:00 и 19:00 по МСК</div>
+            <h2>Выберите удобный поток и займите место</h2>
+            <div class="nr-cta-row" style="justify-content:center;">
+              <a href="#" class="btn btn--teal btn--lg" data-vb-open="morning">Зарегистрироваться на 11:00 <span data-vb-hero-date="morning"></span></a>
+              <a href="#" class="btn btn--ghost btn--lg" data-vb-open="evening">Зарегистрироваться на 19:00 <span data-vb-hero-date="evening"></span></a>
+            </div>
+            <p class="nr-final-note">Без спама. Ссылку на эфир пришлём на почту и в бота.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- footer / подвал -->
+      <footer class="nr-footer">
+        <div class="nr-container">
+          <div class="nr-footer-top">
+            <div>
+              <p class="nr-footer-brand">Ксения Баранова</p>
+              <p class="nr-footer-tag">Школа SMM и нейросетей</p>
+              <p class="nr-footer-desc">Практический мастер-класс: за 3 часа собираете сайт, бота и мини-сервис на нейросетях — без кода и технических знаний.</p>
+            </div>
+            <div>
+              <p class="nr-footer-col-title">Занять место на эфире</p>
+              <div class="nr-footer-cta">
+                <a href="#" class="btn btn--teal btn--md" data-vb-open="morning">Регистрация на 11:00 МСК · <span data-vb-hero-date="morning"></span></a>
+                <a href="#" class="btn btn--ghost btn--md" data-vb-open="evening">Регистрация на 19:00 МСК · <span data-vb-hero-date="evening"></span></a>
+              </div>
+              <div class="nr-footer-links">
+                <a href="#">Политика обработки данных</a>
+                <a href="#">Публичная оферта</a>
+              </div>
+            </div>
+          </div>
+          <div class="nr-footer-bottom">
+            <p class="nr-footer-copy">© 2026 Ксения Баранова. Все права защищены.</p>
+            <p class="nr-footer-legal">ИП Баранова Ксения Николаевна · ИНН 027402381827 · ОГРНИП 317028000116318 · Лицензия № Л035-01198-02/00172850 (Министерство образования и науки)</p>
+          </div>
+        </div>
+      </footer>
+
+    </main>
 
     <!-- Две плавающие кнопки: утро (11) / вечер (19) -->
     <div id="float-reg-stack" class="float-reg-stack" aria-label="Регистрация на эфир">
       <a href="#" class="float-reg-btn" data-vb-open="morning">
-        <span class="float-reg-btn-text">Зарегистрироваться на 11:00 по МСК <span data-vb-hero-date="morning"></span></span>
+        <span class="float-reg-btn-text">Регистрация · 11:00 МСК · <span data-vb-hero-date="morning"></span></span>
       </a>
       <a href="#" class="float-reg-btn" data-vb-open="evening">
-        <span class="float-reg-btn-text">Зарегистрироваться на 19:00 по МСК <span data-vb-hero-date="evening"></span></span>
+        <span class="float-reg-btn-text">Регистрация · 19:00 МСК · <span data-vb-hero-date="evening"></span></span>
       </a>
     </div>
 
@@ -695,8 +868,7 @@
           });
         }
         document.addEventListener("keydown", function (e) {
-          if (e.key !== "Escape") return;
-          if (gcOverlay && gcOverlay.classList.contains("vb-gc-overlay--open")) closeGcOverlay();
+          if (e.key === "Escape" && gcOverlay && gcOverlay.classList.contains("vb-gc-overlay--open")) closeGcOverlay();
         });
 
         var floatStack = document.getElementById("float-reg-stack");
@@ -709,510 +881,37 @@
           window.VIBE_VB.init({ openRegModal: openRegForm });
         }
 
-        function isFreeWidgetHref(href) {
-          if (!href) return false;
-          var h = String(href).toLowerCase();
-          if (h.indexOf("widget") === -1) return false;
-          return (
-            h.indexOf("1603538") !== -1 ||
-            h.indexOf("1603540") !== -1 ||
-            h.indexOf("1558793") !== -1 ||
-            h.indexOf("1585653") !== -1
-          );
-        }
-
-        var VB_REG_BTN_CLASS =
-          "px-8 py-4 rounded-2xl font-bold bg-gradient-main text-white text-center shadow-lg shadow-purple-500/30";
-
-        function makeTimeRegAnchor(slot, hhmm, className) {
-          var a = document.createElement("a");
-          a.href = "#";
-          a.className = ((className || "").trim() + " vb-time-cta-link").trim();
-          a.setAttribute("data-vb-open", slot);
-          a.appendChild(document.createTextNode("Зарегистрироваться на " + hhmm + " "));
-          var sp = document.createElement("span");
-          sp.setAttribute("data-vb-hero-date", slot);
-          a.appendChild(sp);
-          return a;
-        }
-
-        function makeTimeRegBlock(extraClass) {
-          var wrap = document.createElement("div");
-          wrap.className =
-            "vb-time-reg-replace vb-section-cta " + (extraClass || "").trim();
-          wrap.appendChild(
-            makeTimeRegAnchor("morning", "11:00 по МСК", VB_REG_BTN_CLASS)
-          );
-          wrap.appendChild(
-            makeTimeRegAnchor("evening", "19:00 по МСК", VB_REG_BTN_CLASS)
-          );
-          return wrap;
-        }
-
-        /** Пара CTA в конце секции, где ещё нет кнопок регистрации. */
-        function ensureRegButtonsInSections() {
-          var root = document.getElementById("root");
-          if (!root) return;
-          var sections = root.querySelectorAll("section");
-          for (var i = 0; i < sections.length; i++) {
-            var section = sections[i];
-            if (section.id === "pricing") continue;
-            var cs = window.getComputedStyle(section);
-            if (cs.display === "none" || cs.visibility === "hidden") continue;
-            if (section.querySelector(".vb-time-reg-replace")) continue;
-
-            var container =
-              section.querySelector(".vb-outcomes-inner") ||
-              section.querySelector(".vb-gifts-inner") ||
-              section.querySelector(".container") ||
-              section;
-            if (container.querySelector(".vb-section-cta")) continue;
-            container.appendChild(makeTimeRegBlock(""));
-          }
-        }
-
-        /** CTA: 11:00 / 19:00 по МСК + дата; смена режимов по МСК в 9:00 и 19:00 — см. VIBE_VB.refreshScheduleLabels. */
-        function replaceFreeWidgetLinksWithTimeButtons() {
-          var root = document.getElementById("root");
-          if (!root) return;
-          var links = Array.prototype.slice.call(root.querySelectorAll("a[href]"));
-          for (var i = 0; i < links.length; i++) {
-            var link = links[i];
-            if (link.closest(".vb-time-reg-replace")) continue;
-            if (link.getAttribute("data-vb-open")) continue;
-            if (!isFreeWidgetHref(link.getAttribute("href") || "")) continue;
-            var wrap = document.createElement("div");
-            wrap.className = "vb-time-reg-replace";
-            var cls = link.className || "";
-            wrap.appendChild(makeTimeRegAnchor("morning", "11:00 по МСК", cls));
-            wrap.appendChild(makeTimeRegAnchor("evening", "19:00 по МСК", cls));
-            link.parentNode.insertBefore(wrap, link);
-            link.remove();
-          }
-        }
-
-        /** Кнопка «Записаться на мастер-класс» (скролл к тарифам) → две кнопки по времени. */
-        function replaceMasterclassCtaWithTimeButtons() {
-          var root = document.getElementById("root");
-          if (!root) return;
-          var buttons = Array.prototype.slice.call(root.querySelectorAll("button"));
-          for (var i = 0; i < buttons.length; i++) {
-            var btn = buttons[i];
-            if (btn.closest(".vb-time-reg-replace")) continue;
-            var t = (btn.textContent || "").replace(/\s+/g, " ").trim();
-            if (t.indexOf("Записаться на мастер-класс") === -1) continue;
-            var wrap = document.createElement("div");
-            wrap.className = "vb-time-reg-replace vb-time-reg-replace--narrow";
-            var cls =
-              btn.className ||
-              "px-8 py-4 rounded-2xl font-bold bg-gradient-main text-white text-center";
-            wrap.appendChild(makeTimeRegAnchor("morning", "11:00 по МСК", cls));
-            wrap.appendChild(makeTimeRegAnchor("evening", "19:00 по МСК", cls));
-            btn.parentNode.insertBefore(wrap, btn);
-            btn.remove();
-          }
-        }
-
-        function runTimeRegUi() {
-          replaceFreeWidgetLinksWithTimeButtons();
-          replaceMasterclassCtaWithTimeButtons();
-          ensureRegButtonsInSections();
-          if (window.VIBE_VB) window.VIBE_VB.refreshScheduleLabels();
-        }
-
-        var _vbRegUiDebounce = null;
-        function scheduleFullRegUiRefresh() {
-          clearTimeout(_vbRegUiDebounce);
-          _vbRegUiDebounce = setTimeout(function () {
-            runHide();
-            hideDay2Program();
-            replaceResultsSection();
-            insertGiftsSection();
-            addStartIn3Min();
-            runTimeRegUi();
-            modifyLinks();
-          }, 200);
-        }
-
-        /** Оставшиеся ссылки на старый домен → форма регистрации (утро по умолчанию). */
-        function modifyLinks() {
-          var links = document.querySelectorAll(
-            'a[href*="xeniabaranova-school.ru/pl/lite/widget"], a[href*="neyroseti.neiroguru.ru/pl/lite/widget"]'
-          );
-          var sections = document.querySelectorAll("section");
-          var heroSections = [sections[0], sections[1]];
-
-          links.forEach(function (link) {
-            if (link.getAttribute("data-vb-modal-bound") === "1") return;
-            var section = link.closest("section");
-            var isHero = heroSections.indexOf(section) !== -1;
-            var href = link.href || "";
-
-            function bind(slot) {
-              link.setAttribute("data-vb-modal-bound", "1");
-              link.removeAttribute("target");
-              link.href = "#";
-              link.addEventListener("click", function (e) {
-                e.preventDefault();
-                openRegForm(slot);
-              });
-            }
-
-            if (isHero) {
-              bind("morning");
-            } else if (
-              href.indexOf("id=1603540") !== -1 ||
-              href.indexOf("id%3d1603540") !== -1 ||
-              href.indexOf("id=1585653") !== -1 ||
-              href.indexOf("id%3d1585653") !== -1
-            ) {
-              bind("evening");
-            } else if (
-              href.indexOf("id=1603538") !== -1 ||
-              href.indexOf("id%3d1603538") !== -1 ||
-              href.indexOf("id=1558793") !== -1 ||
-              href.indexOf("id%3d1558793") !== -1
-            ) {
-              bind("morning");
-            } else if (href.indexOf("id=1558799") !== -1 || href.indexOf("id%3d1558799") !== -1) {
-              bind("morning");
-            }
+        // Бургер-меню (мобильная навигация)
+        var burger = document.getElementById("nr-burger");
+        var menu = document.getElementById("nr-menu");
+        if (burger && menu) {
+          var setMenu = function (open) {
+            menu.classList.toggle("is-open", open);
+            burger.classList.toggle("is-open", open);
+            burger.setAttribute("aria-expanded", open ? "true" : "false");
+          };
+          burger.addEventListener("click", function () {
+            setMenu(!menu.classList.contains("is-open"));
+          });
+          menu.querySelectorAll("a").forEach(function (a) {
+            a.addEventListener("click", function () { setMenu(false); });
           });
         }
 
-        // VIP: дублируем CSS — на случай смены вёрстки (по тексту и по виджету id=1558799)
-        function hideVipButtonOnly() {
-          var root = document.getElementById("root");
-          if (!root) return;
-          var links = root.querySelectorAll("a, button");
-          for (var i = 0; i < links.length; i++) {
-            var el = links[i];
-            var t = (el.textContent || "").trim();
-            var href = (el.getAttribute("href") || "") + "";
-            if (
-              href.indexOf("1558799") !== -1 ||
-              t.indexOf("Хочу VIP за 570") !== -1 ||
-              t === "Хочу VIP за 570 ₽" ||
-              t.indexOf("Оплатить VIP 570") !== -1
-            ) {
-              el.style.setProperty("display", "none", "important");
-            }
-          }
-        }
-        // Дублируем CSS (на случай смены классов в бандле): подписи тарифов и VIP-тексты
-        function hideCaptionTexts() {
-          var root = document.getElementById("root");
-          if (!root) return;
-          var all = root.querySelectorAll("p, span, div, li");
-          for (var i = 0; i < all.length; i++) {
-            var el = all[i];
-            if (el.children.length > 0) continue;
-            var t = (el.textContent || "").trim();
-            if (t.length > 120) continue;
-            if (
-              t.indexOf("VIP — эфир + записи + сертификат") !== -1 ||
-              t.indexOf("Бесплатно — только эфир") !== -1 ||
-              t.indexOf("Запись и сертификат доступны только в VIP-формате") !== -1 ||
-              t.indexOf("Оплатить VIP 570") !== -1
-            ) {
-              el.style.setProperty("display", "none", "important");
-            }
-          }
-        }
-        // Убираем только блок «Выберите формат участия» (секция с карточками Бесплатно/VIP), первый экран не трогаем
-        function hideFormatSection() {
-          var root = document.getElementById("root");
-          if (!root) return;
-          var sections = root.querySelectorAll("section");
-          for (var i = 0; i < sections.length; i++) {
-            var text = (sections[i].textContent || "").toUpperCase();
-            var hasTitle = text.indexOf("ВЫБЕРИТЕ ФОРМАТ УЧАСТИЯ") !== -1;
-            var hasCards = text.indexOf("БЕСПЛАТНО") !== -1 && (text.indexOf("570") !== -1 || text.indexOf("VIP") !== -1);
-            if (hasTitle && hasCards) {
-              sections[i].style.setProperty("display", "none", "important");
-              return;
-            }
-          }
-        }
-        function runHide() {
-          hideFormatSection();
-          hideVipButtonOnly();
-          hideCaptionTexts();
-        }
-
-        var _vbOutcomesReplaced = false;
-        var _vbGiftsInserted = false;
-
-        /** «Что получите за 3 часа» — нумерованный список заголовок → описание (как на макете). */
-        function replaceResultsSection() {
-          if (_vbOutcomesReplaced) return;
-          var root = document.getElementById("root");
-          if (!root) return;
-          var headings = root.querySelectorAll("h2");
-          var section = null;
-          for (var i = 0; i < headings.length; i++) {
-            if ((headings[i].textContent || "").indexOf("Что получите за 3 часа") !== -1) {
-              section = headings[i].closest("section");
-              break;
-            }
-          }
-          if (!section || section.getAttribute("data-vb-outcomes-done") === "1") return;
-
-          var items = [
-            {
-              title: "Соберёте первого бота в ВК на практике",
-              desc: "получите готовый ВК-бот, который можно сразу использовать или доработать под свой проект",
-            },
-            {
-              title: "Создадите бота в MAX",
-              desc: "научитесь создавать бота в MAX, который выполняет заданные сценарии",
-            },
-            {
-              title: "Подключите GigaChat к сайту",
-              desc: "научитесь делать сайт с встроенным ИИ, который отвечает пользователям",
-            },
-            {
-              title: "Соберёте свой первый веб-сервис",
-              desc: "поймёте, как из простой идеи собрать полноценный цифровой продукт",
-            },
-            {
-              title: "Научитесь собирать сайты за 3 секунды",
-              desc: "без сложной вёрстки и разработчиков",
-            },
-            {
-              title:
-                "Получите «Набор выживания: как запускать сайты, боты и мини-продукты из России в 2026»",
-              desc: "система и 7 бонусных материалов для запуска сайтов, ботов и мини-продуктов из России в новых реалиях",
-            },
-            {
-              title: "Поймёте, как применять это в жизни, работе и для заработка",
-              desc: "",
-            },
-          ];
-
-          var listHtml = items
-            .map(function (item, idx) {
-              var single = !item.desc;
-              var liClass = single ? ' class="vb-outcomes-item--single"' : "";
-              var descLine = item.desc
-                ? '<span class="vb-outcomes-line vb-outcomes-desc">→ ' + item.desc + "</span>"
-                : "";
-              return (
-                "<li" +
-                liClass +
-                '><span class="vb-outcomes-num" aria-hidden="true">' +
-                (idx + 1) +
-                '</span><div class="vb-outcomes-body"><span class="vb-outcomes-line"><strong>' +
-                item.title +
-                "</strong></span>" +
-                descLine +
-                "</div></li>"
-              );
-            })
-            .join("");
-
-          var hadAnim = section.classList.contains("anim-hidden");
-          section.className =
-            "vb-outcomes-section py-24 bg-gradient-to-b from-[#0a0a0c] to-purple-950/20" +
-            (hadAnim ? " anim-hidden" : "");
-          section.setAttribute("data-vb-outcomes-done", "1");
-          section.setAttribute("aria-label", "Что получите за 3 часа");
-                    section.innerHTML =
-            '<div class="vb-outcomes-inner"><div class="vb-outcomes-head"><h2>Что получите за 3 часа</h2><p class="vb-outcomes-tagline">И больше не будете работать по-старому</p></div><ol class="vb-outcomes-list">' +
-            listHtml +
-            "</ol></div>";
-
-          _vbOutcomesReplaced = true;
-
-          if ("IntersectionObserver" in window && section.classList.contains("anim-hidden")) {
-            var obs = new IntersectionObserver(
-              function (entries) {
-                entries.forEach(function (entry) {
-                  if (entry.isIntersecting) {
-                    entry.target.classList.add("anim-visible");
-                    entry.target.classList.remove("anim-hidden");
-                    obs.unobserve(entry.target);
-                  }
-                });
-              },
-              { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
-            );
-            obs.observe(section);
-          }
-        }
-
-        /** Блок подарков за эфир (после секции результатов). */
-        function insertGiftsSection() {
-          if (_vbGiftsInserted || document.getElementById("vb-gifts")) return;
-          var root = document.getElementById("root");
-          if (!root) return;
-          var headings = root.querySelectorAll("h2");
-          var anchorSection = null;
-          for (var i = 0; i < headings.length; i++) {
-            if ((headings[i].textContent || "").indexOf("Что получите за 3 часа") !== -1) {
-              anchorSection = headings[i].closest("section");
-              break;
-            }
-          }
-          if (!anchorSection || !anchorSection.parentNode) return;
-
-          var gifts = [
-            "Гайд: «Как заменить зарубежные сервисы и не зависеть от блокировок»",
-            "Список 20 услуг, которые можно продавать через вайбкодинг",
-            "10 идей автоматизации для малого бизнеса в России",
-            "Чек-лист: «Как проверить сайт перед запуском (чтобы не попасть под блокировку)»",
-            "Как запустить продукт без сайта, только через бот в ВК",
-            "Гайд: «Ошибки при создании ИИ-продуктов без кода»",
-          ];
-
-          var checkSvg =
-            '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>';
-          var listHtml = gifts
-            .map(function (text) {
-              return (
-                '<li><span class="vb-gifts-check" aria-hidden="true">' +
-                checkSvg +
-                "</span><span>" +
-                text +
-                "</span></li>"
-              );
-            })
-            .join("");
-
-          var section = document.createElement("section");
-          section.id = "vb-gifts";
-          section.className = "vb-gifts-section py-24 anim-hidden";
-          section.setAttribute("aria-label", "Подарки за эфир");
-          section.innerHTML =
-            '<motionless class="vb-gifts-inner"><motionless class="vb-gifts-grid"><motionless><h2 class="vb-gifts-title"><span class="vb-gifts-title-accent">Оставайтесь со мной<br>до конца эфира</span><span class="vb-gifts-title-white">и получите все подарки</span></h2></motionless><ul class="vb-gifts-list">' +
-            listHtml +
-            "</ul></motionless></motionless>";
-          section.innerHTML = section.innerHTML.replace(/motionless/g, "div");
-
-          anchorSection.parentNode.insertBefore(section, anchorSection.nextSibling);
-          _vbGiftsInserted = true;
-
-          if ("IntersectionObserver" in window) {
-            var obs = new IntersectionObserver(
-              function (entries) {
-                entries.forEach(function (entry) {
-                  if (entry.isIntersecting) {
-                    entry.target.classList.add("anim-visible");
-                    entry.target.classList.remove("anim-hidden");
-                    obs.unobserve(entry.target);
-                  }
-                });
-              },
-              { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
-            );
-            obs.observe(section);
-          } else {
-            section.classList.add("anim-visible");
-            section.classList.remove("anim-hidden");
-          }
-        }
-
-        /** Скрыть блок программы «ДЕНЬ 2» — мастер-класс однодневный (3 часа). */
-        function hideDay2Program() {
-          var root = document.getElementById("root");
-          if (!root) return;
-          var labels = root.querySelectorAll("div, span");
-          for (var i = 0; i < labels.length; i++) {
-            var el = labels[i];
-            if ((el.textContent || "").trim() !== "ДЕНЬ 2") continue;
-            var grid = el.closest(".grid");
-            if (!grid) continue;
-            var sep = grid.previousElementSibling;
-            if (sep && sep.classList && sep.classList.contains("h-px")) {
-              sep.style.setProperty("display", "none", "important");
-            }
-            grid.style.setProperty("display", "none", "important");
-          }
-        }
-
-        // Устаревшие даты в бандле → однодневный формат
-        function addStartIn3Min() {
-          var root = document.getElementById("root");
-          if (!root) return;
-          var all = root.querySelectorAll("p, span, div, h1, h2, h3, h4, li");
-          for (var i = 0; i < all.length; i++) {
-            var el = all[i];
-            if (el.children.length > 0) continue;
-            var t = (el.textContent || "").trim();
-            if (
-              t.indexOf("22-23 февраля") !== -1 ||
-              t.indexOf("22 февраля") !== -1 ||
-              t.indexOf("23 февраля") !== -1 ||
-              t.indexOf("2-х дневный") !== -1 ||
-              t.indexOf("2-дневный") !== -1 ||
-              t.indexOf("1-дневный") !== -1
-            ) {
-              var nextMk =
-                "практический мастер-класс · 3 часа · 11:00 и 19:00 по МСК";
-              el.textContent =
-                t.indexOf("⚡") !== -1 ? "⚡ " + nextMk : nextMk;
-            }
-          }
-        }
-
-        // Анимации появления при скролле (один раз; 0 и 1 — мобильный и десктопный первый экран)
-        var _vbScrollAnimInited = false;
-        function addScrollAnimations() {
-          if (_vbScrollAnimInited) return;
-          if (!('IntersectionObserver' in window)) return;
-          var root = document.getElementById("root");
-          if (!root) return;
-          var sections = root.querySelectorAll("section");
-          if (!sections.length) return;
-          _vbScrollAnimInited = true;
-          var observer = new IntersectionObserver(function (entries) {
+        // Анимации появления секций при скролле
+        if ("IntersectionObserver" in window) {
+          var obs = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
               if (entry.isIntersecting) {
-                entry.target.classList.add('anim-visible');
-                entry.target.classList.remove('anim-hidden');
-                observer.unobserve(entry.target);
+                entry.target.classList.add("is-visible");
+                obs.unobserve(entry.target);
               }
             });
-          }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-          sections.forEach(function (section, i) {
-            if (i === 0 || i === 1) return;
-            if (section.id === "pricing") return;
-            section.classList.add('anim-hidden');
-            observer.observe(section);
-          });
+          }, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
+          document.querySelectorAll(".nr-anim").forEach(function (el) { obs.observe(el); });
+        } else {
+          document.querySelectorAll(".nr-anim").forEach(function (el) { el.classList.add("is-visible"); });
         }
-
-        // React + мобильный/десктопный дубль секций: повторно подхватываем ссылки, пока DOM стабилизируется
-        var rootObserved = document.getElementById("root");
-        var vbMoDisconnected = false;
-        var vbMo = new MutationObserver(function () {
-          if (vbMoDisconnected) return;
-          var root = document.getElementById("root");
-          if (root && root.children.length > 0) {
-            scheduleFullRegUiRefresh();
-          }
-        });
-        vbMo.observe(rootObserved, { childList: true, subtree: true });
-        setTimeout(function () {
-          vbMo.disconnect();
-          vbMoDisconnected = true;
-        }, 14000);
-        setTimeout(function () { runHide(); hideDay2Program(); replaceResultsSection(); insertGiftsSection(); addStartIn3Min(); runTimeRegUi(); modifyLinks(); addScrollAnimations(); }, 300);
-        setTimeout(function () { runHide(); hideDay2Program(); replaceResultsSection(); insertGiftsSection(); addStartIn3Min(); runTimeRegUi(); modifyLinks(); addScrollAnimations(); }, 800);
-        setTimeout(function () { runHide(); hideDay2Program(); replaceResultsSection(); insertGiftsSection(); addStartIn3Min(); runTimeRegUi(); modifyLinks(); }, 1500);
-        setTimeout(function () { hideDay2Program(); replaceResultsSection(); insertGiftsSection(); addStartIn3Min(); hideCaptionTexts(); runTimeRegUi(); modifyLinks(); }, 2500);
-
-        function showFileOpenHint() {
-          var el = document.getElementById("file-open-hint");
-          if (el) el.hidden = false;
-        }
-        window.addEventListener("error", function (e) {
-          if (e.filename && String(e.filename).indexOf("index-CrqkIGJg") !== -1) showFileOpenHint();
-        }, true);
-        setTimeout(function () {
-          var r = document.getElementById("root");
-          if (r && r.children.length === 0) showFileOpenHint();
-        }, 3500);
       })();
     </script>
 
