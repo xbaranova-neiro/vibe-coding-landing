@@ -18,12 +18,9 @@
     <meta name="twitter:title" content="Как за 3 часа создать сайт, бот и мини-сервис без технических знаний">
     <meta name="twitter:description" content="Практический мастер-класс · 3 часа · 11:00 и 19:00 по МСК. Без кода. Участие бесплатное.">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" href="./fonts/Unbounded-400-normal-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="./fonts/Raleway-400-normal-cyrillic.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="./fonts/fonts.css" />
 
     <style>
       :root {
@@ -111,7 +108,9 @@
       .btn--lg { padding: 17px 30px; font-size: 15px; }
       .btn--md { padding: 14px 26px; font-size: 14px; }
       .btn--sm { padding: 10px 18px; font-size: 12px; }
-      .btn [data-vb-hero-date] { font-weight: 400; opacity: 0.85; }
+      .btn [data-vb-hero-date] { font-weight: 400; opacity: 0.85; white-space: nowrap; }
+      .btn-lbl { display: inline; text-align: center; }
+      .btn-when { white-space: nowrap; font-weight: 400; }
 
       /* ── Nav ────────────────────────────────── */
       .nr-nav {
@@ -494,7 +493,9 @@
         .nr-grid-3 { grid-template-columns: 1fr; }
         .nr-grid-4 { grid-template-columns: repeat(2, 1fr); }
         .nr-cta-row { flex-direction: column; align-items: stretch; }
-        .nr-cta-row .btn { width: 100%; white-space: normal; line-height: 1.3; }
+        .nr-cta-row .btn { width: 100%; white-space: normal; line-height: 1.35; }
+        .nr-cta-row .btn--lg { font-size: 14px; padding: 15px 18px; }
+        .nr-footer-cta .btn { font-size: 13px; padding: 13px 18px; }
       }
       @media (max-width: 480px) {
         .nr-grid-4 { grid-template-columns: 1fr; }
@@ -563,8 +564,8 @@
             <h1 class="nr-h1">Как за 3 часа создать <span class="mark">сайт, бот</span> и мини-сервис без технических знаний</h1>
             <p class="nr-lead">За 3 часа соберёте сайт, бота и мини-сервис с нейросетями — без кода. Подходит новичкам. Участие бесплатное.</p>
             <div class="nr-cta-row">
-              <a href="#" class="btn btn--teal btn--lg" data-vb-open="morning">Зарегистрироваться на 11:00 <span data-vb-hero-date="morning"></span> →</a>
-              <a href="#" class="btn btn--outline btn--lg" data-vb-open="evening">Зарегистрироваться на 19:00 <span data-vb-hero-date="evening"></span> →</a>
+              <a href="#" class="btn btn--teal btn--lg" data-vb-open="morning"><span class="btn-lbl">Зарегистрироваться на 11:00 <span class="btn-when"><span data-vb-hero-date="morning"></span> →</span></span></a>
+              <a href="#" class="btn btn--outline btn--lg" data-vb-open="evening"><span class="btn-lbl">Зарегистрироваться на 19:00 <span class="btn-when"><span data-vb-hero-date="evening"></span> →</span></span></a>
             </div>
             <div class="nr-gift-badge">
               <span class="nr-gift-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M3 12.5h18M12 8v13"/><path d="M12 8S10.5 3.5 8 4.7 12 8 12 8zM12 8s1.5-4.5 4-3.3S12 8 12 8z"/></svg></span>
@@ -770,10 +771,10 @@
             <div class="nr-final-badge"><span class="nr-dot"></span>11:00 и 19:00 по МСК</div>
             <h2>Выберите удобный поток и займите место</h2>
             <div class="nr-cta-row" style="justify-content:center;">
-              <a href="#" class="btn btn--teal btn--lg" data-vb-open="morning">Зарегистрироваться на 11:00 <span data-vb-hero-date="morning"></span></a>
-              <a href="#" class="btn btn--ghost btn--lg" data-vb-open="evening">Зарегистрироваться на 19:00 <span data-vb-hero-date="evening"></span></a>
+              <a href="#" class="btn btn--teal btn--lg" data-vb-open="morning"><span class="btn-lbl">Зарегистрироваться на 11:00 <span class="btn-when"><span data-vb-hero-date="morning"></span></span></span></a>
+              <a href="#" class="btn btn--ghost btn--lg" data-vb-open="evening"><span class="btn-lbl">Зарегистрироваться на 19:00 <span class="btn-when"><span data-vb-hero-date="evening"></span></span></span></a>
             </div>
-            <p class="nr-final-note">Без спама. Ссылку на эфир пришлём на почту и в бота.</p>
+            <p class="nr-final-note">Ссылку на эфир пришлём на почту и в бота.</p>
           </div>
         </div>
       </section>
@@ -790,12 +791,12 @@
             <div>
               <p class="nr-footer-col-title">Занять место на эфире</p>
               <div class="nr-footer-cta">
-                <a href="#" class="btn btn--teal btn--md" data-vb-open="morning">Регистрация на 11:00 МСК · <span data-vb-hero-date="morning"></span></a>
-                <a href="#" class="btn btn--ghost btn--md" data-vb-open="evening">Регистрация на 19:00 МСК · <span data-vb-hero-date="evening"></span></a>
+                <a href="#" class="btn btn--teal btn--md" data-vb-open="morning"><span class="btn-lbl">Регистрация на 11:00 МСК <span class="btn-when">· <span data-vb-hero-date="morning"></span></span></span></a>
+                <a href="#" class="btn btn--ghost btn--md" data-vb-open="evening"><span class="btn-lbl">Регистрация на 19:00 МСК <span class="btn-when">· <span data-vb-hero-date="evening"></span></span></span></a>
               </div>
               <div class="nr-footer-links">
-                <a href="#">Политика обработки данных</a>
-                <a href="#">Публичная оферта</a>
+                <a href="https://xeniabaranova-school.ru/politica" target="_blank" rel="noopener">Политика обработки данных</a>
+                <a href="https://xeniabaranova-school.ru/oferta_vibe-code" target="_blank" rel="noopener">Публичная оферта</a>
               </div>
             </div>
           </div>
